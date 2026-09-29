@@ -15,6 +15,22 @@ Two motivations, two measures:
 Status: research prototype, September 2026. Everything below runs locally except the optional
 behaviour experiment (`phailogeny garden`), which calls Claude.
 
+## The tree
+
+![Circular neighbour-joining tree of 1,003 agents, coloured by source repo](out/figures/tree_centred.svg)
+
+Zooming into one clade: debugging and error-handling agents from five repos group together, with
+the documented copy (`lst97/debugger`, from wshobson) next to its source.
+
+![Debugging clade with labelled agents](out/figures/clade_debugging.svg)
+
+- **Interactive report** (tree with every agent labelled, closest pairs, clusters):
+  <https://sethbarr.github.io/phailogeny/out/report.html>
+  ([uncentred version](https://sethbarr.github.io/phailogeny/out/uncentred/report.html))
+- **Newick files** for iTOL / FigTree: [`out/tree.nwk`](out/tree.nwk),
+  [`out/uncentred/tree.nwk`](out/uncentred/tree.nwk) (uncentred overview:
+  [`out/figures/tree_uncentred.svg`](out/figures/tree_uncentred.svg))
+
 ## Quick start
 
 ```bash

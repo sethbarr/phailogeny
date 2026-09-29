@@ -111,6 +111,25 @@ def _write_tree_outputs(result: dict[str, object], out: Path, top: int) -> dict[
     return {"clusters": len(clusters), "out": str(out)}
 
 
+def _write_figures(centred: dict[str, object], uncentred: dict[str, object], out: Path) -> None:
+    """Circular overview SVGs of both trees, plus a labelled zoom on the debugging clade."""
+    from phailogeny.report.figures import clade_around, radial_svg, rect_svg
+
+    out.mkdir(parents=True, exist_ok=True)
+    source_of = {aid: str(rec["source"]) for aid, rec in zip(centred["ids"], centred["records"])}
+    n = len(source_of)
+    for tag, result in (("centred", centred), ("uncentred", uncentred)):
+        label = "style-centred" if tag == "centred" else "uncentred"
+        title = f"{n:,} agents, NJ on {label} embedding distances"
+        (out / f"tree_{tag}.svg").write_text(radial_svg(result["tree"], source_of, title=title), encoding="utf-8")
+    names = {str(tip.name) for tip in centred["tree"].tips()}
+    anchor = next((a for a in ("wshobson/debugging-toolkit-debugger", "voltagent/debugger") if a in names), None)
+    if anchor:
+        clade = clade_around(centred["tree"], anchor, 18, 40).copy()
+        title = "Zoom: the debugging clade (style-centred tree), coloured by repo"
+        (out / "clade_debugging.svg").write_text(rect_svg(clade, source_of, title=title), encoding="utf-8")
+
+
 def _tree(dirs: list[str], corpus: str | None, out_dir: str, top: int, weights: str) -> dict[str, object]:
     """Build the style-centred tree (primary) and the uncentred tree, and compare them.
 
@@ -131,6 +150,7 @@ def _tree(dirs: list[str], corpus: str | None, out_dir: str, top: int, weights: 
     out = Path(out_dir)
     primary = _write_tree_outputs(centred, out, top)
     _write_tree_outputs(uncentred, out / "uncentred", top)
+    _write_figures(centred, uncentred, out / "figures")
     comparison = compare_analyses(uncentred, centred, "uncentred", "centred")
     comparison["style_centring"] = centred["style_centring"]
     (out / "tree_comparison.json").write_text(json.dumps(comparison, indent=2), encoding="utf-8")
