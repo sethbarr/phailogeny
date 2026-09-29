@@ -76,6 +76,22 @@ with a Mantel test (`phailogeny/phenotype/common_garden.py`).
    nearest neighbour 56% -> 40%. The centred and uncentred trees agree on overall shape
    (cophenetic r 0.90) but differ in 57% of splits (RF), and clusters agree at ARI 0.50.
 
+5. **Controlled paraphrase test** (`scripts/paraphrase_test.py`; 50 wshobson agents, each
+   rewritten by Claude three ways; the true source is known). Rank of the source among all 1,003
+   agents:
+
+   | Rewrite | 5-gram overlap with source | Text overlap finds source first | Embeddings find source first (top 5) |
+   | --- | --- | --- | --- |
+   | Light edit | 0.49 | 100% | 100% (100%) |
+   | Full rewrite | 0.00 | 32% (median rank 502, chance) | 92% (100%) |
+   | Codex-style checklist | 0.00 | 4% | 82% (100%) |
+
+   Embeddings recover the source, but they cannot say *whether* a pair is a copy: rewrite-to-source
+   similarity (median 0.81) overlaps natural same-name pairs that are presumably independent
+   (median 0.73, 10th-90th percentile 0.61-0.84). Function similarity detects "same job", not
+   "same ancestry"; once text is rewritten, homology needs other evidence (see question 3).
+   Distributions: `out/paraphrase/similarity_distributions.json`.
+
 ## Questions for a phylogeneticist
 
 1. **Tree or network?** Agents swap parts across lineages (prompt sections, tool configs). Is NJ

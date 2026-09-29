@@ -198,8 +198,10 @@ def fit_style_offsets(
 
 
 def remove_style(vectors: np.ndarray, sources: list[str], offsets: dict[str, np.ndarray]) -> np.ndarray:
+    """Subtract each repo's style offset and re-normalise. Repos without an offset are left as-is."""
     present = np.linalg.norm(vectors, axis=1) > 0
-    shifted = vectors - np.array([offsets.get(src, 0.0) for src in sources])
+    zero = np.zeros(vectors.shape[1])
+    shifted = vectors - np.array([offsets.get(src, zero) for src in sources])
     shifted[~present] = 0.0
     return _unit(shifted)
 

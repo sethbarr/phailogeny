@@ -40,3 +40,9 @@ def test_style_offsets_recover_a_repo_shift_and_restore_twin_matches() -> None:
     cleaned = remove_style(vectors, sources, offsets)
     sims = cleaned[:20] @ cleaned[20:].T
     assert (sims.argmax(axis=1) == np.arange(20)).all()
+
+
+def test_remove_style_leaves_repos_without_an_offset_unchanged() -> None:
+    vectors = np.eye(3)
+    cleaned = remove_style(vectors, ["a", "new", "new"], {"a": np.array([0.5, 0.0, 0.0])})
+    assert np.allclose(cleaned[1:], vectors[1:])

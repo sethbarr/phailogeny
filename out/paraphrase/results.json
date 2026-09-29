@@ -1,0 +1,93 @@
+{
+  "n_sources": 50,
+  "n_rewrites": 150,
+  "levels": {
+    "light": {
+      "n": 50,
+      "median_5gram_overlap_with_source": 0.492,
+      "flagged_as_copy (overlap >= 0.3)": 0.82,
+      "measures": {
+        "text overlap (MinHash)": {
+          "source_found_first": 1.0,
+          "source_in_top5": 1.0,
+          "median_rank_of_1003": 1.0
+        },
+        "embeddings, uncentred": {
+          "source_found_first": 1.0,
+          "source_in_top5": 1.0,
+          "median_rank_of_1003": 1.0
+        },
+        "embeddings, style-centred": {
+          "source_found_first": 0.98,
+          "source_in_top5": 1.0,
+          "median_rank_of_1003": 1.0
+        },
+        "keyword traits": {
+          "source_found_first": 1.0,
+          "source_in_top5": 1.0,
+          "median_rank_of_1003": 1.0
+        }
+      }
+    },
+    "rewrite": {
+      "n": 50,
+      "median_5gram_overlap_with_source": 0.0,
+      "flagged_as_copy (overlap >= 0.3)": 0.0,
+      "measures": {
+        "text overlap (MinHash)": {
+          "source_found_first": 0.32,
+          "source_in_top5": 0.38,
+          "median_rank_of_1003": 502.0
+        },
+        "embeddings, uncentred": {
+          "source_found_first": 0.92,
+          "source_in_top5": 1.0,
+          "median_rank_of_1003": 1.0
+        },
+        "embeddings, style-centred": {
+          "source_found_first": 0.92,
+          "source_in_top5": 0.98,
+          "median_rank_of_1003": 1.0
+        },
+        "keyword traits": {
+          "source_found_first": 0.64,
+          "source_in_top5": 0.78,
+          "median_rank_of_1003": 1.0
+        }
+      }
+    },
+    "codex": {
+      "n": 50,
+      "median_5gram_overlap_with_source": 0.0,
+      "flagged_as_copy (overlap >= 0.3)": 0.0,
+      "measures": {
+        "text overlap (MinHash)": {
+          "source_found_first": 0.04,
+          "source_in_top5": 0.04,
+          "median_rank_of_1003": 502.0
+        },
+        "embeddings, uncentred": {
+          "source_found_first": 0.82,
+          "source_in_top5": 1.0,
+          "median_rank_of_1003": 1.0
+        },
+        "embeddings, style-centred": {
+          "source_found_first": 0.82,
+          "source_in_top5": 1.0,
+          "median_rank_of_1003": 1.0
+        },
+        "keyword traits": {
+          "source_found_first": 0.1,
+          "source_in_top5": 0.28,
+          "median_rank_of_1003": 12.0
+        }
+      }
+    }
+  },
+  "same_repo_nn_original_corpus": {
+    "text overlap (MinHash)": 0.755,
+    "embeddings, uncentred": 0.565,
+    "embeddings, style-centred": 0.399,
+    "keyword traits": 0.644
+  }
+}

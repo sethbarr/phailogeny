@@ -1,0 +1,50 @@
+{
+  "paraphrase light -> source": {
+    "n": 50,
+    "p10": 0.902,
+    "median": 0.942,
+    "p90": 0.963
+  },
+  "paraphrase rewrite -> source": {
+    "n": 50,
+    "p10": 0.684,
+    "median": 0.811,
+    "p90": 0.859
+  },
+  "paraphrase codex -> source": {
+    "n": 50,
+    "p10": 0.625,
+    "median": 0.701,
+    "p90": 0.778
+  },
+  "natural twins: other repos": {
+    "n": 305,
+    "p10": 0.609,
+    "median": 0.731,
+    "p90": 0.84
+  },
+  "natural twins: edited copy": {
+    "n": 54,
+    "p10": 0.643,
+    "median": 0.804,
+    "p90": 0.911
+  },
+  "natural twins: format change (same org, Claude -> Codex)": {
+    "n": 154,
+    "p10": 0.596,
+    "median": 0.74,
+    "p90": 0.813
+  },
+  "natural twins: full rewrite (documented ancestry)": {
+    "n": 32,
+    "p10": 0.633,
+    "median": 0.772,
+    "p90": 0.87
+  },
+  "random pairs": {
+    "n": 5000,
+    "p10": 0.179,
+    "median": 0.318,
+    "p90": 0.468
+  }
+}
