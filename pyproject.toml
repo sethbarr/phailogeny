@@ -1,0 +1,37 @@
+[project]
+name = "phailogeny"
+version = "0.1.0"
+description = "Comparative analysis of agent estates and functional overlap"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+  "numpy",
+  "scipy",
+  "scikit-learn",
+  "scikit-bio",
+  "sentence-transformers",
+  "datasketch",
+  "pyyaml",
+  "jinja2",
+  "httpx",
+  "anthropic",
+  "pytest",
+  "ruff",
+]
+
+[project.scripts]
+phailogeny = "phailogeny.cli:main"
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 100
+
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+packages = ["phailogeny", "phailogeny.ingest", "phailogeny.characters", "phailogeny.distance", "phailogeny.structure", "phailogeny.analysis", "phailogeny.phenotype", "phailogeny.report", "phailogeny.synth"]

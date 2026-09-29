@@ -1,0 +1,102 @@
+{
+  "methods": {
+    "uncentred": {
+      "same_repo_nearest_neighbour": 0.558,
+      "clusters": 216,
+      "clusters_spanning_repos": 105,
+      "noise_agents": 379
+    },
+    "centred": {
+      "same_repo_nearest_neighbour": 0.402,
+      "clusters": 211,
+      "clusters_spanning_repos": 140,
+      "noise_agents": 345
+    }
+  },
+  "robinson_foulds_proportion": 0.571,
+  "cophenetic_r": 0.896,
+  "cluster_ari": 0.499,
+  "nearest_neighbour_unchanged": 0.694,
+  "nearest_neighbour_changed_examples": [
+    {
+      "agent": "wshobson/ui-visual-validator",
+      "nearest_uncentred": "wshobson/accessibility-expert",
+      "nearest_centred": "voltagent/ui-designer"
+    },
+    {
+      "agent": "wshobson/team-debugger",
+      "nearest_uncentred": "buildwithclaude/hypotheses-manager",
+      "nearest_centred": "wshobson/debugging-toolkit-debugger"
+    },
+    {
+      "agent": "wshobson/team-reviewer",
+      "nearest_uncentred": "wshobson/incident-response-code-reviewer",
+      "nearest_centred": "voltagent/code-reviewer"
+    },
+    {
+      "agent": "wshobson/api-scaffolding-backend-architect",
+      "nearest_uncentred": "wshobson/database-cloud-optimization-database-architect",
+      "nearest_centred": "voltagent/backend-developer"
+    },
+    {
+      "agent": "wshobson/api-scaffolding-graphql-architect",
+      "nearest_uncentred": "buildwithclaude/graphql-architect",
+      "nearest_centred": "voltagent/graphql-architect"
+    },
+    {
+      "agent": "wshobson/api-testing-observability-api-documenter",
+      "nearest_uncentred": "buildwithclaude/api-documenter",
+      "nearest_centred": "voltagent/api-documenter"
+    },
+    {
+      "agent": "wshobson/application-performance-performance-engineer",
+      "nearest_uncentred": "wshobson/api-scaffolding-backend-architect",
+      "nearest_centred": "voltagent/performance-engineer"
+    },
+    {
+      "agent": "wshobson/arm-cortex-expert",
+      "nearest_uncentred": "voltagent/rust-engineer",
+      "nearest_centred": "voltagent/cpp-pro"
+    },
+    {
+      "agent": "wshobson/temporal-python-pro",
+      "nearest_uncentred": "wshobson/python-pro",
+      "nearest_centred": "contains-studio/workflow-optimizer"
+    },
+    {
+      "agent": "wshobson/blockchain-developer",
+      "nearest_uncentred": "buildwithclaude/blockchain-developer",
+      "nearest_centred": "voltagent/blockchain-developer"
+    },
+    {
+      "agent": "wshobson/cicd-automation-cloud-architect",
+      "nearest_uncentred": "wshobson/hybrid-cloud-architect",
+      "nearest_centred": "lst97/cloud-architect"
+    },
+    {
+      "agent": "wshobson/cicd-automation-kubernetes-architect",
+      "nearest_uncentred": "0xfurai/kubernetes-expert",
+      "nearest_centred": "voltagent/kubernetes-specialist"
+    },
+    {
+      "agent": "wshobson/cicd-automation-terraform-specialist",
+      "nearest_uncentred": "voltagent/terragrunt-expert",
+      "nearest_centred": "voltagent-codex/terraform-engineer"
+    },
+    {
+      "agent": "wshobson/cloud-infrastructure-network-engineer",
+      "nearest_uncentred": "wshobson/service-mesh-expert",
+      "nearest_centred": "voltagent/network-engineer"
+    },
+    {
+      "agent": "wshobson/codebase-cleanup-test-automator",
+      "nearest_uncentred": "lst97/test-automator",
+      "nearest_centred": "voltagent/test-automator"
+    }
+  ],
+  "style_centring": {
+    "enabled": true,
+    "ridge": 5.0,
+    "twin_pairs": 545
+  }
+}

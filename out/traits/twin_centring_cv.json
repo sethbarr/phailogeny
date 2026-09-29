@@ -1,0 +1,52 @@
+{
+  "uncentred": {
+    "top1 within repo": 0.771,
+    "global top5": 0.499,
+    "global median rank": 6.0,
+    "top1 | format change": 0.776,
+    "top1 | full rewrite": 0.828,
+    "top1 | edited copy": 0.815,
+    "same-repo NN": 0.558,
+    "pentest cohesion": 0.278
+  },
+  "repo-mean 50%": {
+    "top1 within repo": 0.801,
+    "global top5": 0.672,
+    "global median rank": 3.0,
+    "top1 | format change": 0.834,
+    "top1 | full rewrite": 0.828,
+    "top1 | edited copy": 0.806,
+    "same-repo NN": 0.442,
+    "pentest cohesion": 0.13
+  },
+  "twin-based ridge=1 (5-fold CV)": {
+    "top1 within repo": 0.807,
+    "global top5": 0.728,
+    "global median rank": 3.0,
+    "top1 | format change": 0.834,
+    "top1 | full rewrite": 0.812,
+    "top1 | edited copy": 0.806,
+    "same-repo NN": 0.412,
+    "pentest cohesion": 0.21
+  },
+  "twin-based ridge=5 (5-fold CV)": {
+    "top1 within repo": 0.806,
+    "global top5": 0.727,
+    "global median rank": 3.0,
+    "top1 | format change": 0.831,
+    "top1 | full rewrite": 0.812,
+    "top1 | edited copy": 0.806,
+    "same-repo NN": 0.402,
+    "pentest cohesion": 0.204
+  },
+  "twin-based ridge=20 (5-fold CV)": {
+    "top1 within repo": 0.808,
+    "global top5": 0.719,
+    "global median rank": 3.0,
+    "top1 | format change": 0.828,
+    "top1 | full rewrite": 0.812,
+    "top1 | edited copy": 0.806,
+    "same-repo NN": 0.403,
+    "pentest cohesion": 0.237
+  }
+}

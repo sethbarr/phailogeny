@@ -1,0 +1,115 @@
+{
+  "n_twin_pairs": 545,
+  "groups": {
+    "other repos": 305,
+    "edited copy": 54,
+    "format change (same org, Claude -> Codex)": 154,
+    "full rewrite (documented ancestry)": 32
+  },
+  "measures": {
+    "text overlap (MinHash)": {
+      "auc_all_twins": 0.539,
+      "top1_all": 0.074,
+      "same_repo_nn": 0.755,
+      "top1 | other repos": 0.011,
+      "median rank | other repos": 83.0,
+      "top1 | edited copy": 0.481,
+      "median rank | edited copy": 1.75,
+      "top1 | format change (same org, Claude -> Codex)": 0.065,
+      "median rank | format change (same org, Claude -> Codex)": 83.0,
+      "top1 | full rewrite (documented ancestry)": 0.031,
+      "median rank | full rewrite (documented ancestry)": 20.25
+    },
+    "embedding: description": {
+      "auc_all_twins": 0.982,
+      "top1_all": 0.632,
+      "same_repo_nn": 0.546,
+      "top1 | other repos": 0.613,
+      "median rank | other repos": 1.0,
+      "top1 | edited copy": 0.741,
+      "median rank | edited copy": 1.0,
+      "top1 | format change (same org, Claude -> Codex)": 0.597,
+      "median rank | format change (same org, Claude -> Codex)": 1.0,
+      "top1 | full rewrite (documented ancestry)": 0.797,
+      "median rank | full rewrite (documented ancestry)": 1.0
+    },
+    "embedding: prompt": {
+      "auc_all_twins": 0.984,
+      "top1_all": 0.719,
+      "same_repo_nn": 0.513,
+      "top1 | other repos": 0.69,
+      "median rank | other repos": 1.0,
+      "top1 | edited copy": 0.731,
+      "median rank | edited copy": 1.0,
+      "top1 | format change (same org, Claude -> Codex)": 0.756,
+      "median rank | format change (same org, Claude -> Codex)": 1.0,
+      "top1 | full rewrite (documented ancestry)": 0.797,
+      "median rank | full rewrite (documented ancestry)": 1.0
+    },
+    "embedding: combined (current)": {
+      "auc_all_twins": 0.992,
+      "top1_all": 0.771,
+      "same_repo_nn": 0.558,
+      "top1 | other repos": 0.754,
+      "median rank | other repos": 1.0,
+      "top1 | edited copy": 0.815,
+      "median rank | edited copy": 1.0,
+      "top1 | format change (same org, Claude -> Codex)": 0.776,
+      "median rank | format change (same org, Claude -> Codex)": 1.0,
+      "top1 | full rewrite (documented ancestry)": 0.828,
+      "median rank | full rewrite (documented ancestry)": 1.0
+    },
+    "traits: all": {
+      "auc_all_twins": 0.869,
+      "top1_all": 0.324,
+      "same_repo_nn": 0.639,
+      "top1 | other repos": 0.367,
+      "median rank | other repos": 3.0,
+      "top1 | edited copy": 0.37,
+      "median rank | edited copy": 3.0,
+      "top1 | format change (same org, Claude -> Codex)": 0.221,
+      "median rank | format change (same org, Claude -> Codex)": 5.0,
+      "top1 | full rewrite (documented ancestry)": 0.328,
+      "median rank | full rewrite (documented ancestry)": 2.0
+    },
+    "traits: activity only": {
+      "auc_all_twins": 0.808,
+      "top1_all": 0.2,
+      "same_repo_nn": 0.545,
+      "top1 | other repos": 0.228,
+      "median rank | other repos": 6.0,
+      "top1 | edited copy": 0.296,
+      "median rank | edited copy": 6.5,
+      "top1 | format change (same org, Claude -> Codex)": 0.101,
+      "median rank | format change (same org, Claude -> Codex)": 17.0,
+      "top1 | full rewrite (documented ancestry)": 0.25,
+      "median rank | full rewrite (documented ancestry)": 4.0
+    },
+    "traits: language+platform": {
+      "auc_all_twins": 0.696,
+      "top1_all": 0.188,
+      "same_repo_nn": 0.317,
+      "top1 | other repos": 0.208,
+      "median rank | other repos": 19.0,
+      "top1 | edited copy": 0.148,
+      "median rank | edited copy": 23.5,
+      "top1 | format change (same org, Claude -> Codex)": 0.146,
+      "median rank | format change (same org, Claude -> Codex)": 83.0,
+      "top1 | full rewrite (documented ancestry)": 0.266,
+      "median rank | full rewrite (documented ancestry)": 5.0
+    },
+    "traits + embeddings (mean)": {
+      "auc_all_twins": 0.979,
+      "top1_all": 0.681,
+      "same_repo_nn": 0.663,
+      "top1 | other repos": 0.661,
+      "median rank | other repos": 1.0,
+      "top1 | edited copy": 0.722,
+      "median rank | edited copy": 1.0,
+      "top1 | format change (same org, Claude -> Codex)": 0.692,
+      "median rank | format change (same org, Claude -> Codex)": 1.0,
+      "top1 | full rewrite (documented ancestry)": 0.75,
+      "median rank | full rewrite (documented ancestry)": 1.0
+    }
+  }
+}

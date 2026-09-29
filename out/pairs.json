@@ -1,0 +1,5520 @@
+{
+  "pairs": [
+    {
+      "left": "wshobson/code-refactoring-legacy-modernizer",
+      "right": "buildwithclaude/legacy-modernizer",
+      "functional_similarity": 0.944,
+      "lineage_similarity": 0.141,
+      "relation": "convergent"
+    },
+    {
+      "left": "wshobson/bash-pro",
+      "right": "0xfurai/bash-expert",
+      "functional_similarity": 0.944,
+      "lineage_similarity": 0.234,
+      "relation": "convergent"
+    },
+    {
+      "left": "wshobson/legal-advisor",
+      "right": "buildwithclaude/legal-advisor",
+      "functional_similarity": 0.94,
+      "lineage_similarity": 0.234,
+      "relation": "convergent"
+    },
+    {
+      "left": "wshobson/debugging-toolkit-dx-optimizer",
+      "right": "buildwithclaude/dx-optimizer",
+      "functional_similarity": 0.931,
+      "lineage_similarity": 0.078,
+      "relation": "convergent"
+    },
+    {
+      "left": "wshobson/payment-integration",
+      "right": "buildwithclaude/payment-integration",
+      "functional_similarity": 0.92,
+      "lineage_similarity": 0.031,
+      "relation": "convergent"
+    },
+    {
+      "left": "wshobson/ios-developer",
+      "right": "buildwithclaude/ios-developer",
+      "functional_similarity": 0.916,
+      "lineage_similarity": 0.008,
+      "relation": "convergent"
+    },
+    {
+      "left": "wshobson/quant-analyst",
+      "right": "buildwithclaude/quant-analyst",
+      "functional_similarity": 0.91,
+      "lineage_similarity": 0.141,
+      "relation": "convergent"
+    },
+    {
+      "left": "wshobson/mlops-engineer",
+      "right": "buildwithclaude/mlops-engineer",
+      "functional_similarity": 0.909,
+      "lineage_similarity": 0.023,
+      "relation": "convergent"
+    },
+    {
+      "left": "wshobson/sales-automator",
+      "right": "buildwithclaude/sales-automator",
+      "functional_similarity": 0.904,
+      "lineage_similarity": 0.156,
+      "relation": "convergent"
+    },
+    {
+      "left": "voltagent/java-architect",
+      "right": "voltagent/spring-boot-engineer",
+      "functional_similarity": 0.895,
+      "lineage_similarity": 0.008,
+      "relation": "convergent"
+    },
+    {
+      "left": "lst97/data-engineer",
+      "right": "buildwithclaude/data-engineer",
+      "functional_similarity": 0.895,
+      "lineage_similarity": 0.0,
+      "relation": "convergent"
+    },
+    {
+      "left": "voltagent/documentation-engineer",
+      "right": "voltagent/technical-writer",
+      "functional_similarity": 0.893,
+      "lineage_similarity": 0.031,
+      "relation": "convergent"
+    },
+    {
+      "left": "wshobson/api-testing-observability-api-documenter",
+      "right": "voltagent/api-documenter",
+      "functional_similarity": 0.89,
+      "lineage_similarity": 0.0,
+      "relation": "convergent"
+    },
+    {
+      "left": "wshobson/debugging-toolkit-debugger",
+      "right": "lst97/debugger",
+      "functional_similarity": 0.886,
+      "lineage_similarity": 0.008,
+      "relation": "convergent"
+    },
+    {
+      "left": "wshobson/frontend-mobile-development-mobile-developer",
+      "right": "voltagent/mobile-developer",
+      "functional_similarity": 0.885,
+      "lineage_similarity": 0.0,
+      "relation": "convergent"
+    },
+    {
+      "left": "wshobson/ruby-pro",
+      "right": "buildwithclaude/ruby-expert",
+      "functional_similarity": 0.885,
+      "lineage_similarity": 0.031,
+      "relation": "convergent"
+    },
+    {
+      "left": "voltagent/nextjs-developer",
+      "right": "lst97/nextjs-pro",
+      "functional_similarity": 0.883,
+      "lineage_similarity": 0.0,
+      "relation": "convergent"
+    },
+    {
+      "left": "lst97/legacy-modernizer",
+      "right": "buildwithclaude/legacy-modernizer",
+      "functional_similarity": 0.883,
+      "lineage_similarity": 0.0,
+      "relation": "convergent"
+    },
+    {
+      "left": "wshobson/prompt-engineer",
+      "right": "lst97/prompt-engineer",
+      "functional_similarity": 0.879,
+      "lineage_similarity": 0.0,
+      "relation": "convergent"
+    },
+    {
+      "left": "wshobson/data-engineer",
+      "right": "lst97/data-engineer",
+      "functional_similarity": 0.879,
+      "lineage_similarity": 0.0,
+      "relation": "convergent"
+    },
+    {
+      "left": "wshobson/prompt-engineer",
+      "right": "buildwithclaude/prompt-engineer",
+      "functional_similarity": 0.878,
+      "lineage_similarity": 0.008,
+      "relation": "convergent"
+    },
+    {
+      "left": "wshobson/distributed-debugging-error-detective",
+      "right": "buildwithclaude/error-detective",
+      "functional_similarity": 0.878,
+      "lineage_similarity": 0.102,
+      "relation": "convergent"
+    },
+    {
+      "left": "wshobson/cicd-automation-cloud-architect",
+      "right": "lst97/cloud-architect",
+      "functional_similarity": 0.878,
+      "lineage_similarity": 0.0,
+      "relation": "convergent"
+    },
+    {
+      "left": "lst97/ai-engineer",
+      "right": "buildwithclaude/ai-engineer",
+      "functional_similarity": 0.878,
+      "lineage_similarity": 0.0,
+      "relation": "convergent"
+    },
+    {
+      "left": "wshobson/api-scaffolding-graphql-architect",
+      "right": "voltagent/graphql-architect",
+      "functional_similarity": 0.876,
+      "lineage_similarity": 0.0,
+      "relation": "convergent"
+    },
+    {
+      "left": "buildwithclaude/gsd-plan-checker",
+      "right": "buildwithclaude/gsd-planner",
+      "functional_similarity": 0.874,
+      "lineage_similarity": 0.0,
+      "relation": "convergent"
+    },
+    {
+      "left": "voltagent/deployment-engineer",
+      "right": "voltagent/devops-engineer",
+      "functional_similarity": 0.874,
+      "lineage_similarity": 0.0,
+      "relation": "convergent"
+    },
+    {
+      "left": "wshobson/api-scaffolding-graphql-architect",
+      "right": "lst97/graphql-architect",
+      "functional_similarity": 0.873,
+      "lineage_similarity": 0.0,
+      "relation": "convergent"
+    },
+    {
+      "left": "wshobson/api-testing-observability-api-documenter",
+      "right": "buildwithclaude/api-documenter",
+      "functional_similarity": 0.872,
+      "lineage_similarity": 0.008,
+      "relation": "convergent"
+    },
+    {
+      "left": "voltagent/quant-analyst",
+      "right": "buildwithclaude/quant-analyst",
+      "functional_similarity": 0.872,
+      "lineage_similarity": 0.0,
+      "relation": "convergent"
+    },
+    {
+      "left": "lst97/debugger",
+      "right": "buildwithclaude/debugger",
+      "functional_similarity": 0.871,
+      "lineage_similarity": 0.008,
+      "relation": "convergent"
+    },
+    {
+      "left": "wshobson/data-engineer",
+      "right": "buildwithclaude/data-engineer",
+      "functional_similarity": 0.871,
+      "lineage_similarity": 0.008,
+      "relation": "convergent"
+    },
+    {
+      "left": "voltagent/expo-react-native-expert",
+      "right": "voltagent-codex/expo-react-native-expert",
+      "functional_similarity": 0.87,
+      "lineage_similarity": 0.0,
+      "relation": "convergent"
+    },
+    {
+      "left": "lst97/golang-pro",
+      "right": "0xfurai/go-expert",
+      "functional_similarity": 0.87,
+      "lineage_similarity": 0.0,
+      "relation": "convergent"
+    },
+    {
+      "left": "wshobson/cicd-automation-cloud-architect",
+      "right": "wshobson/hybrid-cloud-architect",
+      "functional_similarity": 0.869,
+      "lineage_similarity": 0.016,
+      "relation": "convergent"
+    },
+    {
+      "left": "wshobson/api-scaffolding-graphql-architect",
+      "right": "voltagent-codex/graphql-architect",
+      "functional_similarity": 0.868,
+      "lineage_similarity": 0.0,
+      "relation": "convergent"
+    },
+    {
+      "left": "wshobson/ai-engineer",
+      "right": "lst97/ai-engineer",
+      "functional_similarity": 0.867,
+      "lineage_similarity": 0.0,
+      "relation": "convergent"
+    },
+    {
+      "left": "lst97/react-pro",
+      "right": "0xfurai/react-expert",
+      "functional_similarity": 0.867,
+      "lineage_similarity": 0.0,
+      "relation": "convergent"
+    },
+    {
+      "left": "voltagent/healthcare-admin",
+      "right": "voltagent-codex/healthcare-admin",
+      "functional_similarity": 0.867,
+      "lineage_similarity": 0.023,
+      "relation": "convergent"
+    },
+    {
+      "left": "wshobson/accessibility-expert",
+      "right": "voltagent/accessibility-tester",
+      "functional_similarity": 0.866,
+      "lineage_similarity": 0.0,
+      "relation": "convergent"
+    },
+    {
+      "left": "wshobson/frontend-mobile-development-mobile-developer",
+      "right": "buildwithclaude/mobile-developer",
+      "functional_similarity": 0.866,
+      "lineage_similarity": 0.008,
+      "relation": "convergent"
+    },
+    {
+      "left": "voltagent/graphql-architect",
+      "right": "voltagent-codex/graphql-architect",
+      "functional_similarity": 0.866,
+      "lineage_similarity": 0.0,
+      "relation": "convergent"
+    },
+    {
+      "left": "wshobson/ai-engineer",
+      "right": "buildwithclaude/ai-engineer",
+      "functional_similarity": 0.866,
+      "lineage_similarity": 0.0,
+      "relation": "convergent"
+    },
+    {
+      "left": "voltagent/documentation-engineer",
+      "right": "voltagent/api-documenter",
+      "functional_similarity": 0.864,
+      "lineage_similarity": 0.039,
+      "relation": "convergent"
+    },
+    {
+      "left": "wshobson/debugging-toolkit-debugger",
+      "right": "buildwithclaude/debugger",
+      "functional_similarity": 0.864,
+      "lineage_similarity": 0.031,
+      "relation": "convergent"
+    },
+    {
+      "left": "voltagent/ux-researcher",
+      "right": "contains-studio/ux-researcher",
+      "functional_similarity": 0.862,
+      "lineage_similarity": 0.0,
+      "relation": "convergent"
+    },
+    {
+      "left": "wshobson/javascript-pro",
+      "right": "buildwithclaude/javascript-developer",
+      "functional_similarity": 0.862,
+      "lineage_similarity": 0.016,
+      "relation": "convergent"
+    },
+    {
+      "left": "voltagent/codebase-orchestrator",
+      "right": "voltagent-codex/codebase-orchestrator",
+      "functional_similarity": 0.861,
+      "lineage_similarity": 0.008,
+      "relation": "convergent"
+    },
+    {
+      "left": "wshobson/cpp-pro",
+      "right": "buildwithclaude/cpp-engineer",
+      "functional_similarity": 0.861,
+      "lineage_similarity": 0.281,
+      "relation": "convergent"
+    },
+    {
+      "left": "wshobson/ios-developer",
+      "right": "0xfurai/ios-expert",
+      "functional_similarity": 0.86,
+      "lineage_similarity": 0.0,
+      "relation": "convergent"
+    },
+    {
+      "left": "wshobson/cicd-automation-deployment-engineer",
+      "right": "voltagent/deployment-engineer",
+      "functional_similarity": 0.859,
+      "lineage_similarity": 0.0,
+      "relation": "convergent"
+    },
+    {
+      "left": "wshobson/ui-ux-designer",
+      "right": "buildwithclaude/ui-ux-designer",
+      "functional_similarity": 0.859,
+      "lineage_similarity": 0.016,
+      "relation": "convergent"
+    },
+    {
+      "left": "buildwithclaude/opus-reviewer",
+      "right": "buildwithclaude/sonnet-reviewer",
+      "functional_similarity": 0.859,
+      "lineage_similarity": 0.047,
+      "relation": "convergent"
+    },
+    {
+      "left": "voltagent/sql-pro",
+      "right": "voltagent/database-optimizer",
+      "functional_similarity": 0.858,
+      "lineage_similarity": 0.023,
+      "relation": "convergent"
+    },
+    {
+      "left": "buildwithclaude/ruby-expert",
+      "right": "0xfurai/ruby-expert",
+      "functional_similarity": 0.858,
+      "lineage_similarity": 0.0,
+      "relation": "convergent"
+    },
+    {
+      "left": "wshobson/search-specialist",
+      "right": "buildwithclaude/search-specialist",
+      "functional_similarity": 0.858,
+      "lineage_similarity": 0.039,
+      "relation": "convergent"
+    },
+    {
+      "left": "lst97/python-pro",
+      "right": "buildwithclaude/python-expert",
+      "functional_similarity": 0.858,
+      "lineage_similarity": 0.0,
+      "relation": "convergent"
+    },
+    {
+      "left": "voltagent/api-documenter",
+      "right": "lst97/api-documenter",
+      "functional_similarity": 0.858,
+      "lineage_similarity": 0.0,
+      "relation": "convergent"
+    },
+    {
+      "left": "voltagent/data-engineer",
+      "right": "lst97/data-engineer",
+      "functional_similarity": 0.855,
+      "lineage_similarity": 0.0,
+      "relation": "convergent"
+    },
+    {
+      "left": "voltagent/kubernetes-specialist",
+      "right": "voltagent-codex/kubernetes-specialist",
+      "functional_similarity": 0.854,
+      "lineage_similarity": 0.0,
+      "relation": "convergent"
+    }
+  ],
+  "nearest": {
+    "wshobson/ui-visual-validator": {
+      "neighbour": "voltagent/ui-designer",
+      "functional_similarity": 0.669
+    },
+    "wshobson/agent-orchestration-context-manager": {
+      "neighbour": "buildwithclaude/context-manager",
+      "functional_similarity": 0.748
+    },
+    "wshobson/team-debugger": {
+      "neighbour": "wshobson/debugging-toolkit-debugger",
+      "functional_similarity": 0.629
+    },
+    "wshobson/team-implementer": {
+      "neighbour": "wshobson/team-lead",
+      "functional_similarity": 0.625
+    },
+    "wshobson/team-lead": {
+      "neighbour": "buildwithclaude/project-supervisor-orchestrator",
+      "functional_similarity": 0.663
+    },
+    "wshobson/team-reviewer": {
+      "neighbour": "voltagent/code-reviewer",
+      "functional_similarity": 0.711
+    },
+    "wshobson/api-scaffolding-backend-architect": {
+      "neighbour": "voltagent/backend-developer",
+      "functional_similarity": 0.802
+    },
+    "wshobson/api-scaffolding-django-pro": {
+      "neighbour": "voltagent/django-developer",
+      "functional_similarity": 0.828
+    },
+    "wshobson/api-scaffolding-fastapi-pro": {
+      "neighbour": "voltagent/fastapi-developer",
+      "functional_similarity": 0.84
+    },
+    "wshobson/api-scaffolding-graphql-architect": {
+      "neighbour": "voltagent/graphql-architect",
+      "functional_similarity": 0.876
+    },
+    "wshobson/api-testing-observability-api-documenter": {
+      "neighbour": "voltagent/api-documenter",
+      "functional_similarity": 0.89
+    },
+    "wshobson/application-performance-frontend-developer": {
+      "neighbour": "buildwithclaude/frontend-developer",
+      "functional_similarity": 0.817
+    },
+    "wshobson/application-performance-observability-engineer": {
+      "neighbour": "voltagent/sre-engineer",
+      "functional_similarity": 0.759
+    },
+    "wshobson/application-performance-performance-engineer": {
+      "neighbour": "voltagent/performance-engineer",
+      "functional_similarity": 0.811
+    },
+    "wshobson/arm-cortex-expert": {
+      "neighbour": "voltagent/cpp-pro",
+      "functional_similarity": 0.581
+    },
+    "wshobson/backend-api-security-backend-security-coder": {
+      "neighbour": "wshobson/frontend-security-coder",
+      "functional_similarity": 0.845
+    },
+    "wshobson/event-sourcing-architect": {
+      "neighbour": "wshobson/comprehensive-review-architect-review",
+      "functional_similarity": 0.579
+    },
+    "wshobson/backend-development-performance-engineer": {
+      "neighbour": "buildwithclaude/performance-engineer",
+      "functional_similarity": 0.747
+    },
+    "wshobson/backend-development-security-auditor": {
+      "neighbour": "buildwithclaude/security-auditor",
+      "functional_similarity": 0.812
+    },
+    "wshobson/backend-development-tdd-orchestrator": {
+      "neighbour": "wshobson/codebase-cleanup-test-automator",
+      "functional_similarity": 0.754
+    },
+    "wshobson/temporal-python-pro": {
+      "neighbour": "contains-studio/workflow-optimizer",
+      "functional_similarity": 0.65
+    },
+    "wshobson/backend-development-test-automator": {
+      "neighbour": "buildwithclaude/test-automator",
+      "functional_similarity": 0.803
+    },
+    "wshobson/blockchain-developer": {
+      "neighbour": "voltagent/blockchain-developer",
+      "functional_similarity": 0.78
+    },
+    "wshobson/business-analyst": {
+      "neighbour": "buildwithclaude/business-analyst",
+      "functional_similarity": 0.779
+    },
+    "wshobson/c4-code": {
+      "neighbour": "wshobson/c4-component",
+      "functional_similarity": 0.829
+    },
+    "wshobson/c4-component": {
+      "neighbour": "wshobson/c4-code",
+      "functional_similarity": 0.829
+    },
+    "wshobson/c4-container": {
+      "neighbour": "wshobson/c4-component",
+      "functional_similarity": 0.804
+    },
+    "wshobson/c4-context": {
+      "neighbour": "wshobson/c4-component",
+      "functional_similarity": 0.79
+    },
+    "wshobson/cicd-automation-cloud-architect": {
+      "neighbour": "lst97/cloud-architect",
+      "functional_similarity": 0.878
+    },
+    "wshobson/cicd-automation-deployment-engineer": {
+      "neighbour": "voltagent/deployment-engineer",
+      "functional_similarity": 0.859
+    },
+    "wshobson/cicd-automation-devops-troubleshooter": {
+      "neighbour": "buildwithclaude/devops-troubleshooter",
+      "functional_similarity": 0.806
+    },
+    "wshobson/cicd-automation-kubernetes-architect": {
+      "neighbour": "voltagent/kubernetes-specialist",
+      "functional_similarity": 0.847
+    },
+    "wshobson/cicd-automation-terraform-specialist": {
+      "neighbour": "voltagent-codex/terraform-engineer",
+      "functional_similarity": 0.818
+    },
+    "wshobson/hybrid-cloud-architect": {
+      "neighbour": "wshobson/cicd-automation-cloud-architect",
+      "functional_similarity": 0.869
+    },
+    "wshobson/cloud-infrastructure-network-engineer": {
+      "neighbour": "voltagent/network-engineer",
+      "functional_similarity": 0.821
+    },
+    "wshobson/service-mesh-expert": {
+      "neighbour": "wshobson/cloud-infrastructure-network-engineer",
+      "functional_similarity": 0.735
+    },
+    "wshobson/code-documentation-code-reviewer": {
+      "neighbour": "voltagent/code-reviewer",
+      "functional_similarity": 0.826
+    },
+    "wshobson/code-documentation-docs-architect": {
+      "neighbour": "wshobson/reference-builder",
+      "functional_similarity": 0.777
+    },
+    "wshobson/code-documentation-tutorial-engineer": {
+      "neighbour": "wshobson/code-documentation-docs-architect",
+      "functional_similarity": 0.595
+    },
+    "wshobson/code-refactoring-legacy-modernizer": {
+      "neighbour": "buildwithclaude/legacy-modernizer",
+      "functional_similarity": 0.944
+    },
+    "wshobson/codebase-cleanup-test-automator": {
+      "neighbour": "voltagent/test-automator",
+      "functional_similarity": 0.813
+    },
+    "wshobson/comprehensive-review-architect-review": {
+      "neighbour": "wshobson/api-scaffolding-backend-architect",
+      "functional_similarity": 0.74
+    },
+    "wshobson/comprehensive-review-security-auditor": {
+      "neighbour": "lst97/security-auditor",
+      "functional_similarity": 0.8
+    },
+    "wshobson/conductor-validator": {
+      "neighbour": "buildwithclaude/gsd-ui-checker",
+      "functional_similarity": 0.573
+    },
+    "wshobson/content-marketer": {
+      "neighbour": "voltagent/content-marketer",
+      "functional_similarity": 0.808
+    },
+    "wshobson/search-specialist": {
+      "neighbour": "buildwithclaude/search-specialist",
+      "functional_similarity": 0.858
+    },
+    "wshobson/customer-support": {
+      "neighbour": "wshobson/content-marketer",
+      "functional_similarity": 0.668
+    },
+    "wshobson/sales-automator": {
+      "neighbour": "buildwithclaude/sales-automator",
+      "functional_similarity": 0.904
+    },
+    "wshobson/data-engineer": {
+      "neighbour": "lst97/data-engineer",
+      "functional_similarity": 0.879
+    },
+    "wshobson/database-cloud-optimization-database-architect": {
+      "neighbour": "wshobson/database-cloud-optimization-database-optimizer",
+      "functional_similarity": 0.817
+    },
+    "wshobson/database-cloud-optimization-database-optimizer": {
+      "neighbour": "voltagent/database-optimizer",
+      "functional_similarity": 0.85
+    },
+    "wshobson/sql-pro": {
+      "neighbour": "wshobson/database-cloud-optimization-database-optimizer",
+      "functional_similarity": 0.782
+    },
+    "wshobson/database-admin": {
+      "neighbour": "wshobson/cicd-automation-cloud-architect",
+      "functional_similarity": 0.81
+    },
+    "wshobson/debugging-toolkit-debugger": {
+      "neighbour": "lst97/debugger",
+      "functional_similarity": 0.886
+    },
+    "wshobson/debugging-toolkit-dx-optimizer": {
+      "neighbour": "buildwithclaude/dx-optimizer",
+      "functional_similarity": 0.931
+    },
+    "wshobson/monorepo-architect": {
+      "neighbour": "voltagent/build-engineer",
+      "functional_similarity": 0.642
+    },
+    "wshobson/dgx-spark-ops-engineer": {
+      "neighbour": "wshobson/llm-finetuning-training-engineer",
+      "functional_similarity": 0.528
+    },
+    "wshobson/distributed-debugging-error-detective": {
+      "neighbour": "buildwithclaude/error-detective",
+      "functional_similarity": 0.878
+    },
+    "wshobson/mermaid-expert": {
+      "neighbour": "contains-studio/visual-storyteller",
+      "functional_similarity": 0.519
+    },
+    "wshobson/reference-builder": {
+      "neighbour": "wshobson/code-documentation-docs-architect",
+      "functional_similarity": 0.777
+    },
+    "wshobson/dotnet-architect": {
+      "neighbour": "voltagent/csharp-developer",
+      "functional_similarity": 0.782
+    },
+    "wshobson/frontend-mobile-development-mobile-developer": {
+      "neighbour": "voltagent/mobile-developer",
+      "functional_similarity": 0.885
+    },
+    "wshobson/frontend-security-coder": {
+      "neighbour": "wshobson/backend-api-security-backend-security-coder",
+      "functional_similarity": 0.845
+    },
+    "wshobson/mobile-security-coder": {
+      "neighbour": "wshobson/backend-api-security-backend-security-coder",
+      "functional_similarity": 0.769
+    },
+    "wshobson/elixir-pro": {
+      "neighbour": "0xfurai/elixir-expert",
+      "functional_similarity": 0.727
+    },
+    "wshobson/haskell-pro": {
+      "neighbour": "0xfurai/haskell-expert",
+      "functional_similarity": 0.764
+    },
+    "wshobson/minecraft-bukkit-pro": {
+      "neighbour": "voltagent/backend-developer",
+      "functional_similarity": 0.643
+    },
+    "wshobson/unity-developer": {
+      "neighbour": "voltagent/game-developer",
+      "functional_similarity": 0.684
+    },
+    "wshobson/hr-pro": {
+      "neighbour": "voltagent/legal-advisor",
+      "functional_similarity": 0.586
+    },
+    "wshobson/legal-advisor": {
+      "neighbour": "buildwithclaude/legal-advisor",
+      "functional_similarity": 0.94
+    },
+    "wshobson/incident-response-code-reviewer": {
+      "neighbour": "voltagent/code-reviewer",
+      "functional_similarity": 0.754
+    },
+    "wshobson/incident-response-debugger": {
+      "neighbour": "voltagent/debugger",
+      "functional_similarity": 0.631
+    },
+    "wshobson/incident-response-error-detective": {
+      "neighbour": "buildwithclaude/incident-responder",
+      "functional_similarity": 0.715
+    },
+    "wshobson/incident-responder": {
+      "neighbour": "lst97/incident-responder",
+      "functional_similarity": 0.76
+    },
+    "wshobson/incident-response-test-automator": {
+      "neighbour": "voltagent-codex/test-automator",
+      "functional_similarity": 0.72
+    },
+    "wshobson/javascript-pro": {
+      "neighbour": "buildwithclaude/javascript-developer",
+      "functional_similarity": 0.862
+    },
+    "wshobson/typescript-pro": {
+      "neighbour": "buildwithclaude/typescript-expert",
+      "functional_similarity": 0.842
+    },
+    "wshobson/julia-pro": {
+      "neighbour": "wshobson/scala-pro",
+      "functional_similarity": 0.476
+    },
+    "wshobson/csharp-pro": {
+      "neighbour": "0xfurai/csharp-expert",
+      "functional_similarity": 0.769
+    },
+    "wshobson/java-pro": {
+      "neighbour": "buildwithclaude/java-developer",
+      "functional_similarity": 0.82
+    },
+    "wshobson/scala-pro": {
+      "neighbour": "0xfurai/scala-expert",
+      "functional_similarity": 0.751
+    },
+    "wshobson/ai-engineer": {
+      "neighbour": "lst97/ai-engineer",
+      "functional_similarity": 0.867
+    },
+    "wshobson/prompt-engineer": {
+      "neighbour": "lst97/prompt-engineer",
+      "functional_similarity": 0.879
+    },
+    "wshobson/vector-database-engineer": {
+      "neighbour": "0xfurai/vector-db-expert",
+      "functional_similarity": 0.683
+    },
+    "wshobson/llm-finetuning-architect": {
+      "neighbour": "wshobson/llm-finetuning-eval-engineer",
+      "functional_similarity": 0.756
+    },
+    "wshobson/llm-finetuning-eval-engineer": {
+      "neighbour": "wshobson/llm-finetuning-architect",
+      "functional_similarity": 0.756
+    },
+    "wshobson/llm-finetuning-training-engineer": {
+      "neighbour": "wshobson/llm-finetuning-architect",
+      "functional_similarity": 0.692
+    },
+    "wshobson/data-scientist": {
+      "neighbour": "voltagent/data-scientist",
+      "functional_similarity": 0.81
+    },
+    "wshobson/ml-engineer": {
+      "neighbour": "buildwithclaude/ml-engineer",
+      "functional_similarity": 0.828
+    },
+    "wshobson/mlops-engineer": {
+      "neighbour": "buildwithclaude/mlops-engineer",
+      "functional_similarity": 0.909
+    },
+    "wshobson/gallery-researcher": {
+      "neighbour": "buildwithclaude/gallery-researcher",
+      "functional_similarity": 0.841
+    },
+    "wshobson/image-generator": {
+      "neighbour": "buildwithclaude/image-generator",
+      "functional_similarity": 0.673
+    },
+    "wshobson/prompt-crafter": {
+      "neighbour": "buildwithclaude/prompt-crafter",
+      "functional_similarity": 0.793
+    },
+    "wshobson/flutter-expert": {
+      "neighbour": "voltagent/flutter-expert",
+      "functional_similarity": 0.846
+    },
+    "wshobson/ios-developer": {
+      "neighbour": "buildwithclaude/ios-developer",
+      "functional_similarity": 0.916
+    },
+    "wshobson/ui-ux-designer": {
+      "neighbour": "buildwithclaude/ui-ux-designer",
+      "functional_similarity": 0.859
+    },
+    "wshobson/code-review-preshipment": {
+      "neighbour": "vijaythecoder/code-reviewer",
+      "functional_similarity": 0.66
+    },
+    "wshobson/deploy-with-verification": {
+      "neighbour": "wshobson/session-start",
+      "functional_similarity": 0.682
+    },
+    "wshobson/prod-logs-health-check": {
+      "neighbour": "wshobson/distributed-debugging-error-detective",
+      "functional_similarity": 0.613
+    },
+    "wshobson/session-end": {
+      "neighbour": "wshobson/session-start",
+      "functional_similarity": 0.778
+    },
+    "wshobson/session-start": {
+      "neighbour": "wshobson/session-end",
+      "functional_similarity": 0.778
+    },
+    "wshobson/payment-integration": {
+      "neighbour": "buildwithclaude/payment-integration",
+      "functional_similarity": 0.92
+    },
+    "wshobson/eval-judge": {
+      "neighbour": "wshobson/eval-orchestrator",
+      "functional_similarity": 0.724
+    },
+    "wshobson/eval-orchestrator": {
+      "neighbour": "wshobson/eval-judge",
+      "functional_similarity": 0.724
+    },
+    "wshobson/pptx-deck-creation-builder": {
+      "neighbour": "contains-studio/visual-storyteller",
+      "functional_similarity": 0.446
+    },
+    "wshobson/policy-enforcer": {
+      "neighbour": "wshobson/review-policy-author",
+      "functional_similarity": 0.76
+    },
+    "wshobson/receipt-verifier": {
+      "neighbour": "pentest/bizlogic-hunter",
+      "functional_similarity": 0.394
+    },
+    "wshobson/python-pro": {
+      "neighbour": "lst97/python-pro",
+      "functional_similarity": 0.801
+    },
+    "wshobson/quant-analyst": {
+      "neighbour": "buildwithclaude/quant-analyst",
+      "functional_similarity": 0.91
+    },
+    "wshobson/risk-manager": {
+      "neighbour": "buildwithclaude/risk-manager",
+      "functional_similarity": 0.791
+    },
+    "wshobson/firmware-analyst": {
+      "neighbour": "wshobson/malware-analyst",
+      "functional_similarity": 0.704
+    },
+    "wshobson/malware-analyst": {
+      "neighbour": "pentest/malware-analyst",
+      "functional_similarity": 0.841
+    },
+    "wshobson/reverse-engineer": {
+      "neighbour": "pentest/reverse-engineer",
+      "functional_similarity": 0.853
+    },
+    "wshobson/review-policy-author": {
+      "neighbour": "wshobson/policy-enforcer",
+      "functional_similarity": 0.76
+    },
+    "wshobson/threat-modeling-expert": {
+      "neighbour": "pentest/threat-modeler",
+      "functional_similarity": 0.717
+    },
+    "wshobson/seo-authority-builder": {
+      "neighbour": "wshobson/seo-content-auditor",
+      "functional_similarity": 0.633
+    },
+    "wshobson/seo-cannibalization-detector": {
+      "neighbour": "wshobson/seo-keyword-strategist",
+      "functional_similarity": 0.643
+    },
+    "wshobson/seo-content-refresher": {
+      "neighbour": "wshobson/seo-content-auditor",
+      "functional_similarity": 0.593
+    },
+    "wshobson/seo-content-auditor": {
+      "neighbour": "wshobson/seo-content-writer",
+      "functional_similarity": 0.751
+    },
+    "wshobson/seo-content-planner": {
+      "neighbour": "wshobson/seo-content-writer",
+      "functional_similarity": 0.803
+    },
+    "wshobson/seo-content-writer": {
+      "neighbour": "wshobson/seo-content-planner",
+      "functional_similarity": 0.803
+    },
+    "wshobson/seo-keyword-strategist": {
+      "neighbour": "wshobson/seo-content-writer",
+      "functional_similarity": 0.71
+    },
+    "wshobson/seo-meta-optimizer": {
+      "neighbour": "wshobson/seo-content-writer",
+      "functional_similarity": 0.701
+    },
+    "wshobson/seo-snippet-hunter": {
+      "neighbour": "wshobson/seo-content-writer",
+      "functional_similarity": 0.605
+    },
+    "wshobson/seo-structure-architect": {
+      "neighbour": "wshobson/seo-content-planner",
+      "functional_similarity": 0.71
+    },
+    "wshobson/bash-pro": {
+      "neighbour": "0xfurai/bash-expert",
+      "functional_similarity": 0.944
+    },
+    "wshobson/posix-shell-pro": {
+      "neighbour": "wshobson/bash-pro",
+      "functional_similarity": 0.755
+    },
+    "wshobson/architect": {
+      "neighbour": "wshobson/implement",
+      "functional_similarity": 0.822
+    },
+    "wshobson/implement": {
+      "neighbour": "wshobson/architect",
+      "functional_similarity": 0.822
+    },
+    "wshobson/orchestrate": {
+      "neighbour": "wshobson/architect",
+      "functional_similarity": 0.782
+    },
+    "wshobson/playwright": {
+      "neighbour": "0xfurai/playwright-expert",
+      "functional_similarity": 0.669
+    },
+    "wshobson/qa": {
+      "neighbour": "wshobson/architect",
+      "functional_similarity": 0.725
+    },
+    "wshobson/review": {
+      "neighbour": "vijaythecoder/code-reviewer",
+      "functional_similarity": 0.715
+    },
+    "wshobson/social-publishing-publisher": {
+      "neighbour": "voltagent/x-api-integration",
+      "functional_similarity": 0.619
+    },
+    "wshobson/startup-analyst": {
+      "neighbour": "voltagent/product-manager",
+      "functional_similarity": 0.675
+    },
+    "wshobson/c-pro": {
+      "neighbour": "buildwithclaude/c-developer",
+      "functional_similarity": 0.694
+    },
+    "wshobson/cpp-pro": {
+      "neighbour": "buildwithclaude/cpp-engineer",
+      "functional_similarity": 0.861
+    },
+    "wshobson/golang-pro": {
+      "neighbour": "voltagent/golang-pro",
+      "functional_similarity": 0.822
+    },
+    "wshobson/rust-pro": {
+      "neighbour": "voltagent/rust-engineer",
+      "functional_similarity": 0.792
+    },
+    "wshobson/accessibility-expert": {
+      "neighbour": "voltagent/accessibility-tester",
+      "functional_similarity": 0.866
+    },
+    "wshobson/design-system-architect": {
+      "neighbour": "wshobson/ui-designer",
+      "functional_similarity": 0.758
+    },
+    "wshobson/ui-designer": {
+      "neighbour": "voltagent/ui-designer",
+      "functional_similarity": 0.775
+    },
+    "wshobson/php-pro": {
+      "neighbour": "buildwithclaude/php-developer",
+      "functional_similarity": 0.754
+    },
+    "wshobson/ruby-pro": {
+      "neighbour": "buildwithclaude/ruby-expert",
+      "functional_similarity": 0.885
+    },
+    "voltagent/api-designer": {
+      "neighbour": "voltagent/api-documenter",
+      "functional_similarity": 0.809
+    },
+    "voltagent/auth-integration-engineer": {
+      "neighbour": "0xfurai/oauth-oidc-expert",
+      "functional_similarity": 0.745
+    },
+    "voltagent/backend-developer": {
+      "neighbour": "wshobson/api-scaffolding-backend-architect",
+      "functional_similarity": 0.802
+    },
+    "voltagent/design-bridge": {
+      "neighbour": "voltagent-codex/design-bridge",
+      "functional_similarity": 0.823
+    },
+    "voltagent/electron-pro": {
+      "neighbour": "0xfurai/electron-expert",
+      "functional_similarity": 0.839
+    },
+    "voltagent/frontend-developer": {
+      "neighbour": "contains-studio/frontend-developer",
+      "functional_similarity": 0.705
+    },
+    "voltagent/fullstack-developer": {
+      "neighbour": "contains-studio/backend-architect",
+      "functional_similarity": 0.766
+    },
+    "voltagent/graphql-architect": {
+      "neighbour": "wshobson/api-scaffolding-graphql-architect",
+      "functional_similarity": 0.876
+    },
+    "voltagent/microservices-architect": {
+      "neighbour": "wshobson/comprehensive-review-architect-review",
+      "functional_similarity": 0.686
+    },
+    "voltagent/mobile-developer": {
+      "neighbour": "wshobson/frontend-mobile-development-mobile-developer",
+      "functional_similarity": 0.885
+    },
+    "voltagent/ui-designer": {
+      "neighbour": "buildwithclaude/ui-ux-designer",
+      "functional_similarity": 0.844
+    },
+    "voltagent/webhook-engineer": {
+      "neighbour": "voltagent-codex/payment-integration",
+      "functional_similarity": 0.587
+    },
+    "voltagent/websocket-engineer": {
+      "neighbour": "0xfurai/websocket-expert",
+      "functional_similarity": 0.765
+    },
+    "voltagent/angular-architect": {
+      "neighbour": "0xfurai/angular-expert",
+      "functional_similarity": 0.747
+    },
+    "voltagent/cpp-pro": {
+      "neighbour": "voltagent-codex/cpp-pro",
+      "functional_similarity": 0.786
+    },
+    "voltagent/csharp-developer": {
+      "neighbour": "voltagent/dotnet-core-expert",
+      "functional_similarity": 0.812
+    },
+    "voltagent/django-developer": {
+      "neighbour": "0xfurai/django-expert",
+      "functional_similarity": 0.838
+    },
+    "voltagent/dotnet-core-expert": {
+      "neighbour": "voltagent/csharp-developer",
+      "functional_similarity": 0.812
+    },
+    "voltagent/dotnet-framework-4.8-expert": {
+      "neighbour": "voltagent-codex/dotnet-framework-4.8-expert",
+      "functional_similarity": 0.848
+    },
+    "voltagent/elixir-expert": {
+      "neighbour": "0xfurai/elixir-expert",
+      "functional_similarity": 0.768
+    },
+    "voltagent/expo-react-native-expert": {
+      "neighbour": "voltagent-codex/expo-react-native-expert",
+      "functional_similarity": 0.87
+    },
+    "voltagent/fastapi-developer": {
+      "neighbour": "wshobson/api-scaffolding-fastapi-pro",
+      "functional_similarity": 0.84
+    },
+    "voltagent/flutter-expert": {
+      "neighbour": "wshobson/flutter-expert",
+      "functional_similarity": 0.846
+    },
+    "voltagent/golang-pro": {
+      "neighbour": "lst97/golang-pro",
+      "functional_similarity": 0.829
+    },
+    "voltagent/java-architect": {
+      "neighbour": "voltagent/spring-boot-engineer",
+      "functional_similarity": 0.895
+    },
+    "voltagent/javascript-pro": {
+      "neighbour": "buildwithclaude/javascript-developer",
+      "functional_similarity": 0.82
+    },
+    "voltagent/kotlin-specialist": {
+      "neighbour": "voltagent-codex/kotlin-specialist",
+      "functional_similarity": 0.798
+    },
+    "voltagent/laravel-specialist": {
+      "neighbour": "voltagent-codex/laravel-specialist",
+      "functional_similarity": 0.809
+    },
+    "voltagent/nextjs-developer": {
+      "neighbour": "lst97/nextjs-pro",
+      "functional_similarity": 0.883
+    },
+    "voltagent/node-specialist": {
+      "neighbour": "0xfurai/nodejs-expert",
+      "functional_similarity": 0.816
+    },
+    "voltagent/php-pro": {
+      "neighbour": "voltagent-codex/php-pro",
+      "functional_similarity": 0.775
+    },
+    "voltagent/powershell-5.1-expert": {
+      "neighbour": "voltagent/windows-infra-admin",
+      "functional_similarity": 0.732
+    },
+    "voltagent/powershell-7-expert": {
+      "neighbour": "voltagent/azure-infra-engineer",
+      "functional_similarity": 0.771
+    },
+    "voltagent/python-pro": {
+      "neighbour": "wshobson/python-pro",
+      "functional_similarity": 0.795
+    },
+    "voltagent/rails-expert": {
+      "neighbour": "buildwithclaude/rails-expert",
+      "functional_similarity": 0.814
+    },
+    "voltagent/react-specialist": {
+      "neighbour": "wshobson/application-performance-frontend-developer",
+      "functional_similarity": 0.781
+    },
+    "voltagent/rust-engineer": {
+      "neighbour": "buildwithclaude/rust-expert",
+      "functional_similarity": 0.818
+    },
+    "voltagent/spring-boot-engineer": {
+      "neighbour": "voltagent/java-architect",
+      "functional_similarity": 0.895
+    },
+    "voltagent/sql-pro": {
+      "neighbour": "voltagent/database-optimizer",
+      "functional_similarity": 0.858
+    },
+    "voltagent/swift-expert": {
+      "neighbour": "0xfurai/swift-expert",
+      "functional_similarity": 0.85
+    },
+    "voltagent/symfony-specialist": {
+      "neighbour": "voltagent-codex/symfony-specialist",
+      "functional_similarity": 0.763
+    },
+    "voltagent/typescript-pro": {
+      "neighbour": "lst97/typescript-pro",
+      "functional_similarity": 0.843
+    },
+    "voltagent/vue-expert": {
+      "neighbour": "voltagent-codex/vue-expert",
+      "functional_similarity": 0.804
+    },
+    "voltagent/azure-infra-engineer": {
+      "neighbour": "voltagent/powershell-7-expert",
+      "functional_similarity": 0.771
+    },
+    "voltagent/cloud-architect": {
+      "neighbour": "wshobson/cicd-automation-cloud-architect",
+      "functional_similarity": 0.851
+    },
+    "voltagent/database-administrator": {
+      "neighbour": "buildwithclaude/database-admin",
+      "functional_similarity": 0.781
+    },
+    "voltagent/deployment-engineer": {
+      "neighbour": "voltagent/devops-engineer",
+      "functional_similarity": 0.874
+    },
+    "voltagent/devops-engineer": {
+      "neighbour": "voltagent/deployment-engineer",
+      "functional_similarity": 0.874
+    },
+    "voltagent/devops-incident-responder": {
+      "neighbour": "buildwithclaude/incident-responder",
+      "functional_similarity": 0.738
+    },
+    "voltagent/docker-expert": {
+      "neighbour": "voltagent-codex/docker-expert",
+      "functional_similarity": 0.845
+    },
+    "voltagent/incident-responder": {
+      "neighbour": "wshobson/incident-responder",
+      "functional_similarity": 0.739
+    },
+    "voltagent/kubernetes-specialist": {
+      "neighbour": "voltagent-codex/kubernetes-specialist",
+      "functional_similarity": 0.854
+    },
+    "voltagent/network-engineer": {
+      "neighbour": "wshobson/cloud-infrastructure-network-engineer",
+      "functional_similarity": 0.821
+    },
+    "voltagent/platform-engineer": {
+      "neighbour": "voltagent-codex/platform-engineer",
+      "functional_similarity": 0.746
+    },
+    "voltagent/security-engineer": {
+      "neighbour": "voltagent/devops-engineer",
+      "functional_similarity": 0.797
+    },
+    "voltagent/sre-engineer": {
+      "neighbour": "voltagent-codex/sre-engineer",
+      "functional_similarity": 0.814
+    },
+    "voltagent/terraform-engineer": {
+      "neighbour": "buildwithclaude/terraform-specialist",
+      "functional_similarity": 0.84
+    },
+    "voltagent/terragrunt-expert": {
+      "neighbour": "voltagent/terraform-engineer",
+      "functional_similarity": 0.798
+    },
+    "voltagent/windows-infra-admin": {
+      "neighbour": "voltagent-codex/windows-infra-admin",
+      "functional_similarity": 0.74
+    },
+    "voltagent/accessibility-tester": {
+      "neighbour": "wshobson/accessibility-expert",
+      "functional_similarity": 0.866
+    },
+    "voltagent/ad-security-reviewer": {
+      "neighbour": "voltagent-codex/ad-security-reviewer",
+      "functional_similarity": 0.793
+    },
+    "voltagent/ai-writing-auditor": {
+      "neighbour": "voltagent-codex/ai-writing-auditor",
+      "functional_similarity": 0.731
+    },
+    "voltagent/architect-reviewer": {
+      "neighbour": "voltagent-codex/architect-reviewer",
+      "functional_similarity": 0.735
+    },
+    "voltagent/chaos-engineer": {
+      "neighbour": "voltagent-codex/chaos-engineer",
+      "functional_similarity": 0.73
+    },
+    "voltagent/code-reviewer": {
+      "neighbour": "vijaythecoder/code-reviewer",
+      "functional_similarity": 0.836
+    },
+    "voltagent/compliance-auditor": {
+      "neighbour": "voltagent/security-auditor",
+      "functional_similarity": 0.785
+    },
+    "voltagent/debugger": {
+      "neighbour": "voltagent/error-detective",
+      "functional_similarity": 0.843
+    },
+    "voltagent/error-detective": {
+      "neighbour": "voltagent/debugger",
+      "functional_similarity": 0.843
+    },
+    "voltagent/gdpr-ccpa-compliance": {
+      "neighbour": "voltagent-codex/gdpr-ccpa-compliance",
+      "functional_similarity": 0.724
+    },
+    "voltagent/penetration-tester": {
+      "neighbour": "voltagent/security-auditor",
+      "functional_similarity": 0.767
+    },
+    "voltagent/performance-engineer": {
+      "neighbour": "voltagent/database-optimizer",
+      "functional_similarity": 0.821
+    },
+    "voltagent/powershell-security-hardening": {
+      "neighbour": "voltagent-codex/powershell-security-hardening",
+      "functional_similarity": 0.805
+    },
+    "voltagent/qa-expert": {
+      "neighbour": "lst97/qa-expert",
+      "functional_similarity": 0.795
+    },
+    "voltagent/security-auditor": {
+      "neighbour": "voltagent/compliance-auditor",
+      "functional_similarity": 0.785
+    },
+    "voltagent/test-automator": {
+      "neighbour": "lst97/test-automator",
+      "functional_similarity": 0.817
+    },
+    "voltagent/ui-ux-tester": {
+      "neighbour": "voltagent-codex/ui-ux-tester",
+      "functional_similarity": 0.815
+    },
+    "voltagent/ai-engineer": {
+      "neighbour": "contains-studio/ai-engineer",
+      "functional_similarity": 0.813
+    },
+    "voltagent/data-analyst": {
+      "neighbour": "buildwithclaude/business-analyst",
+      "functional_similarity": 0.758
+    },
+    "voltagent/data-engineer": {
+      "neighbour": "lst97/data-engineer",
+      "functional_similarity": 0.855
+    },
+    "voltagent/data-scientist": {
+      "neighbour": "wshobson/data-scientist",
+      "functional_similarity": 0.81
+    },
+    "voltagent/database-optimizer": {
+      "neighbour": "voltagent/sql-pro",
+      "functional_similarity": 0.858
+    },
+    "voltagent/llm-architect": {
+      "neighbour": "voltagent-codex/llm-architect",
+      "functional_similarity": 0.69
+    },
+    "voltagent/machine-learning-engineer": {
+      "neighbour": "voltagent/ml-engineer",
+      "functional_similarity": 0.825
+    },
+    "voltagent/ml-engineer": {
+      "neighbour": "voltagent/machine-learning-engineer",
+      "functional_similarity": 0.825
+    },
+    "voltagent/mlops-engineer": {
+      "neighbour": "buildwithclaude/mlops-engineer",
+      "functional_similarity": 0.824
+    },
+    "voltagent/nlp-engineer": {
+      "neighbour": "voltagent-codex/nlp-engineer",
+      "functional_similarity": 0.808
+    },
+    "voltagent/postgres-pro": {
+      "neighbour": "voltagent-codex/postgres-pro",
+      "functional_similarity": 0.794
+    },
+    "voltagent/prompt-engineer": {
+      "neighbour": "wshobson/prompt-engineer",
+      "functional_similarity": 0.765
+    },
+    "voltagent/reinforcement-learning-engineer": {
+      "neighbour": "voltagent-codex/reinforcement-learning-engineer",
+      "functional_similarity": 0.806
+    },
+    "voltagent/build-engineer": {
+      "neighbour": "voltagent/dx-optimizer",
+      "functional_similarity": 0.787
+    },
+    "voltagent/cli-developer": {
+      "neighbour": "voltagent/tooling-engineer",
+      "functional_similarity": 0.782
+    },
+    "voltagent/dependency-manager": {
+      "neighbour": "voltagent-codex/dependency-manager",
+      "functional_similarity": 0.793
+    },
+    "voltagent/docs-drift-editor": {
+      "neighbour": "buildwithclaude/gsd-code-fixer",
+      "functional_similarity": 0.514
+    },
+    "voltagent/documentation-engineer": {
+      "neighbour": "voltagent/technical-writer",
+      "functional_similarity": 0.893
+    },
+    "voltagent/dx-optimizer": {
+      "neighbour": "voltagent-codex/dx-optimizer",
+      "functional_similarity": 0.805
+    },
+    "voltagent/git-workflow-manager": {
+      "neighbour": "voltagent-codex/git-workflow-manager",
+      "functional_similarity": 0.794
+    },
+    "voltagent/legacy-modernizer": {
+      "neighbour": "lst97/legacy-modernizer",
+      "functional_similarity": 0.845
+    },
+    "voltagent/mcp-developer": {
+      "neighbour": "voltagent-codex/mcp-developer",
+      "functional_similarity": 0.799
+    },
+    "voltagent/powershell-module-architect": {
+      "neighbour": "voltagent-codex/powershell-module-architect",
+      "functional_similarity": 0.741
+    },
+    "voltagent/powershell-ui-architect": {
+      "neighbour": "voltagent-codex/powershell-ui-architect",
+      "functional_similarity": 0.708
+    },
+    "voltagent/readme-generator": {
+      "neighbour": "voltagent-codex/readme-generator",
+      "functional_similarity": 0.808
+    },
+    "voltagent/refactoring-specialist": {
+      "neighbour": "voltagent-codex/refactoring-specialist",
+      "functional_similarity": 0.65
+    },
+    "voltagent/slack-expert": {
+      "neighbour": "voltagent-codex/slack-expert",
+      "functional_similarity": 0.837
+    },
+    "voltagent/tooling-engineer": {
+      "neighbour": "voltagent/cli-developer",
+      "functional_similarity": 0.782
+    },
+    "voltagent/visual-asset-generator": {
+      "neighbour": "voltagent-codex/visual-asset-generator",
+      "functional_similarity": 0.777
+    },
+    "voltagent/api-documenter": {
+      "neighbour": "wshobson/api-testing-observability-api-documenter",
+      "functional_similarity": 0.89
+    },
+    "voltagent/blockchain-developer": {
+      "neighbour": "buildwithclaude/blockchain-developer",
+      "functional_similarity": 0.799
+    },
+    "voltagent/email-deliverability-engineer": {
+      "neighbour": "voltagent/payment-integration",
+      "functional_similarity": 0.616
+    },
+    "voltagent/embedded-systems": {
+      "neighbour": "voltagent-codex/embedded-systems",
+      "functional_similarity": 0.707
+    },
+    "voltagent/fintech-engineer": {
+      "neighbour": "voltagent-codex/fintech-engineer",
+      "functional_similarity": 0.761
+    },
+    "voltagent/game-developer": {
+      "neighbour": "voltagent-codex/game-developer",
+      "functional_similarity": 0.784
+    },
+    "voltagent/healthcare-admin": {
+      "neighbour": "voltagent-codex/healthcare-admin",
+      "functional_similarity": 0.867
+    },
+    "voltagent/hipaa-compliance": {
+      "neighbour": "voltagent-codex/hipaa-compliance",
+      "functional_similarity": 0.749
+    },
+    "voltagent/iot-engineer": {
+      "neighbour": "voltagent-codex/iot-engineer",
+      "functional_similarity": 0.742
+    },
+    "voltagent/m365-admin": {
+      "neighbour": "voltagent-codex/m365-admin",
+      "functional_similarity": 0.704
+    },
+    "voltagent/mobile-app-developer": {
+      "neighbour": "voltagent/mobile-developer",
+      "functional_similarity": 0.843
+    },
+    "voltagent/payment-integration": {
+      "neighbour": "buildwithclaude/payment-integration",
+      "functional_similarity": 0.825
+    },
+    "voltagent/quant-analyst": {
+      "neighbour": "buildwithclaude/quant-analyst",
+      "functional_similarity": 0.872
+    },
+    "voltagent/risk-manager": {
+      "neighbour": "voltagent/compliance-auditor",
+      "functional_similarity": 0.734
+    },
+    "voltagent/seo-specialist": {
+      "neighbour": "voltagent-codex/seo-specialist",
+      "functional_similarity": 0.727
+    },
+    "voltagent/x-api-integration": {
+      "neighbour": "voltagent/api-documenter",
+      "functional_similarity": 0.636
+    },
+    "voltagent/assumption-mapping": {
+      "neighbour": "voltagent-codex/assumption-mapping",
+      "functional_similarity": 0.724
+    },
+    "voltagent/backlog-grooming": {
+      "neighbour": "voltagent-codex/backlog-grooming",
+      "functional_similarity": 0.738
+    },
+    "voltagent/business-analyst": {
+      "neighbour": "voltagent/data-analyst",
+      "functional_similarity": 0.738
+    },
+    "voltagent/content-marketer": {
+      "neighbour": "wshobson/content-marketer",
+      "functional_similarity": 0.808
+    },
+    "voltagent/content-quality-editor": {
+      "neighbour": "voltagent-codex/content-quality-editor",
+      "functional_similarity": 0.813
+    },
+    "voltagent/customer-success-manager": {
+      "neighbour": "voltagent/product-manager",
+      "functional_similarity": 0.703
+    },
+    "voltagent/growth-loops": {
+      "neighbour": "voltagent-codex/growth-loops",
+      "functional_similarity": 0.7
+    },
+    "voltagent/landing-page-copywriter": {
+      "neighbour": "voltagent/content-marketer",
+      "functional_similarity": 0.61
+    },
+    "voltagent/legal-advisor": {
+      "neighbour": "voltagent/compliance-auditor",
+      "functional_similarity": 0.755
+    },
+    "voltagent/license-engineer": {
+      "neighbour": "voltagent-codex/license-engineer",
+      "functional_similarity": 0.809
+    },
+    "voltagent/product-manager": {
+      "neighbour": "contains-studio/ux-researcher",
+      "functional_similarity": 0.75
+    },
+    "voltagent/project-manager": {
+      "neighbour": "voltagent/product-manager",
+      "functional_similarity": 0.718
+    },
+    "voltagent/sales-engineer": {
+      "neighbour": "voltagent-codex/sales-engineer",
+      "functional_similarity": 0.74
+    },
+    "voltagent/scrum-master": {
+      "neighbour": "contains-studio/studio-producer",
+      "functional_similarity": 0.62
+    },
+    "voltagent/technical-writer": {
+      "neighbour": "voltagent/documentation-engineer",
+      "functional_similarity": 0.893
+    },
+    "voltagent/ux-researcher": {
+      "neighbour": "contains-studio/ux-researcher",
+      "functional_similarity": 0.862
+    },
+    "voltagent/wordpress-master": {
+      "neighbour": "buildwithclaude/wordpress-developer",
+      "functional_similarity": 0.741
+    },
+    "voltagent/agent-installer": {
+      "neighbour": "voltagent/search",
+      "functional_similarity": 0.668
+    },
+    "voltagent/agent-organizer": {
+      "neighbour": "voltagent/multi-agent-coordinator",
+      "functional_similarity": 0.769
+    },
+    "voltagent/codebase-orchestrator": {
+      "neighbour": "voltagent-codex/codebase-orchestrator",
+      "functional_similarity": 0.861
+    },
+    "voltagent/context-manager": {
+      "neighbour": "buildwithclaude/context-manager",
+      "functional_similarity": 0.651
+    },
+    "voltagent/error-coordinator": {
+      "neighbour": "voltagent/knowledge-synthesizer",
+      "functional_similarity": 0.783
+    },
+    "voltagent/it-ops-orchestrator": {
+      "neighbour": "voltagent/azure-infra-engineer",
+      "functional_similarity": 0.714
+    },
+    "voltagent/knowledge-synthesizer": {
+      "neighbour": "voltagent/error-coordinator",
+      "functional_similarity": 0.783
+    },
+    "voltagent/memory-curator": {
+      "neighbour": "voltagent/knowledge-synthesizer",
+      "functional_similarity": 0.553
+    },
+    "voltagent/multi-agent-coordinator": {
+      "neighbour": "voltagent/agent-organizer",
+      "functional_similarity": 0.769
+    },
+    "voltagent/performance-monitor": {
+      "neighbour": "voltagent/error-coordinator",
+      "functional_similarity": 0.757
+    },
+    "voltagent/task-distributor": {
+      "neighbour": "voltagent/agent-organizer",
+      "functional_similarity": 0.715
+    },
+    "voltagent/workflow-orchestrator": {
+      "neighbour": "voltagent/task-distributor",
+      "functional_similarity": 0.608
+    },
+    "voltagent/ab-test-analysis": {
+      "neighbour": "voltagent-codex/ab-test-analysis",
+      "functional_similarity": 0.752
+    },
+    "voltagent/cohort-analysis": {
+      "neighbour": "voltagent-codex/cohort-analysis",
+      "functional_similarity": 0.765
+    },
+    "voltagent/competitive-analyst": {
+      "neighbour": "voltagent/market-researcher",
+      "functional_similarity": 0.671
+    },
+    "voltagent/data-researcher": {
+      "neighbour": "voltagent/data-scientist",
+      "functional_similarity": 0.777
+    },
+    "voltagent/first-principles-thinking": {
+      "neighbour": "voltagent-codex/first-principles-thinking",
+      "functional_similarity": 0.697
+    },
+    "voltagent/market-researcher": {
+      "neighbour": "buildwithclaude/market-research-analyst",
+      "functional_similarity": 0.75
+    },
+    "voltagent/project-idea-validator": {
+      "neighbour": "voltagent-codex/project-idea-validator",
+      "functional_similarity": 0.813
+    },
+    "voltagent/research-analyst": {
+      "neighbour": "buildwithclaude/research-synthesizer",
+      "functional_similarity": 0.726
+    },
+    "voltagent/scientific-literature-researcher": {
+      "neighbour": "voltagent-codex/scientific-literature-researcher",
+      "functional_similarity": 0.753
+    },
+    "voltagent/search-specialist": {
+      "neighbour": "wshobson/search-specialist",
+      "functional_similarity": 0.701
+    },
+    "voltagent/trend-analyst": {
+      "neighbour": "voltagent-codex/trend-analyst",
+      "functional_similarity": 0.657
+    },
+    "voltagent/fetch": {
+      "neighbour": "voltagent/list",
+      "functional_similarity": 0.713
+    },
+    "voltagent/invalidate": {
+      "neighbour": "voltagent/fetch",
+      "functional_similarity": 0.561
+    },
+    "voltagent/list": {
+      "neighbour": "voltagent/fetch",
+      "functional_similarity": 0.713
+    },
+    "voltagent/search": {
+      "neighbour": "voltagent/agent-installer",
+      "functional_similarity": 0.668
+    },
+    "lst97/agent-organizer": {
+      "neighbour": "contains-studio/workflow-optimizer",
+      "functional_similarity": 0.724
+    },
+    "lst97/product-manager": {
+      "neighbour": "buildwithclaude/prometeo-pm",
+      "functional_similarity": 0.702
+    },
+    "lst97/ai-engineer": {
+      "neighbour": "buildwithclaude/ai-engineer",
+      "functional_similarity": 0.878
+    },
+    "lst97/data-engineer": {
+      "neighbour": "buildwithclaude/data-engineer",
+      "functional_similarity": 0.895
+    },
+    "lst97/data-scientist": {
+      "neighbour": "buildwithclaude/data-scientist",
+      "functional_similarity": 0.832
+    },
+    "lst97/database-optimizer": {
+      "neighbour": "buildwithclaude/database-optimizer",
+      "functional_similarity": 0.829
+    },
+    "lst97/graphql-architect": {
+      "neighbour": "wshobson/api-scaffolding-graphql-architect",
+      "functional_similarity": 0.873
+    },
+    "lst97/ml-engineer": {
+      "neighbour": "voltagent/ml-engineer",
+      "functional_similarity": 0.807
+    },
+    "lst97/postgresql-pglite-pro": {
+      "neighbour": "0xfurai/postgres-expert",
+      "functional_similarity": 0.698
+    },
+    "lst97/prompt-engineer": {
+      "neighbour": "wshobson/prompt-engineer",
+      "functional_similarity": 0.879
+    },
+    "lst97/backend-architect": {
+      "neighbour": "wshobson/api-scaffolding-backend-architect",
+      "functional_similarity": 0.721
+    },
+    "lst97/dx-optimizer": {
+      "neighbour": "wshobson/debugging-toolkit-dx-optimizer",
+      "functional_similarity": 0.826
+    },
+    "lst97/electron-pro": {
+      "neighbour": "0xfurai/electron-expert",
+      "functional_similarity": 0.778
+    },
+    "lst97/frontend-developer": {
+      "neighbour": "lst97/react-pro",
+      "functional_similarity": 0.788
+    },
+    "lst97/full-stack-developer": {
+      "neighbour": "voltagent/fullstack-developer",
+      "functional_similarity": 0.723
+    },
+    "lst97/golang-pro": {
+      "neighbour": "0xfurai/go-expert",
+      "functional_similarity": 0.87
+    },
+    "lst97/legacy-modernizer": {
+      "neighbour": "buildwithclaude/legacy-modernizer",
+      "functional_similarity": 0.883
+    },
+    "lst97/mobile-developer": {
+      "neighbour": "wshobson/frontend-mobile-development-mobile-developer",
+      "functional_similarity": 0.846
+    },
+    "lst97/nextjs-pro": {
+      "neighbour": "voltagent/nextjs-developer",
+      "functional_similarity": 0.883
+    },
+    "lst97/python-pro": {
+      "neighbour": "buildwithclaude/python-expert",
+      "functional_similarity": 0.858
+    },
+    "lst97/react-pro": {
+      "neighbour": "0xfurai/react-expert",
+      "functional_similarity": 0.867
+    },
+    "lst97/typescript-pro": {
+      "neighbour": "voltagent/typescript-pro",
+      "functional_similarity": 0.843
+    },
+    "lst97/ui-designer": {
+      "neighbour": "voltagent/ui-designer",
+      "functional_similarity": 0.775
+    },
+    "lst97/ux-designer": {
+      "neighbour": "wshobson/ui-ux-designer",
+      "functional_similarity": 0.683
+    },
+    "lst97/cloud-architect": {
+      "neighbour": "wshobson/cicd-automation-cloud-architect",
+      "functional_similarity": 0.878
+    },
+    "lst97/deployment-engineer": {
+      "neighbour": "buildwithclaude/deployment-engineer",
+      "functional_similarity": 0.848
+    },
+    "lst97/devops-incident-responder": {
+      "neighbour": "buildwithclaude/devops-troubleshooter",
+      "functional_similarity": 0.797
+    },
+    "lst97/incident-responder": {
+      "neighbour": "wshobson/incident-responder",
+      "functional_similarity": 0.76
+    },
+    "lst97/performance-engineer": {
+      "neighbour": "wshobson/application-performance-performance-engineer",
+      "functional_similarity": 0.767
+    },
+    "lst97/architect-reviewer": {
+      "neighbour": "buildwithclaude/architect-review",
+      "functional_similarity": 0.805
+    },
+    "lst97/code-reviewer-pro": {
+      "neighbour": "voltagent/code-reviewer",
+      "functional_similarity": 0.736
+    },
+    "lst97/debugger": {
+      "neighbour": "wshobson/debugging-toolkit-debugger",
+      "functional_similarity": 0.886
+    },
+    "lst97/qa-expert": {
+      "neighbour": "voltagent/qa-expert",
+      "functional_similarity": 0.795
+    },
+    "lst97/test-automator": {
+      "neighbour": "voltagent/test-automator",
+      "functional_similarity": 0.817
+    },
+    "lst97/security-auditor": {
+      "neighbour": "wshobson/comprehensive-review-security-auditor",
+      "functional_similarity": 0.8
+    },
+    "lst97/api-documenter": {
+      "neighbour": "voltagent/api-documenter",
+      "functional_similarity": 0.858
+    },
+    "lst97/documentation-expert": {
+      "neighbour": "voltagent/documentation-engineer",
+      "functional_similarity": 0.803
+    },
+    "voltagent-codex/api-designer": {
+      "neighbour": "voltagent/api-designer",
+      "functional_similarity": 0.72
+    },
+    "voltagent-codex/backend-developer": {
+      "neighbour": "voltagent-codex/fullstack-developer",
+      "functional_similarity": 0.631
+    },
+    "voltagent-codex/code-mapper": {
+      "neighbour": "voltagent-codex/agent-organizer",
+      "functional_similarity": 0.636
+    },
+    "voltagent-codex/design-bridge": {
+      "neighbour": "voltagent/design-bridge",
+      "functional_similarity": 0.823
+    },
+    "voltagent-codex/electron-pro": {
+      "neighbour": "0xfurai/electron-expert",
+      "functional_similarity": 0.795
+    },
+    "voltagent-codex/frontend-developer": {
+      "neighbour": "contains-studio/frontend-developer",
+      "functional_similarity": 0.678
+    },
+    "voltagent-codex/fullstack-developer": {
+      "neighbour": "voltagent-codex/backend-developer",
+      "functional_similarity": 0.631
+    },
+    "voltagent-codex/graphql-architect": {
+      "neighbour": "wshobson/api-scaffolding-graphql-architect",
+      "functional_similarity": 0.868
+    },
+    "voltagent-codex/microservices-architect": {
+      "neighbour": "voltagent-codex/cloud-architect",
+      "functional_similarity": 0.669
+    },
+    "voltagent-codex/mobile-developer": {
+      "neighbour": "voltagent/mobile-app-developer",
+      "functional_similarity": 0.77
+    },
+    "voltagent-codex/ui-designer": {
+      "neighbour": "voltagent/ui-designer",
+      "functional_similarity": 0.712
+    },
+    "voltagent-codex/ui-fixer": {
+      "neighbour": "voltagent/ui-ux-tester",
+      "functional_similarity": 0.58
+    },
+    "voltagent-codex/websocket-engineer": {
+      "neighbour": "0xfurai/websocket-expert",
+      "functional_similarity": 0.77
+    },
+    "voltagent-codex/angular-architect": {
+      "neighbour": "0xfurai/angular-expert",
+      "functional_similarity": 0.758
+    },
+    "voltagent-codex/cpp-pro": {
+      "neighbour": "voltagent/cpp-pro",
+      "functional_similarity": 0.786
+    },
+    "voltagent-codex/csharp-developer": {
+      "neighbour": "voltagent/csharp-developer",
+      "functional_similarity": 0.787
+    },
+    "voltagent-codex/django-developer": {
+      "neighbour": "0xfurai/django-expert",
+      "functional_similarity": 0.825
+    },
+    "voltagent-codex/dotnet-core-expert": {
+      "neighbour": "voltagent/csharp-developer",
+      "functional_similarity": 0.784
+    },
+    "voltagent-codex/dotnet-framework-4.8-expert": {
+      "neighbour": "voltagent/dotnet-framework-4.8-expert",
+      "functional_similarity": 0.848
+    },
+    "voltagent-codex/elixir-expert": {
+      "neighbour": "0xfurai/elixir-expert",
+      "functional_similarity": 0.786
+    },
+    "voltagent-codex/erlang-expert": {
+      "neighbour": "0xfurai/erlang-expert",
+      "functional_similarity": 0.673
+    },
+    "voltagent-codex/expo-react-native-expert": {
+      "neighbour": "voltagent/expo-react-native-expert",
+      "functional_similarity": 0.87
+    },
+    "voltagent-codex/fastapi-developer": {
+      "neighbour": "voltagent/fastapi-developer",
+      "functional_similarity": 0.798
+    },
+    "voltagent-codex/flutter-expert": {
+      "neighbour": "wshobson/flutter-expert",
+      "functional_similarity": 0.799
+    },
+    "voltagent-codex/golang-pro": {
+      "neighbour": "lst97/golang-pro",
+      "functional_similarity": 0.815
+    },
+    "voltagent-codex/java-architect": {
+      "neighbour": "voltagent/java-architect",
+      "functional_similarity": 0.722
+    },
+    "voltagent-codex/javascript-pro": {
+      "neighbour": "voltagent/javascript-pro",
+      "functional_similarity": 0.772
+    },
+    "voltagent-codex/kotlin-specialist": {
+      "neighbour": "voltagent/kotlin-specialist",
+      "functional_similarity": 0.798
+    },
+    "voltagent-codex/laravel-specialist": {
+      "neighbour": "voltagent/laravel-specialist",
+      "functional_similarity": 0.809
+    },
+    "voltagent-codex/nextjs-developer": {
+      "neighbour": "voltagent/nextjs-developer",
+      "functional_similarity": 0.831
+    },
+    "voltagent-codex/node-specialist": {
+      "neighbour": "voltagent/node-specialist",
+      "functional_similarity": 0.81
+    },
+    "voltagent-codex/php-pro": {
+      "neighbour": "voltagent/php-pro",
+      "functional_similarity": 0.775
+    },
+    "voltagent-codex/powershell-5.1-expert": {
+      "neighbour": "voltagent-codex/powershell-7-expert",
+      "functional_similarity": 0.839
+    },
+    "voltagent-codex/powershell-7-expert": {
+      "neighbour": "voltagent-codex/powershell-5.1-expert",
+      "functional_similarity": 0.839
+    },
+    "voltagent-codex/python-pro": {
+      "neighbour": "voltagent/python-pro",
+      "functional_similarity": 0.758
+    },
+    "voltagent-codex/rails-expert": {
+      "neighbour": "buildwithclaude/rails-expert",
+      "functional_similarity": 0.811
+    },
+    "voltagent-codex/react-specialist": {
+      "neighbour": "0xfurai/react-expert",
+      "functional_similarity": 0.757
+    },
+    "voltagent-codex/rust-engineer": {
+      "neighbour": "voltagent/rust-engineer",
+      "functional_similarity": 0.792
+    },
+    "voltagent-codex/spring-boot-engineer": {
+      "neighbour": "voltagent/spring-boot-engineer",
+      "functional_similarity": 0.778
+    },
+    "voltagent-codex/sql-pro": {
+      "neighbour": "voltagent/sql-pro",
+      "functional_similarity": 0.785
+    },
+    "voltagent-codex/swift-expert": {
+      "neighbour": "voltagent/swift-expert",
+      "functional_similarity": 0.83
+    },
+    "voltagent-codex/symfony-specialist": {
+      "neighbour": "voltagent/symfony-specialist",
+      "functional_similarity": 0.763
+    },
+    "voltagent-codex/typescript-pro": {
+      "neighbour": "0xfurai/typescript-expert",
+      "functional_similarity": 0.808
+    },
+    "voltagent-codex/vue-expert": {
+      "neighbour": "0xfurai/vue-expert",
+      "functional_similarity": 0.829
+    },
+    "voltagent-codex/azure-infra-engineer": {
+      "neighbour": "voltagent/azure-infra-engineer",
+      "functional_similarity": 0.762
+    },
+    "voltagent-codex/cloud-architect": {
+      "neighbour": "voltagent/cloud-architect",
+      "functional_similarity": 0.773
+    },
+    "voltagent-codex/database-administrator": {
+      "neighbour": "buildwithclaude/database-admin",
+      "functional_similarity": 0.768
+    },
+    "voltagent-codex/deployment-engineer": {
+      "neighbour": "voltagent-codex/devops-engineer",
+      "functional_similarity": 0.752
+    },
+    "voltagent-codex/devops-engineer": {
+      "neighbour": "voltagent/deployment-engineer",
+      "functional_similarity": 0.846
+    },
+    "voltagent-codex/devops-incident-responder": {
+      "neighbour": "voltagent-codex/devops-engineer",
+      "functional_similarity": 0.785
+    },
+    "voltagent-codex/docker-expert": {
+      "neighbour": "voltagent/docker-expert",
+      "functional_similarity": 0.845
+    },
+    "voltagent-codex/incident-responder": {
+      "neighbour": "voltagent-codex/devops-incident-responder",
+      "functional_similarity": 0.676
+    },
+    "voltagent-codex/kubernetes-specialist": {
+      "neighbour": "voltagent/kubernetes-specialist",
+      "functional_similarity": 0.854
+    },
+    "voltagent-codex/network-engineer": {
+      "neighbour": "buildwithclaude/network-engineer",
+      "functional_similarity": 0.759
+    },
+    "voltagent-codex/platform-engineer": {
+      "neighbour": "voltagent-codex/idp-architect",
+      "functional_similarity": 0.811
+    },
+    "voltagent-codex/security-engineer": {
+      "neighbour": "voltagent/security-engineer",
+      "functional_similarity": 0.76
+    },
+    "voltagent-codex/sre-engineer": {
+      "neighbour": "voltagent/sre-engineer",
+      "functional_similarity": 0.814
+    },
+    "voltagent-codex/terraform-engineer": {
+      "neighbour": "wshobson/cicd-automation-terraform-specialist",
+      "functional_similarity": 0.818
+    },
+    "voltagent-codex/terragrunt-expert": {
+      "neighbour": "voltagent-codex/terraform-engineer",
+      "functional_similarity": 0.785
+    },
+    "voltagent-codex/windows-infra-admin": {
+      "neighbour": "voltagent/windows-infra-admin",
+      "functional_similarity": 0.74
+    },
+    "voltagent-codex/accessibility-tester": {
+      "neighbour": "voltagent/accessibility-tester",
+      "functional_similarity": 0.745
+    },
+    "voltagent-codex/ad-security-reviewer": {
+      "neighbour": "voltagent/ad-security-reviewer",
+      "functional_similarity": 0.793
+    },
+    "voltagent-codex/ai-writing-auditor": {
+      "neighbour": "voltagent/ai-writing-auditor",
+      "functional_similarity": 0.731
+    },
+    "voltagent-codex/anti-ui-slop-reviewer": {
+      "neighbour": "lst97/ui-designer",
+      "functional_similarity": 0.649
+    },
+    "voltagent-codex/architect-reviewer": {
+      "neighbour": "voltagent/architect-reviewer",
+      "functional_similarity": 0.735
+    },
+    "voltagent-codex/browser-debugger": {
+      "neighbour": "voltagent/ui-ux-tester",
+      "functional_similarity": 0.7
+    },
+    "voltagent-codex/chaos-engineer": {
+      "neighbour": "voltagent-codex/sre-engineer",
+      "functional_similarity": 0.738
+    },
+    "voltagent-codex/code-reviewer": {
+      "neighbour": "voltagent/code-reviewer",
+      "functional_similarity": 0.716
+    },
+    "voltagent-codex/compliance-auditor": {
+      "neighbour": "voltagent/compliance-auditor",
+      "functional_similarity": 0.734
+    },
+    "voltagent-codex/debugger": {
+      "neighbour": "voltagent/debugger",
+      "functional_similarity": 0.707
+    },
+    "voltagent-codex/error-detective": {
+      "neighbour": "voltagent/error-detective",
+      "functional_similarity": 0.697
+    },
+    "voltagent-codex/gdpr-ccpa-compliance": {
+      "neighbour": "voltagent/gdpr-ccpa-compliance",
+      "functional_similarity": 0.724
+    },
+    "voltagent-codex/penetration-tester": {
+      "neighbour": "voltagent/penetration-tester",
+      "functional_similarity": 0.732
+    },
+    "voltagent-codex/performance-engineer": {
+      "neighbour": "voltagent/performance-engineer",
+      "functional_similarity": 0.786
+    },
+    "voltagent-codex/powershell-security-hardening": {
+      "neighbour": "voltagent/powershell-security-hardening",
+      "functional_similarity": 0.805
+    },
+    "voltagent-codex/qa-expert": {
+      "neighbour": "lst97/qa-expert",
+      "functional_similarity": 0.755
+    },
+    "voltagent-codex/reviewer": {
+      "neighbour": "vijaythecoder/code-reviewer",
+      "functional_similarity": 0.708
+    },
+    "voltagent-codex/security-auditor": {
+      "neighbour": "lst97/security-auditor",
+      "functional_similarity": 0.757
+    },
+    "voltagent-codex/test-automator": {
+      "neighbour": "lst97/test-automator",
+      "functional_similarity": 0.749
+    },
+    "voltagent-codex/ui-ux-tester": {
+      "neighbour": "voltagent/ui-ux-tester",
+      "functional_similarity": 0.815
+    },
+    "voltagent-codex/ai-engineer": {
+      "neighbour": "contains-studio/ai-engineer",
+      "functional_similarity": 0.677
+    },
+    "voltagent-codex/azure-databricks-platform-architect": {
+      "neighbour": "voltagent-codex/azure-infra-engineer",
+      "functional_similarity": 0.687
+    },
+    "voltagent-codex/data-analyst": {
+      "neighbour": "voltagent-codex/data-scientist",
+      "functional_similarity": 0.709
+    },
+    "voltagent-codex/data-engineer": {
+      "neighbour": "voltagent/data-engineer",
+      "functional_similarity": 0.798
+    },
+    "voltagent-codex/data-scientist": {
+      "neighbour": "voltagent-codex/data-analyst",
+      "functional_similarity": 0.709
+    },
+    "voltagent-codex/database-optimizer": {
+      "neighbour": "voltagent/database-optimizer",
+      "functional_similarity": 0.826
+    },
+    "voltagent-codex/llm-architect": {
+      "neighbour": "voltagent-codex/architect-reviewer",
+      "functional_similarity": 0.731
+    },
+    "voltagent-codex/machine-learning-engineer": {
+      "neighbour": "voltagent/ml-engineer",
+      "functional_similarity": 0.796
+    },
+    "voltagent-codex/ml-engineer": {
+      "neighbour": "voltagent-codex/machine-learning-engineer",
+      "functional_similarity": 0.702
+    },
+    "voltagent-codex/mlops-engineer": {
+      "neighbour": "voltagent-codex/devops-engineer",
+      "functional_similarity": 0.777
+    },
+    "voltagent-codex/nlp-engineer": {
+      "neighbour": "voltagent/nlp-engineer",
+      "functional_similarity": 0.808
+    },
+    "voltagent-codex/postgres-pro": {
+      "neighbour": "voltagent/postgres-pro",
+      "functional_similarity": 0.794
+    },
+    "voltagent-codex/prompt-engineer": {
+      "neighbour": "voltagent/prompt-engineer",
+      "functional_similarity": 0.728
+    },
+    "voltagent-codex/reinforcement-learning-engineer": {
+      "neighbour": "voltagent/reinforcement-learning-engineer",
+      "functional_similarity": 0.806
+    },
+    "voltagent-codex/build-engineer": {
+      "neighbour": "voltagent-codex/devops-engineer",
+      "functional_similarity": 0.728
+    },
+    "voltagent-codex/cli-developer": {
+      "neighbour": "voltagent/cli-developer",
+      "functional_similarity": 0.765
+    },
+    "voltagent-codex/dependency-manager": {
+      "neighbour": "voltagent/dependency-manager",
+      "functional_similarity": 0.793
+    },
+    "voltagent-codex/documentation-engineer": {
+      "neighbour": "voltagent-codex/tooling-engineer",
+      "functional_similarity": 0.754
+    },
+    "voltagent-codex/dx-optimizer": {
+      "neighbour": "voltagent/dx-optimizer",
+      "functional_similarity": 0.805
+    },
+    "voltagent-codex/git-workflow-manager": {
+      "neighbour": "voltagent/git-workflow-manager",
+      "functional_similarity": 0.794
+    },
+    "voltagent-codex/legacy-modernizer": {
+      "neighbour": "lst97/legacy-modernizer",
+      "functional_similarity": 0.769
+    },
+    "voltagent-codex/mcp-developer": {
+      "neighbour": "voltagent/mcp-developer",
+      "functional_similarity": 0.799
+    },
+    "voltagent-codex/powershell-module-architect": {
+      "neighbour": "voltagent-codex/powershell-ui-architect",
+      "functional_similarity": 0.784
+    },
+    "voltagent-codex/powershell-ui-architect": {
+      "neighbour": "voltagent-codex/powershell-module-architect",
+      "functional_similarity": 0.784
+    },
+    "voltagent-codex/readme-generator": {
+      "neighbour": "voltagent/readme-generator",
+      "functional_similarity": 0.808
+    },
+    "voltagent-codex/refactoring-specialist": {
+      "neighbour": "voltagent/refactoring-specialist",
+      "functional_similarity": 0.65
+    },
+    "voltagent-codex/slack-expert": {
+      "neighbour": "voltagent/slack-expert",
+      "functional_similarity": 0.837
+    },
+    "voltagent-codex/tooling-engineer": {
+      "neighbour": "voltagent-codex/dx-optimizer",
+      "functional_similarity": 0.775
+    },
+    "voltagent-codex/visual-asset-generator": {
+      "neighbour": "voltagent/visual-asset-generator",
+      "functional_similarity": 0.777
+    },
+    "voltagent-codex/api-documenter": {
+      "neighbour": "voltagent/api-documenter",
+      "functional_similarity": 0.792
+    },
+    "voltagent-codex/blockchain-developer": {
+      "neighbour": "voltagent/blockchain-developer",
+      "functional_similarity": 0.748
+    },
+    "voltagent-codex/embedded-systems": {
+      "neighbour": "voltagent/embedded-systems",
+      "functional_similarity": 0.707
+    },
+    "voltagent-codex/fintech-engineer": {
+      "neighbour": "voltagent/fintech-engineer",
+      "functional_similarity": 0.761
+    },
+    "voltagent-codex/game-developer": {
+      "neighbour": "voltagent/game-developer",
+      "functional_similarity": 0.784
+    },
+    "voltagent-codex/healthcare-admin": {
+      "neighbour": "voltagent/healthcare-admin",
+      "functional_similarity": 0.867
+    },
+    "voltagent-codex/hipaa-compliance": {
+      "neighbour": "voltagent/hipaa-compliance",
+      "functional_similarity": 0.749
+    },
+    "voltagent-codex/iot-engineer": {
+      "neighbour": "voltagent/iot-engineer",
+      "functional_similarity": 0.742
+    },
+    "voltagent-codex/m365-admin": {
+      "neighbour": "voltagent/m365-admin",
+      "functional_similarity": 0.704
+    },
+    "voltagent-codex/mobile-app-developer": {
+      "neighbour": "voltagent/mobile-app-developer",
+      "functional_similarity": 0.787
+    },
+    "voltagent-codex/payment-integration": {
+      "neighbour": "voltagent/payment-integration",
+      "functional_similarity": 0.772
+    },
+    "voltagent-codex/quant-analyst": {
+      "neighbour": "voltagent/quant-analyst",
+      "functional_similarity": 0.693
+    },
+    "voltagent-codex/risk-manager": {
+      "neighbour": "voltagent/risk-manager",
+      "functional_similarity": 0.734
+    },
+    "voltagent-codex/seo-specialist": {
+      "neighbour": "voltagent/seo-specialist",
+      "functional_similarity": 0.727
+    },
+    "voltagent-codex/assumption-mapping": {
+      "neighbour": "voltagent/assumption-mapping",
+      "functional_similarity": 0.724
+    },
+    "voltagent-codex/backlog-grooming": {
+      "neighbour": "voltagent/backlog-grooming",
+      "functional_similarity": 0.738
+    },
+    "voltagent-codex/business-analyst": {
+      "neighbour": "voltagent-codex/product-manager",
+      "functional_similarity": 0.64
+    },
+    "voltagent-codex/content-marketer": {
+      "neighbour": "wshobson/content-marketer",
+      "functional_similarity": 0.632
+    },
+    "voltagent-codex/content-quality-editor": {
+      "neighbour": "voltagent/content-quality-editor",
+      "functional_similarity": 0.813
+    },
+    "voltagent-codex/customer-success-manager": {
+      "neighbour": "voltagent/product-manager",
+      "functional_similarity": 0.667
+    },
+    "voltagent-codex/growth-loops": {
+      "neighbour": "voltagent/growth-loops",
+      "functional_similarity": 0.7
+    },
+    "voltagent-codex/legal-advisor": {
+      "neighbour": "voltagent/legal-advisor",
+      "functional_similarity": 0.713
+    },
+    "voltagent-codex/license-engineer": {
+      "neighbour": "voltagent/license-engineer",
+      "functional_similarity": 0.809
+    },
+    "voltagent-codex/product-manager": {
+      "neighbour": "voltagent/product-manager",
+      "functional_similarity": 0.674
+    },
+    "voltagent-codex/project-manager": {
+      "neighbour": "voltagent/project-manager",
+      "functional_similarity": 0.631
+    },
+    "voltagent-codex/resume-refiner": {
+      "neighbour": "wshobson/hr-pro",
+      "functional_similarity": 0.539
+    },
+    "voltagent-codex/sales-engineer": {
+      "neighbour": "voltagent/sales-engineer",
+      "functional_similarity": 0.74
+    },
+    "voltagent-codex/scrum-master": {
+      "neighbour": "voltagent-codex/dx-optimizer",
+      "functional_similarity": 0.688
+    },
+    "voltagent-codex/technical-writer": {
+      "neighbour": "voltagent/documentation-engineer",
+      "functional_similarity": 0.715
+    },
+    "voltagent-codex/ux-researcher": {
+      "neighbour": "voltagent/ux-researcher",
+      "functional_similarity": 0.656
+    },
+    "voltagent-codex/wordpress-master": {
+      "neighbour": "voltagent/wordpress-master",
+      "functional_similarity": 0.736
+    },
+    "voltagent-codex/agent-installer": {
+      "neighbour": "buildwithclaude/agent-expert",
+      "functional_similarity": 0.631
+    },
+    "voltagent-codex/agent-organizer": {
+      "neighbour": "voltagent-codex/multi-agent-coordinator",
+      "functional_similarity": 0.737
+    },
+    "voltagent-codex/codebase-orchestrator": {
+      "neighbour": "voltagent/codebase-orchestrator",
+      "functional_similarity": 0.861
+    },
+    "voltagent-codex/context-manager": {
+      "neighbour": "buildwithclaude/context-manager",
+      "functional_similarity": 0.576
+    },
+    "voltagent-codex/error-coordinator": {
+      "neighbour": "voltagent/debugger",
+      "functional_similarity": 0.661
+    },
+    "voltagent-codex/it-ops-orchestrator": {
+      "neighbour": "voltagent-codex/windows-infra-admin",
+      "functional_similarity": 0.675
+    },
+    "voltagent-codex/knowledge-synthesizer": {
+      "neighbour": "voltagent-codex/error-coordinator",
+      "functional_similarity": 0.551
+    },
+    "voltagent-codex/multi-agent-coordinator": {
+      "neighbour": "voltagent-codex/task-distributor",
+      "functional_similarity": 0.741
+    },
+    "voltagent-codex/performance-monitor": {
+      "neighbour": "voltagent-codex/performance-engineer",
+      "functional_similarity": 0.628
+    },
+    "voltagent-codex/task-distributor": {
+      "neighbour": "voltagent-codex/multi-agent-coordinator",
+      "functional_similarity": 0.741
+    },
+    "voltagent-codex/workflow-orchestrator": {
+      "neighbour": "voltagent-codex/agent-organizer",
+      "functional_similarity": 0.736
+    },
+    "voltagent-codex/ab-test-analysis": {
+      "neighbour": "voltagent/ab-test-analysis",
+      "functional_similarity": 0.752
+    },
+    "voltagent-codex/cohort-analysis": {
+      "neighbour": "voltagent/cohort-analysis",
+      "functional_similarity": 0.765
+    },
+    "voltagent-codex/competitive-analyst": {
+      "neighbour": "contains-studio/tool-evaluator",
+      "functional_similarity": 0.606
+    },
+    "voltagent-codex/data-researcher": {
+      "neighbour": "voltagent/data-researcher",
+      "functional_similarity": 0.675
+    },
+    "voltagent-codex/docs-researcher": {
+      "neighbour": "voltagent-codex/api-documenter",
+      "functional_similarity": 0.729
+    },
+    "voltagent-codex/first-principles-thinking": {
+      "neighbour": "voltagent/first-principles-thinking",
+      "functional_similarity": 0.697
+    },
+    "voltagent-codex/market-researcher": {
+      "neighbour": "voltagent/market-researcher",
+      "functional_similarity": 0.713
+    },
+    "voltagent-codex/project-idea-validator": {
+      "neighbour": "voltagent/project-idea-validator",
+      "functional_similarity": 0.813
+    },
+    "voltagent-codex/research-analyst": {
+      "neighbour": "voltagent-codex/data-researcher",
+      "functional_similarity": 0.618
+    },
+    "voltagent-codex/scientific-literature-researcher": {
+      "neighbour": "voltagent/scientific-literature-researcher",
+      "functional_similarity": 0.753
+    },
+    "voltagent-codex/search-specialist": {
+      "neighbour": "voltagent/search-specialist",
+      "functional_similarity": 0.654
+    },
+    "voltagent-codex/trend-analyst": {
+      "neighbour": "voltagent/trend-analyst",
+      "functional_similarity": 0.657
+    },
+    "voltagent-codex/ai-governance-auditor": {
+      "neighbour": "wshobson/code-documentation-code-reviewer",
+      "functional_similarity": 0.607
+    },
+    "voltagent-codex/model-risk-manager": {
+      "neighbour": "voltagent-codex/chaos-engineer",
+      "functional_similarity": 0.654
+    },
+    "voltagent-codex/policy-guardrail-designer": {
+      "neighbour": "voltagent-codex/security-engineer",
+      "functional_similarity": 0.593
+    },
+    "voltagent-codex/responsible-ai-reviewer": {
+      "neighbour": "voltagent-codex/ai-governance-auditor",
+      "functional_similarity": 0.584
+    },
+    "voltagent-codex/backstage-specialist": {
+      "neighbour": "voltagent-codex/idp-architect",
+      "functional_similarity": 0.667
+    },
+    "voltagent-codex/golden-path-designer": {
+      "neighbour": "voltagent-codex/platform-engineer",
+      "functional_similarity": 0.709
+    },
+    "voltagent-codex/idp-architect": {
+      "neighbour": "voltagent-codex/platform-engineer",
+      "functional_similarity": 0.811
+    },
+    "voltagent-codex/platform-product-manager": {
+      "neighbour": "voltagent-codex/idp-architect",
+      "functional_similarity": 0.647
+    },
+    "voltagent-codex/ai-observability-engineer": {
+      "neighbour": "wshobson/application-performance-observability-engineer",
+      "functional_similarity": 0.627
+    },
+    "voltagent-codex/eval-engineer": {
+      "neighbour": "voltagent-codex/llm-architect",
+      "functional_similarity": 0.718
+    },
+    "voltagent-codex/hallucination-investigator": {
+      "neighbour": "voltagent/error-detective",
+      "functional_similarity": 0.594
+    },
+    "voltagent-codex/prompt-regression-tester": {
+      "neighbour": "voltagent-codex/test-automator",
+      "functional_similarity": 0.724
+    },
+    "buildwithclaude/ag2-architect": {
+      "neighbour": "buildwithclaude/ag2-prompt-engineer",
+      "functional_similarity": 0.78
+    },
+    "buildwithclaude/ag2-prompt-engineer": {
+      "neighbour": "buildwithclaude/ag2-reviewer",
+      "functional_similarity": 0.787
+    },
+    "buildwithclaude/ag2-reviewer": {
+      "neighbour": "buildwithclaude/ag2-prompt-engineer",
+      "functional_similarity": 0.787
+    },
+    "buildwithclaude/centinela-qa": {
+      "neighbour": "voltagent/security-auditor",
+      "functional_similarity": 0.69
+    },
+    "buildwithclaude/forja-dev": {
+      "neighbour": "lst97/agent-organizer",
+      "functional_similarity": 0.683
+    },
+    "buildwithclaude/prometeo-pm": {
+      "neighbour": "lst97/product-manager",
+      "functional_similarity": 0.702
+    },
+    "buildwithclaude/agent-expert": {
+      "neighbour": "lst97/agent-organizer",
+      "functional_similarity": 0.676
+    },
+    "buildwithclaude/mcp-deployment-orchestrator": {
+      "neighbour": "0xfurai/kubernetes-expert",
+      "functional_similarity": 0.755
+    },
+    "buildwithclaude/mcp-expert": {
+      "neighbour": "buildwithclaude/mcp-server-architect",
+      "functional_similarity": 0.835
+    },
+    "buildwithclaude/mcp-registry-navigator": {
+      "neighbour": "buildwithclaude/mcp-server-architect",
+      "functional_similarity": 0.681
+    },
+    "buildwithclaude/project-supervisor-orchestrator": {
+      "neighbour": "buildwithclaude/episode-orchestrator",
+      "functional_similarity": 0.739
+    },
+    "buildwithclaude/blockchain-developer": {
+      "neighbour": "voltagent/blockchain-developer",
+      "functional_similarity": 0.799
+    },
+    "buildwithclaude/hyperledger-fabric-developer": {
+      "neighbour": "voltagent-codex/blockchain-developer",
+      "functional_similarity": 0.645
+    },
+    "buildwithclaude/business-analyst": {
+      "neighbour": "wshobson/business-analyst",
+      "functional_similarity": 0.779
+    },
+    "buildwithclaude/legal-advisor": {
+      "neighbour": "wshobson/legal-advisor",
+      "functional_similarity": 0.94
+    },
+    "buildwithclaude/payment-integration": {
+      "neighbour": "wshobson/payment-integration",
+      "functional_similarity": 0.92
+    },
+    "buildwithclaude/quant-analyst": {
+      "neighbour": "wshobson/quant-analyst",
+      "functional_similarity": 0.91
+    },
+    "buildwithclaude/arbitrage-bot": {
+      "neighbour": "buildwithclaude/crypto-trader",
+      "functional_similarity": 0.761
+    },
+    "buildwithclaude/crypto-analyst": {
+      "neighbour": "buildwithclaude/crypto-trader",
+      "functional_similarity": 0.715
+    },
+    "buildwithclaude/crypto-risk-manager": {
+      "neighbour": "buildwithclaude/crypto-trader",
+      "functional_similarity": 0.713
+    },
+    "buildwithclaude/crypto-trader": {
+      "neighbour": "buildwithclaude/arbitrage-bot",
+      "functional_similarity": 0.761
+    },
+    "buildwithclaude/defi-strategist": {
+      "neighbour": "buildwithclaude/arbitrage-bot",
+      "functional_similarity": 0.603
+    },
+    "buildwithclaude/ai-engineer": {
+      "neighbour": "lst97/ai-engineer",
+      "functional_similarity": 0.878
+    },
+    "buildwithclaude/context-manager": {
+      "neighbour": "wshobson/agent-orchestration-context-manager",
+      "functional_similarity": 0.748
+    },
+    "buildwithclaude/data-analyst": {
+      "neighbour": "buildwithclaude/business-analyst",
+      "functional_similarity": 0.709
+    },
+    "buildwithclaude/data-engineer": {
+      "neighbour": "lst97/data-engineer",
+      "functional_similarity": 0.895
+    },
+    "buildwithclaude/data-scientist": {
+      "neighbour": "lst97/data-scientist",
+      "functional_similarity": 0.832
+    },
+    "buildwithclaude/hackathon-ai-strategist": {
+      "neighbour": "voltagent/ai-engineer",
+      "functional_similarity": 0.601
+    },
+    "buildwithclaude/llms-maintainer": {
+      "neighbour": "lst97/ai-engineer",
+      "functional_similarity": 0.578
+    },
+    "buildwithclaude/ml-engineer": {
+      "neighbour": "wshobson/ml-engineer",
+      "functional_similarity": 0.828
+    },
+    "buildwithclaude/mlops-engineer": {
+      "neighbour": "wshobson/mlops-engineer",
+      "functional_similarity": 0.909
+    },
+    "buildwithclaude/prompt-engineer": {
+      "neighbour": "wshobson/prompt-engineer",
+      "functional_similarity": 0.878
+    },
+    "buildwithclaude/search-specialist": {
+      "neighbour": "wshobson/search-specialist",
+      "functional_similarity": 0.858
+    },
+    "buildwithclaude/task-decomposition-expert": {
+      "neighbour": "lst97/agent-organizer",
+      "functional_similarity": 0.686
+    },
+    "buildwithclaude/accessibility-specialist": {
+      "neighbour": "wshobson/accessibility-expert",
+      "functional_similarity": 0.804
+    },
+    "buildwithclaude/ui-ux-designer": {
+      "neighbour": "wshobson/ui-ux-designer",
+      "functional_similarity": 0.859
+    },
+    "buildwithclaude/backend-architect": {
+      "neighbour": "contains-studio/backend-architect",
+      "functional_similarity": 0.716
+    },
+    "buildwithclaude/directus-developer": {
+      "neighbour": "buildwithclaude/drupal-developer",
+      "functional_similarity": 0.663
+    },
+    "buildwithclaude/drupal-developer": {
+      "neighbour": "buildwithclaude/wordpress-developer",
+      "functional_similarity": 0.834
+    },
+    "buildwithclaude/frontend-developer": {
+      "neighbour": "lst97/nextjs-pro",
+      "functional_similarity": 0.819
+    },
+    "buildwithclaude/graphql-architect": {
+      "neighbour": "wshobson/api-scaffolding-graphql-architect",
+      "functional_similarity": 0.85
+    },
+    "buildwithclaude/ios-developer": {
+      "neighbour": "wshobson/ios-developer",
+      "functional_similarity": 0.916
+    },
+    "buildwithclaude/laravel-vue-developer": {
+      "neighbour": "0xfurai/laravel-expert",
+      "functional_similarity": 0.693
+    },
+    "buildwithclaude/legacy-modernizer": {
+      "neighbour": "wshobson/code-refactoring-legacy-modernizer",
+      "functional_similarity": 0.944
+    },
+    "buildwithclaude/mobile-developer": {
+      "neighbour": "wshobson/frontend-mobile-development-mobile-developer",
+      "functional_similarity": 0.866
+    },
+    "buildwithclaude/nextjs-app-router-developer": {
+      "neighbour": "voltagent/nextjs-developer",
+      "functional_similarity": 0.834
+    },
+    "buildwithclaude/react-performance-optimization": {
+      "neighbour": "0xfurai/react-expert",
+      "functional_similarity": 0.705
+    },
+    "buildwithclaude/wordpress-developer": {
+      "neighbour": "buildwithclaude/drupal-developer",
+      "functional_similarity": 0.834
+    },
+    "buildwithclaude/api-documenter": {
+      "neighbour": "wshobson/api-testing-observability-api-documenter",
+      "functional_similarity": 0.872
+    },
+    "buildwithclaude/docusaurus-expert": {
+      "neighbour": "voltagent/documentation-engineer",
+      "functional_similarity": 0.574
+    },
+    "buildwithclaude/markdown-syntax-formatter": {
+      "neighbour": "buildwithclaude/visual-analysis-ocr",
+      "functional_similarity": 0.619
+    },
+    "buildwithclaude/cloud-architect": {
+      "neighbour": "lst97/cloud-architect",
+      "functional_similarity": 0.842
+    },
+    "buildwithclaude/database-admin": {
+      "neighbour": "voltagent/database-administrator",
+      "functional_similarity": 0.781
+    },
+    "buildwithclaude/database-optimization": {
+      "neighbour": "wshobson/database-cloud-optimization-database-optimizer",
+      "functional_similarity": 0.832
+    },
+    "buildwithclaude/database-optimizer": {
+      "neighbour": "voltagent/database-optimizer",
+      "functional_similarity": 0.839
+    },
+    "buildwithclaude/deployment-engineer": {
+      "neighbour": "lst97/deployment-engineer",
+      "functional_similarity": 0.848
+    },
+    "buildwithclaude/devops-troubleshooter": {
+      "neighbour": "wshobson/cicd-automation-devops-troubleshooter",
+      "functional_similarity": 0.806
+    },
+    "buildwithclaude/network-engineer": {
+      "neighbour": "voltagent-codex/network-engineer",
+      "functional_similarity": 0.759
+    },
+    "buildwithclaude/terraform-specialist": {
+      "neighbour": "0xfurai/terraform-expert",
+      "functional_similarity": 0.842
+    },
+    "buildwithclaude/c-developer": {
+      "neighbour": "0xfurai/c-expert",
+      "functional_similarity": 0.789
+    },
+    "buildwithclaude/cpp-engineer": {
+      "neighbour": "wshobson/cpp-pro",
+      "functional_similarity": 0.861
+    },
+    "buildwithclaude/golang-expert": {
+      "neighbour": "lst97/golang-pro",
+      "functional_similarity": 0.853
+    },
+    "buildwithclaude/java-developer": {
+      "neighbour": "wshobson/java-pro",
+      "functional_similarity": 0.82
+    },
+    "buildwithclaude/javascript-developer": {
+      "neighbour": "wshobson/javascript-pro",
+      "functional_similarity": 0.862
+    },
+    "buildwithclaude/php-developer": {
+      "neighbour": "wshobson/php-pro",
+      "functional_similarity": 0.754
+    },
+    "buildwithclaude/python-expert": {
+      "neighbour": "lst97/python-pro",
+      "functional_similarity": 0.858
+    },
+    "buildwithclaude/rails-expert": {
+      "neighbour": "0xfurai/rails-expert",
+      "functional_similarity": 0.849
+    },
+    "buildwithclaude/ruby-expert": {
+      "neighbour": "wshobson/ruby-pro",
+      "functional_similarity": 0.885
+    },
+    "buildwithclaude/rust-expert": {
+      "neighbour": "0xfurai/rust-expert",
+      "functional_similarity": 0.852
+    },
+    "buildwithclaude/sql-expert": {
+      "neighbour": "0xfurai/sql-expert",
+      "functional_similarity": 0.778
+    },
+    "buildwithclaude/typescript-expert": {
+      "neighbour": "voltagent/typescript-pro",
+      "functional_similarity": 0.842
+    },
+    "buildwithclaude/audio-quality-controller": {
+      "neighbour": "buildwithclaude/timestamp-precision-specialist",
+      "functional_similarity": 0.67
+    },
+    "buildwithclaude/episode-orchestrator": {
+      "neighbour": "buildwithclaude/project-supervisor-orchestrator",
+      "functional_similarity": 0.739
+    },
+    "buildwithclaude/ocr-grammar-fixer": {
+      "neighbour": "buildwithclaude/ocr-quality-assurance",
+      "functional_similarity": 0.725
+    },
+    "buildwithclaude/ocr-quality-assurance": {
+      "neighbour": "buildwithclaude/ocr-grammar-fixer",
+      "functional_similarity": 0.725
+    },
+    "buildwithclaude/podcast-content-analyzer": {
+      "neighbour": "buildwithclaude/podcast-metadata-specialist",
+      "functional_similarity": 0.705
+    },
+    "buildwithclaude/podcast-metadata-specialist": {
+      "neighbour": "buildwithclaude/seo-podcast-optimizer",
+      "functional_similarity": 0.731
+    },
+    "buildwithclaude/podcast-transcriber": {
+      "neighbour": "buildwithclaude/timestamp-precision-specialist",
+      "functional_similarity": 0.731
+    },
+    "buildwithclaude/podcast-trend-scout": {
+      "neighbour": "buildwithclaude/seo-podcast-optimizer",
+      "functional_similarity": 0.676
+    },
+    "buildwithclaude/seo-podcast-optimizer": {
+      "neighbour": "buildwithclaude/podcast-metadata-specialist",
+      "functional_similarity": 0.731
+    },
+    "buildwithclaude/timestamp-precision-specialist": {
+      "neighbour": "buildwithclaude/podcast-transcriber",
+      "functional_similarity": 0.731
+    },
+    "buildwithclaude/visual-analysis-ocr": {
+      "neighbour": "buildwithclaude/text-comparison-validator",
+      "functional_similarity": 0.706
+    },
+    "buildwithclaude/echo": {
+      "neighbour": "buildwithclaude/lyra",
+      "functional_similarity": 0.628
+    },
+    "buildwithclaude/hypatia": {
+      "neighbour": "buildwithclaude/lyra",
+      "functional_similarity": 0.564
+    },
+    "buildwithclaude/iris": {
+      "neighbour": "voltagent/ui-designer",
+      "functional_similarity": 0.723
+    },
+    "buildwithclaude/lyra": {
+      "neighbour": "buildwithclaude/iris",
+      "functional_similarity": 0.663
+    },
+    "buildwithclaude/newton": {
+      "neighbour": "buildwithclaude/gsd-research-synthesizer",
+      "functional_similarity": 0.557
+    },
+    "buildwithclaude/api-security-audit": {
+      "neighbour": "buildwithclaude/security-auditor",
+      "functional_similarity": 0.687
+    },
+    "buildwithclaude/architect-review": {
+      "neighbour": "lst97/architect-reviewer",
+      "functional_similarity": 0.805
+    },
+    "buildwithclaude/code-reviewer": {
+      "neighbour": "voltagent/code-reviewer",
+      "functional_similarity": 0.731
+    },
+    "buildwithclaude/command-expert": {
+      "neighbour": "voltagent-codex/cli-developer",
+      "functional_similarity": 0.737
+    },
+    "buildwithclaude/debugger": {
+      "neighbour": "lst97/debugger",
+      "functional_similarity": 0.871
+    },
+    "buildwithclaude/dx-optimizer": {
+      "neighbour": "wshobson/debugging-toolkit-dx-optimizer",
+      "functional_similarity": 0.931
+    },
+    "buildwithclaude/error-detective": {
+      "neighbour": "wshobson/distributed-debugging-error-detective",
+      "functional_similarity": 0.878
+    },
+    "buildwithclaude/incident-responder": {
+      "neighbour": "lst97/incident-responder",
+      "functional_similarity": 0.742
+    },
+    "buildwithclaude/mcp-security-auditor": {
+      "neighbour": "wshobson/comprehensive-review-security-auditor",
+      "functional_similarity": 0.724
+    },
+    "buildwithclaude/mcp-server-architect": {
+      "neighbour": "buildwithclaude/mcp-expert",
+      "functional_similarity": 0.835
+    },
+    "buildwithclaude/mcp-testing-engineer": {
+      "neighbour": "buildwithclaude/mcp-server-architect",
+      "functional_similarity": 0.752
+    },
+    "buildwithclaude/performance-engineer": {
+      "neighbour": "voltagent/performance-engineer",
+      "functional_similarity": 0.815
+    },
+    "buildwithclaude/review-agent": {
+      "neighbour": "voltagent/compliance-auditor",
+      "functional_similarity": 0.623
+    },
+    "buildwithclaude/security-auditor": {
+      "neighbour": "wshobson/backend-development-security-auditor",
+      "functional_similarity": 0.812
+    },
+    "buildwithclaude/test-automator": {
+      "neighbour": "wshobson/backend-development-test-automator",
+      "functional_similarity": 0.803
+    },
+    "buildwithclaude/academic-research-synthesizer": {
+      "neighbour": "buildwithclaude/academic-researcher",
+      "functional_similarity": 0.651
+    },
+    "buildwithclaude/academic-researcher": {
+      "neighbour": "voltagent/research-analyst",
+      "functional_similarity": 0.687
+    },
+    "buildwithclaude/comprehensive-researcher": {
+      "neighbour": "buildwithclaude/research-synthesizer",
+      "functional_similarity": 0.65
+    },
+    "buildwithclaude/market-research-analyst": {
+      "neighbour": "voltagent/market-researcher",
+      "functional_similarity": 0.75
+    },
+    "buildwithclaude/research-brief-generator": {
+      "neighbour": "buildwithclaude/query-clarifier",
+      "functional_similarity": 0.652
+    },
+    "buildwithclaude/research-coordinator": {
+      "neighbour": "buildwithclaude/research-orchestrator",
+      "functional_similarity": 0.655
+    },
+    "buildwithclaude/research-orchestrator": {
+      "neighbour": "buildwithclaude/project-supervisor-orchestrator",
+      "functional_similarity": 0.678
+    },
+    "buildwithclaude/research-synthesizer": {
+      "neighbour": "voltagent/research-analyst",
+      "functional_similarity": 0.726
+    },
+    "buildwithclaude/technical-researcher": {
+      "neighbour": "voltagent/code-reviewer",
+      "functional_similarity": 0.697
+    },
+    "buildwithclaude/content-marketer": {
+      "neighbour": "wshobson/seo-content-writer",
+      "functional_similarity": 0.769
+    },
+    "buildwithclaude/customer-support": {
+      "neighbour": "contains-studio/support-responder",
+      "functional_similarity": 0.703
+    },
+    "buildwithclaude/risk-manager": {
+      "neighbour": "wshobson/risk-manager",
+      "functional_similarity": 0.791
+    },
+    "buildwithclaude/sales-automator": {
+      "neighbour": "wshobson/sales-automator",
+      "functional_similarity": 0.904
+    },
+    "buildwithclaude/social-media-clip-creator": {
+      "neighbour": "wshobson/social-publishing-publisher",
+      "functional_similarity": 0.53
+    },
+    "buildwithclaude/social-media-copywriter": {
+      "neighbour": "buildwithclaude/podcast-metadata-specialist",
+      "functional_similarity": 0.718
+    },
+    "buildwithclaude/twitter-ai-influencer-manager": {
+      "neighbour": "contains-studio/ai-engineer",
+      "functional_similarity": 0.597
+    },
+    "buildwithclaude/connection-agent": {
+      "neighbour": "buildwithclaude/tag-agent",
+      "functional_similarity": 0.513
+    },
+    "buildwithclaude/game-developer": {
+      "neighbour": "voltagent/game-developer",
+      "functional_similarity": 0.746
+    },
+    "buildwithclaude/metadata-agent": {
+      "neighbour": "buildwithclaude/review-agent",
+      "functional_similarity": 0.622
+    },
+    "buildwithclaude/moc-agent": {
+      "neighbour": "buildwithclaude/metadata-agent",
+      "functional_similarity": 0.617
+    },
+    "buildwithclaude/query-clarifier": {
+      "neighbour": "buildwithclaude/research-brief-generator",
+      "functional_similarity": 0.652
+    },
+    "buildwithclaude/report-generator": {
+      "neighbour": "buildwithclaude/research-synthesizer",
+      "functional_similarity": 0.663
+    },
+    "buildwithclaude/tag-agent": {
+      "neighbour": "buildwithclaude/metadata-agent",
+      "functional_similarity": 0.569
+    },
+    "buildwithclaude/text-comparison-validator": {
+      "neighbour": "buildwithclaude/visual-analysis-ocr",
+      "functional_similarity": 0.706
+    },
+    "buildwithclaude/url-context-validator": {
+      "neighbour": "wshobson/seo-content-auditor",
+      "functional_similarity": 0.604
+    },
+    "buildwithclaude/url-link-extractor": {
+      "neighbour": "buildwithclaude/url-context-validator",
+      "functional_similarity": 0.569
+    },
+    "buildwithclaude/builder": {
+      "neighbour": "buildwithclaude/verifier",
+      "functional_similarity": 0.815
+    },
+    "buildwithclaude/committer": {
+      "neighbour": "buildwithclaude/builder",
+      "functional_similarity": 0.72
+    },
+    "buildwithclaude/planner": {
+      "neighbour": "buildwithclaude/specifier",
+      "functional_similarity": 0.836
+    },
+    "buildwithclaude/scheduler": {
+      "neighbour": "buildwithclaude/planner",
+      "functional_similarity": 0.733
+    },
+    "buildwithclaude/specifier": {
+      "neighbour": "buildwithclaude/planner",
+      "functional_similarity": 0.836
+    },
+    "buildwithclaude/verifier": {
+      "neighbour": "buildwithclaude/builder",
+      "functional_similarity": 0.815
+    },
+    "buildwithclaude/architect": {
+      "neighbour": "voltagent/architect-reviewer",
+      "functional_similarity": 0.615
+    },
+    "buildwithclaude/code-reviewer~2": {
+      "neighbour": "voltagent/code-reviewer",
+      "functional_similarity": 0.712
+    },
+    "buildwithclaude/bot-deploy-verifier": {
+      "neighbour": "buildwithclaude/daemon-agent",
+      "functional_similarity": 0.551
+    },
+    "buildwithclaude/claim-auditor": {
+      "neighbour": "voltagent/performance-monitor",
+      "functional_similarity": 0.58
+    },
+    "buildwithclaude/remote-agent-dispatcher": {
+      "neighbour": "buildwithclaude/planner",
+      "functional_similarity": 0.486
+    },
+    "buildwithclaude/comms-scanner": {
+      "neighbour": "buildwithclaude/monitor-agent",
+      "functional_similarity": 0.565
+    },
+    "buildwithclaude/daemon-agent": {
+      "neighbour": "buildwithclaude/infra-monitor",
+      "functional_similarity": 0.569
+    },
+    "buildwithclaude/doctor-agent": {
+      "neighbour": "buildwithclaude/triage-agent",
+      "functional_similarity": 0.56
+    },
+    "buildwithclaude/infra-monitor": {
+      "neighbour": "buildwithclaude/monitor-agent",
+      "functional_similarity": 0.698
+    },
+    "buildwithclaude/marketing-optimizer": {
+      "neighbour": "buildwithclaude/yolo-cfo",
+      "functional_similarity": 0.522
+    },
+    "buildwithclaude/memory-extractor": {
+      "neighbour": "buildwithclaude/daemon-agent",
+      "functional_similarity": 0.562
+    },
+    "buildwithclaude/monitor-agent": {
+      "neighbour": "buildwithclaude/infra-monitor",
+      "functional_similarity": 0.698
+    },
+    "buildwithclaude/project-scanner": {
+      "neighbour": "buildwithclaude/committer",
+      "functional_similarity": 0.608
+    },
+    "buildwithclaude/revenue-tracker": {
+      "neighbour": "buildwithclaude/yolo-cfo",
+      "functional_similarity": 0.686
+    },
+    "buildwithclaude/triage-agent": {
+      "neighbour": "buildwithclaude/gsd-debugger",
+      "functional_similarity": 0.633
+    },
+    "buildwithclaude/yolo-ceo": {
+      "neighbour": "buildwithclaude/yolo-coo",
+      "functional_similarity": 0.649
+    },
+    "buildwithclaude/yolo-cfo": {
+      "neighbour": "buildwithclaude/revenue-tracker",
+      "functional_similarity": 0.686
+    },
+    "buildwithclaude/yolo-coo": {
+      "neighbour": "buildwithclaude/yolo-cto",
+      "functional_similarity": 0.728
+    },
+    "buildwithclaude/yolo-cto": {
+      "neighbour": "buildwithclaude/yolo-coo",
+      "functional_similarity": 0.728
+    },
+    "buildwithclaude/gsd-advisor-researcher": {
+      "neighbour": "buildwithclaude/gsd-assumptions-analyzer",
+      "functional_similarity": 0.58
+    },
+    "buildwithclaude/gsd-ai-researcher": {
+      "neighbour": "buildwithclaude/gsd-eval-planner",
+      "functional_similarity": 0.689
+    },
+    "buildwithclaude/gsd-assumptions-analyzer": {
+      "neighbour": "buildwithclaude/gsd-codebase-mapper",
+      "functional_similarity": 0.63
+    },
+    "buildwithclaude/gsd-code-fixer": {
+      "neighbour": "buildwithclaude/gsd-code-reviewer",
+      "functional_similarity": 0.801
+    },
+    "buildwithclaude/gsd-code-reviewer": {
+      "neighbour": "buildwithclaude/gsd-code-fixer",
+      "functional_similarity": 0.801
+    },
+    "buildwithclaude/gsd-codebase-mapper": {
+      "neighbour": "buildwithclaude/gsd-pattern-mapper",
+      "functional_similarity": 0.762
+    },
+    "buildwithclaude/gsd-debug-session-manager": {
+      "neighbour": "buildwithclaude/gsd-debugger",
+      "functional_similarity": 0.78
+    },
+    "buildwithclaude/gsd-debugger": {
+      "neighbour": "buildwithclaude/gsd-debug-session-manager",
+      "functional_similarity": 0.78
+    },
+    "buildwithclaude/gsd-doc-classifier": {
+      "neighbour": "buildwithclaude/gsd-doc-synthesizer",
+      "functional_similarity": 0.77
+    },
+    "buildwithclaude/gsd-doc-synthesizer": {
+      "neighbour": "buildwithclaude/gsd-doc-classifier",
+      "functional_similarity": 0.77
+    },
+    "buildwithclaude/gsd-doc-verifier": {
+      "neighbour": "buildwithclaude/gsd-doc-writer",
+      "functional_similarity": 0.616
+    },
+    "buildwithclaude/gsd-doc-writer": {
+      "neighbour": "buildwithclaude/gsd-doc-verifier",
+      "functional_similarity": 0.616
+    },
+    "buildwithclaude/gsd-domain-researcher": {
+      "neighbour": "buildwithclaude/gsd-eval-planner",
+      "functional_similarity": 0.767
+    },
+    "buildwithclaude/gsd-eval-auditor": {
+      "neighbour": "buildwithclaude/gsd-eval-planner",
+      "functional_similarity": 0.817
+    },
+    "buildwithclaude/gsd-eval-planner": {
+      "neighbour": "buildwithclaude/gsd-eval-auditor",
+      "functional_similarity": 0.817
+    },
+    "buildwithclaude/gsd-executor": {
+      "neighbour": "buildwithclaude/gsd-planner",
+      "functional_similarity": 0.798
+    },
+    "buildwithclaude/gsd-framework-selector": {
+      "neighbour": "buildwithclaude/gsd-ai-researcher",
+      "functional_similarity": 0.683
+    },
+    "buildwithclaude/gsd-integration-checker": {
+      "neighbour": "buildwithclaude/gsd-verifier",
+      "functional_similarity": 0.621
+    },
+    "buildwithclaude/gsd-intel-updater": {
+      "neighbour": "buildwithclaude/gsd-codebase-mapper",
+      "functional_similarity": 0.756
+    },
+    "buildwithclaude/gsd-nyquist-auditor": {
+      "neighbour": "buildwithclaude/gsd-plan-checker",
+      "functional_similarity": 0.604
+    },
+    "buildwithclaude/gsd-pattern-mapper": {
+      "neighbour": "buildwithclaude/gsd-codebase-mapper",
+      "functional_similarity": 0.762
+    },
+    "buildwithclaude/gsd-phase-researcher": {
+      "neighbour": "buildwithclaude/gsd-plan-checker",
+      "functional_similarity": 0.82
+    },
+    "buildwithclaude/gsd-plan-checker": {
+      "neighbour": "buildwithclaude/gsd-planner",
+      "functional_similarity": 0.874
+    },
+    "buildwithclaude/gsd-planner": {
+      "neighbour": "buildwithclaude/gsd-plan-checker",
+      "functional_similarity": 0.874
+    },
+    "buildwithclaude/gsd-project-researcher": {
+      "neighbour": "buildwithclaude/gsd-phase-researcher",
+      "functional_similarity": 0.746
+    },
+    "buildwithclaude/gsd-research-synthesizer": {
+      "neighbour": "buildwithclaude/gsd-phase-researcher",
+      "functional_similarity": 0.65
+    },
+    "buildwithclaude/gsd-roadmapper": {
+      "neighbour": "buildwithclaude/gsd-planner",
+      "functional_similarity": 0.782
+    },
+    "buildwithclaude/gsd-security-auditor": {
+      "neighbour": "buildwithclaude/gsd-phase-researcher",
+      "functional_similarity": 0.601
+    },
+    "buildwithclaude/gsd-ui-auditor": {
+      "neighbour": "buildwithclaude/gsd-ui-checker",
+      "functional_similarity": 0.705
+    },
+    "buildwithclaude/gsd-ui-checker": {
+      "neighbour": "buildwithclaude/gsd-ui-researcher",
+      "functional_similarity": 0.835
+    },
+    "buildwithclaude/gsd-ui-researcher": {
+      "neighbour": "buildwithclaude/gsd-ui-checker",
+      "functional_similarity": 0.835
+    },
+    "buildwithclaude/gsd-user-profiler": {
+      "neighbour": "buildwithclaude/gsd-eval-planner",
+      "functional_similarity": 0.56
+    },
+    "buildwithclaude/gsd-verifier": {
+      "neighbour": "buildwithclaude/gsd-plan-checker",
+      "functional_similarity": 0.753
+    },
+    "buildwithclaude/kegg-bioinformatics": {
+      "neighbour": "voltagent/scientific-literature-researcher",
+      "functional_similarity": 0.496
+    },
+    "buildwithclaude/implementer": {
+      "neighbour": "buildwithclaude/planner~2",
+      "functional_similarity": 0.575
+    },
+    "buildwithclaude/planner~2": {
+      "neighbour": "buildwithclaude/planner",
+      "functional_similarity": 0.595
+    },
+    "buildwithclaude/reviewer": {
+      "neighbour": "vijaythecoder/code-reviewer",
+      "functional_similarity": 0.608
+    },
+    "buildwithclaude/gallery-researcher": {
+      "neighbour": "wshobson/gallery-researcher",
+      "functional_similarity": 0.841
+    },
+    "buildwithclaude/image-generator": {
+      "neighbour": "wshobson/image-generator",
+      "functional_similarity": 0.673
+    },
+    "buildwithclaude/prompt-crafter": {
+      "neighbour": "wshobson/prompt-crafter",
+      "functional_similarity": 0.793
+    },
+    "buildwithclaude/business-boss": {
+      "neighbour": "buildwithclaude/product-boss",
+      "functional_similarity": 0.75
+    },
+    "buildwithclaude/business-cynic": {
+      "neighbour": "buildwithclaude/product-cynic",
+      "functional_similarity": 0.762
+    },
+    "buildwithclaude/business-pusher": {
+      "neighbour": "buildwithclaude/product-pusher",
+      "functional_similarity": 0.672
+    },
+    "buildwithclaude/business-rookie": {
+      "neighbour": "buildwithclaude/design-rookie",
+      "functional_similarity": 0.753
+    },
+    "buildwithclaude/business-watcher": {
+      "neighbour": "buildwithclaude/business-boss",
+      "functional_similarity": 0.534
+    },
+    "buildwithclaude/design-boss": {
+      "neighbour": "buildwithclaude/dev-boss",
+      "functional_similarity": 0.734
+    },
+    "buildwithclaude/design-cynic": {
+      "neighbour": "buildwithclaude/dev-cynic",
+      "functional_similarity": 0.742
+    },
+    "buildwithclaude/design-pusher": {
+      "neighbour": "buildwithclaude/design-boss",
+      "functional_similarity": 0.661
+    },
+    "buildwithclaude/design-rookie": {
+      "neighbour": "buildwithclaude/dev-rookie",
+      "functional_similarity": 0.767
+    },
+    "buildwithclaude/design-watcher": {
+      "neighbour": "buildwithclaude/design-boss",
+      "functional_similarity": 0.675
+    },
+    "buildwithclaude/dev-boss": {
+      "neighbour": "buildwithclaude/design-boss",
+      "functional_similarity": 0.734
+    },
+    "buildwithclaude/dev-cynic": {
+      "neighbour": "buildwithclaude/design-cynic",
+      "functional_similarity": 0.742
+    },
+    "buildwithclaude/dev-pusher": {
+      "neighbour": "buildwithclaude/dev-watcher",
+      "functional_similarity": 0.649
+    },
+    "buildwithclaude/dev-rookie": {
+      "neighbour": "buildwithclaude/design-rookie",
+      "functional_similarity": 0.767
+    },
+    "buildwithclaude/dev-watcher": {
+      "neighbour": "buildwithclaude/dev-pusher",
+      "functional_similarity": 0.649
+    },
+    "buildwithclaude/life-boss": {
+      "neighbour": "buildwithclaude/design-boss",
+      "functional_similarity": 0.687
+    },
+    "buildwithclaude/life-cynic": {
+      "neighbour": "buildwithclaude/dev-cynic",
+      "functional_similarity": 0.687
+    },
+    "buildwithclaude/life-pusher": {
+      "neighbour": "buildwithclaude/business-pusher",
+      "functional_similarity": 0.666
+    },
+    "buildwithclaude/life-rookie": {
+      "neighbour": "buildwithclaude/dev-rookie",
+      "functional_similarity": 0.663
+    },
+    "buildwithclaude/life-watcher": {
+      "neighbour": "buildwithclaude/life-boss",
+      "functional_similarity": 0.655
+    },
+    "buildwithclaude/product-boss": {
+      "neighbour": "buildwithclaude/business-boss",
+      "functional_similarity": 0.75
+    },
+    "buildwithclaude/product-cynic": {
+      "neighbour": "buildwithclaude/business-cynic",
+      "functional_similarity": 0.762
+    },
+    "buildwithclaude/product-pusher": {
+      "neighbour": "buildwithclaude/business-pusher",
+      "functional_similarity": 0.672
+    },
+    "buildwithclaude/product-rookie": {
+      "neighbour": "buildwithclaude/design-rookie",
+      "functional_similarity": 0.716
+    },
+    "buildwithclaude/product-watcher": {
+      "neighbour": "buildwithclaude/product-boss",
+      "functional_similarity": 0.616
+    },
+    "buildwithclaude/haiku-reviewer": {
+      "neighbour": "buildwithclaude/sonnet-reviewer",
+      "functional_similarity": 0.843
+    },
+    "buildwithclaude/opus-reviewer": {
+      "neighbour": "buildwithclaude/sonnet-reviewer",
+      "functional_similarity": 0.859
+    },
+    "buildwithclaude/sonnet-reviewer": {
+      "neighbour": "buildwithclaude/opus-reviewer",
+      "functional_similarity": 0.859
+    },
+    "buildwithclaude/shipwright": {
+      "neighbour": "voltagent/deployment-engineer",
+      "functional_similarity": 0.643
+    },
+    "buildwithclaude/hypotheses-manager": {
+      "neighbour": "buildwithclaude/interview-analyst",
+      "functional_similarity": 0.831
+    },
+    "buildwithclaude/interview-analyst": {
+      "neighbour": "buildwithclaude/hypotheses-manager",
+      "functional_similarity": 0.831
+    },
+    "buildwithclaude/lean-startup-advisor": {
+      "neighbour": "buildwithclaude/hypotheses-manager",
+      "functional_similarity": 0.736
+    },
+    "buildwithclaude/web-researcher": {
+      "neighbour": "wshobson/search-specialist",
+      "functional_similarity": 0.609
+    },
+    "0xfurai/actix-expert": {
+      "neighbour": "voltagent-codex/rust-engineer",
+      "functional_similarity": 0.571
+    },
+    "0xfurai/android-expert": {
+      "neighbour": "voltagent/mobile-app-developer",
+      "functional_similarity": 0.747
+    },
+    "0xfurai/angular-expert": {
+      "neighbour": "0xfurai/angularjs-expert",
+      "functional_similarity": 0.802
+    },
+    "0xfurai/angularjs-expert": {
+      "neighbour": "0xfurai/angular-expert",
+      "functional_similarity": 0.802
+    },
+    "0xfurai/ansible-expert": {
+      "neighbour": "buildwithclaude/deployment-engineer",
+      "functional_similarity": 0.579
+    },
+    "0xfurai/aspnet-core-expert": {
+      "neighbour": "voltagent-codex/dotnet-core-expert",
+      "functional_similarity": 0.769
+    },
+    "0xfurai/astro-expert": {
+      "neighbour": "buildwithclaude/drupal-developer",
+      "functional_similarity": 0.499
+    },
+    "0xfurai/auth0-expert": {
+      "neighbour": "0xfurai/oauth-oidc-expert",
+      "functional_similarity": 0.709
+    },
+    "0xfurai/ava-expert": {
+      "neighbour": "voltagent/test-automator",
+      "functional_similarity": 0.55
+    },
+    "0xfurai/bash-expert": {
+      "neighbour": "wshobson/bash-pro",
+      "functional_similarity": 0.944
+    },
+    "0xfurai/braintree-expert": {
+      "neighbour": "voltagent/payment-integration",
+      "functional_similarity": 0.701
+    },
+    "0xfurai/bullmq-expert": {
+      "neighbour": "0xfurai/celery-expert",
+      "functional_similarity": 0.588
+    },
+    "0xfurai/bun-expert": {
+      "neighbour": "voltagent/javascript-pro",
+      "functional_similarity": 0.644
+    },
+    "0xfurai/c-expert": {
+      "neighbour": "buildwithclaude/c-developer",
+      "functional_similarity": 0.789
+    },
+    "0xfurai/cassandra-expert": {
+      "neighbour": "wshobson/database-cloud-optimization-database-optimizer",
+      "functional_similarity": 0.653
+    },
+    "0xfurai/celery-expert": {
+      "neighbour": "wshobson/temporal-python-pro",
+      "functional_similarity": 0.592
+    },
+    "0xfurai/circleci-expert": {
+      "neighbour": "voltagent/deployment-engineer",
+      "functional_similarity": 0.615
+    },
+    "0xfurai/clojure-expert": {
+      "neighbour": "0xfurai/elixir-expert",
+      "functional_similarity": 0.558
+    },
+    "0xfurai/cockroachdb-expert": {
+      "neighbour": "voltagent/database-administrator",
+      "functional_similarity": 0.624
+    },
+    "0xfurai/cpp-expert": {
+      "neighbour": "buildwithclaude/cpp-engineer",
+      "functional_similarity": 0.781
+    },
+    "0xfurai/csharp-expert": {
+      "neighbour": "wshobson/csharp-pro",
+      "functional_similarity": 0.769
+    },
+    "0xfurai/css-expert": {
+      "neighbour": "wshobson/ui-designer",
+      "functional_similarity": 0.682
+    },
+    "0xfurai/cypress-expert": {
+      "neighbour": "lst97/test-automator",
+      "functional_similarity": 0.651
+    },
+    "0xfurai/dart-expert": {
+      "neighbour": "wshobson/flutter-expert",
+      "functional_similarity": 0.762
+    },
+    "0xfurai/deno-expert": {
+      "neighbour": "0xfurai/javascript-expert",
+      "functional_similarity": 0.573
+    },
+    "0xfurai/django-expert": {
+      "neighbour": "voltagent/django-developer",
+      "functional_similarity": 0.838
+    },
+    "0xfurai/docker-expert": {
+      "neighbour": "voltagent/docker-expert",
+      "functional_similarity": 0.825
+    },
+    "0xfurai/dynamodb-expert": {
+      "neighbour": "wshobson/database-cloud-optimization-database-optimizer",
+      "functional_similarity": 0.659
+    },
+    "0xfurai/elasticsearch-expert": {
+      "neighbour": "0xfurai/elk-expert",
+      "functional_similarity": 0.79
+    },
+    "0xfurai/electron-expert": {
+      "neighbour": "voltagent/electron-pro",
+      "functional_similarity": 0.839
+    },
+    "0xfurai/elixir-expert": {
+      "neighbour": "voltagent-codex/elixir-expert",
+      "functional_similarity": 0.786
+    },
+    "0xfurai/elk-expert": {
+      "neighbour": "0xfurai/elasticsearch-expert",
+      "functional_similarity": 0.79
+    },
+    "0xfurai/erlang-expert": {
+      "neighbour": "voltagent-codex/erlang-expert",
+      "functional_similarity": 0.673
+    },
+    "0xfurai/expo-expert": {
+      "neighbour": "voltagent/expo-react-native-expert",
+      "functional_similarity": 0.827
+    },
+    "0xfurai/express-expert": {
+      "neighbour": "0xfurai/nodejs-expert",
+      "functional_similarity": 0.679
+    },
+    "0xfurai/fastapi-expert": {
+      "neighbour": "voltagent-codex/fastapi-developer",
+      "functional_similarity": 0.718
+    },
+    "0xfurai/fastify-expert": {
+      "neighbour": "0xfurai/nodejs-expert",
+      "functional_similarity": 0.669
+    },
+    "0xfurai/fiber-expert": {
+      "neighbour": "voltagent/deployment-engineer",
+      "functional_similarity": 0.263
+    },
+    "0xfurai/flask-expert": {
+      "neighbour": "0xfurai/django-expert",
+      "functional_similarity": 0.625
+    },
+    "0xfurai/flutter-expert": {
+      "neighbour": "wshobson/flutter-expert",
+      "functional_similarity": 0.843
+    },
+    "0xfurai/flyway-expert": {
+      "neighbour": "0xfurai/liquibase-expert",
+      "functional_similarity": 0.677
+    },
+    "0xfurai/gin-expert": {
+      "neighbour": "lst97/golang-pro",
+      "functional_similarity": 0.587
+    },
+    "0xfurai/github-actions-expert": {
+      "neighbour": "buildwithclaude/deployment-engineer",
+      "functional_similarity": 0.695
+    },
+    "0xfurai/gitlab-ci-expert": {
+      "neighbour": "voltagent/deployment-engineer",
+      "functional_similarity": 0.72
+    },
+    "0xfurai/go-expert": {
+      "neighbour": "lst97/golang-pro",
+      "functional_similarity": 0.87
+    },
+    "0xfurai/grafana-expert": {
+      "neighbour": "0xfurai/prometheus-expert",
+      "functional_similarity": 0.674
+    },
+    "0xfurai/graphql-expert": {
+      "neighbour": "wshobson/api-scaffolding-graphql-architect",
+      "functional_similarity": 0.811
+    },
+    "0xfurai/grpc-expert": {
+      "neighbour": "0xfurai/trpc-expert",
+      "functional_similarity": 0.553
+    },
+    "0xfurai/haskell-expert": {
+      "neighbour": "wshobson/haskell-pro",
+      "functional_similarity": 0.764
+    },
+    "0xfurai/html-expert": {
+      "neighbour": "wshobson/seo-structure-architect",
+      "functional_similarity": 0.574
+    },
+    "0xfurai/ios-expert": {
+      "neighbour": "wshobson/ios-developer",
+      "functional_similarity": 0.86
+    },
+    "0xfurai/jasmine-expert": {
+      "neighbour": "0xfurai/jest-expert",
+      "functional_similarity": 0.644
+    },
+    "0xfurai/java-expert": {
+      "neighbour": "buildwithclaude/java-developer",
+      "functional_similarity": 0.736
+    },
+    "0xfurai/javascript-expert": {
+      "neighbour": "voltagent/javascript-pro",
+      "functional_similarity": 0.813
+    },
+    "0xfurai/jenkins-expert": {
+      "neighbour": "voltagent/deployment-engineer",
+      "functional_similarity": 0.683
+    },
+    "0xfurai/jest-expert": {
+      "neighbour": "0xfurai/jasmine-expert",
+      "functional_similarity": 0.644
+    },
+    "0xfurai/jquery-expert": {
+      "neighbour": "0xfurai/javascript-expert",
+      "functional_similarity": 0.62
+    },
+    "0xfurai/jwt-expert": {
+      "neighbour": "wshobson/backend-api-security-backend-security-coder",
+      "functional_similarity": 0.562
+    },
+    "0xfurai/kafka-expert": {
+      "neighbour": "buildwithclaude/data-engineer",
+      "functional_similarity": 0.612
+    },
+    "0xfurai/keycloak-expert": {
+      "neighbour": "voltagent/auth-integration-engineer",
+      "functional_similarity": 0.633
+    },
+    "0xfurai/knex-expert": {
+      "neighbour": "0xfurai/typeorm-expert",
+      "functional_similarity": 0.658
+    },
+    "0xfurai/kotlin-expert": {
+      "neighbour": "voltagent-codex/kotlin-specialist",
+      "functional_similarity": 0.791
+    },
+    "0xfurai/kubernetes-expert": {
+      "neighbour": "voltagent/kubernetes-specialist",
+      "functional_similarity": 0.851
+    },
+    "0xfurai/langchain-expert": {
+      "neighbour": "voltagent/blockchain-developer",
+      "functional_similarity": 0.512
+    },
+    "0xfurai/laravel-expert": {
+      "neighbour": "voltagent/laravel-specialist",
+      "functional_similarity": 0.808
+    },
+    "0xfurai/liquibase-expert": {
+      "neighbour": "0xfurai/flyway-expert",
+      "functional_similarity": 0.677
+    },
+    "0xfurai/loki-expert": {
+      "neighbour": "0xfurai/elk-expert",
+      "functional_similarity": 0.593
+    },
+    "0xfurai/lua-expert": {
+      "neighbour": "vijaythecoder/backend-developer",
+      "functional_similarity": 0.576
+    },
+    "0xfurai/mariadb-expert": {
+      "neighbour": "0xfurai/mysql-expert",
+      "functional_similarity": 0.682
+    },
+    "0xfurai/mocha-expert": {
+      "neighbour": "0xfurai/jasmine-expert",
+      "functional_similarity": 0.625
+    },
+    "0xfurai/mongodb-expert": {
+      "neighbour": "0xfurai/elasticsearch-expert",
+      "functional_similarity": 0.642
+    },
+    "0xfurai/mongoose-expert": {
+      "neighbour": "0xfurai/mongodb-expert",
+      "functional_similarity": 0.635
+    },
+    "0xfurai/mqtt-expert": {
+      "neighbour": "0xfurai/rabbitmq-expert",
+      "functional_similarity": 0.609
+    },
+    "0xfurai/mssql-expert": {
+      "neighbour": "0xfurai/sql-expert",
+      "functional_similarity": 0.69
+    },
+    "0xfurai/mysql-expert": {
+      "neighbour": "wshobson/database-cloud-optimization-database-optimizer",
+      "functional_similarity": 0.7
+    },
+    "0xfurai/nats-expert": {
+      "neighbour": "voltagent/network-engineer",
+      "functional_similarity": 0.615
+    },
+    "0xfurai/neo4j-expert": {
+      "neighbour": "voltagent/graphql-architect",
+      "functional_similarity": 0.638
+    },
+    "0xfurai/nestjs-expert": {
+      "neighbour": "0xfurai/nodejs-expert",
+      "functional_similarity": 0.653
+    },
+    "0xfurai/nextjs-expert": {
+      "neighbour": "voltagent/nextjs-developer",
+      "functional_similarity": 0.844
+    },
+    "0xfurai/nodejs-expert": {
+      "neighbour": "voltagent/node-specialist",
+      "functional_similarity": 0.816
+    },
+    "0xfurai/numpy-expert": {
+      "neighbour": "0xfurai/python-expert",
+      "functional_similarity": 0.522
+    },
+    "0xfurai/oauth-oidc-expert": {
+      "neighbour": "voltagent/auth-integration-engineer",
+      "functional_similarity": 0.745
+    },
+    "0xfurai/ocaml-expert": {
+      "neighbour": "0xfurai/haskell-expert",
+      "functional_similarity": 0.594
+    },
+    "0xfurai/openai-api-expert": {
+      "neighbour": "0xfurai/openapi-expert",
+      "functional_similarity": 0.727
+    },
+    "0xfurai/openapi-expert": {
+      "neighbour": "lst97/api-documenter",
+      "functional_similarity": 0.824
+    },
+    "0xfurai/opensearch-expert": {
+      "neighbour": "0xfurai/elasticsearch-expert",
+      "functional_similarity": 0.692
+    },
+    "0xfurai/opentelemetry-expert": {
+      "neighbour": "wshobson/application-performance-observability-engineer",
+      "functional_similarity": 0.553
+    },
+    "0xfurai/owasp-top10-expert": {
+      "neighbour": "buildwithclaude/security-auditor",
+      "functional_similarity": 0.717
+    },
+    "0xfurai/pandas-expert": {
+      "neighbour": "wshobson/data-scientist",
+      "functional_similarity": 0.584
+    },
+    "0xfurai/perl-expert": {
+      "neighbour": "voltagent-codex/tooling-engineer",
+      "functional_similarity": 0.546
+    },
+    "0xfurai/phoenix-expert": {
+      "neighbour": "voltagent/elixir-expert",
+      "functional_similarity": 0.664
+    },
+    "0xfurai/php-expert": {
+      "neighbour": "voltagent-codex/php-pro",
+      "functional_similarity": 0.736
+    },
+    "0xfurai/playwright-expert": {
+      "neighbour": "0xfurai/selenium-expert",
+      "functional_similarity": 0.712
+    },
+    "0xfurai/postgres-expert": {
+      "neighbour": "voltagent-codex/postgres-pro",
+      "functional_similarity": 0.777
+    },
+    "0xfurai/prisma-expert": {
+      "neighbour": "wshobson/sql-pro",
+      "functional_similarity": 0.604
+    },
+    "0xfurai/prometheus-expert": {
+      "neighbour": "0xfurai/grafana-expert",
+      "functional_similarity": 0.674
+    },
+    "0xfurai/pulumi-expert": {
+      "neighbour": "voltagent/cloud-architect",
+      "functional_similarity": 0.655
+    },
+    "0xfurai/puppeteer-expert": {
+      "neighbour": "0xfurai/selenium-expert",
+      "functional_similarity": 0.633
+    },
+    "0xfurai/python-expert": {
+      "neighbour": "lst97/python-pro",
+      "functional_similarity": 0.85
+    },
+    "0xfurai/pytorch-expert": {
+      "neighbour": "0xfurai/tensorflow-expert",
+      "functional_similarity": 0.734
+    },
+    "0xfurai/rabbitmq-expert": {
+      "neighbour": "0xfurai/mqtt-expert",
+      "functional_similarity": 0.609
+    },
+    "0xfurai/rails-expert": {
+      "neighbour": "buildwithclaude/rails-expert",
+      "functional_similarity": 0.849
+    },
+    "0xfurai/react-expert": {
+      "neighbour": "lst97/react-pro",
+      "functional_similarity": 0.867
+    },
+    "0xfurai/react-native-expert": {
+      "neighbour": "voltagent/mobile-developer",
+      "functional_similarity": 0.789
+    },
+    "0xfurai/redis-expert": {
+      "neighbour": "wshobson/data-engineer",
+      "functional_similarity": 0.59
+    },
+    "0xfurai/remix-expert": {
+      "neighbour": "contains-studio/frontend-developer",
+      "functional_similarity": 0.602
+    },
+    "0xfurai/rest-expert": {
+      "neighbour": "voltagent/api-designer",
+      "functional_similarity": 0.736
+    },
+    "0xfurai/rollup-expert": {
+      "neighbour": "0xfurai/webpack-expert",
+      "functional_similarity": 0.708
+    },
+    "0xfurai/ruby-expert": {
+      "neighbour": "buildwithclaude/ruby-expert",
+      "functional_similarity": 0.858
+    },
+    "0xfurai/rust-expert": {
+      "neighbour": "buildwithclaude/rust-expert",
+      "functional_similarity": 0.852
+    },
+    "0xfurai/scala-expert": {
+      "neighbour": "wshobson/scala-pro",
+      "functional_similarity": 0.751
+    },
+    "0xfurai/scikit-learn-expert": {
+      "neighbour": "voltagent/ml-engineer",
+      "functional_similarity": 0.604
+    },
+    "0xfurai/selenium-expert": {
+      "neighbour": "0xfurai/playwright-expert",
+      "functional_similarity": 0.712
+    },
+    "0xfurai/sequelize-expert": {
+      "neighbour": "wshobson/database-cloud-optimization-database-architect",
+      "functional_similarity": 0.64
+    },
+    "0xfurai/sidekiq-expert": {
+      "neighbour": "wshobson/application-performance-performance-engineer",
+      "functional_similarity": 0.55
+    },
+    "0xfurai/sns-expert": {
+      "neighbour": "voltagent/email-deliverability-engineer",
+      "functional_similarity": 0.513
+    },
+    "0xfurai/solidjs-expert": {
+      "neighbour": "contains-studio/frontend-developer",
+      "functional_similarity": 0.703
+    },
+    "0xfurai/spring-boot-expert": {
+      "neighbour": "voltagent/spring-boot-engineer",
+      "functional_similarity": 0.768
+    },
+    "0xfurai/sql-expert": {
+      "neighbour": "buildwithclaude/sql-expert",
+      "functional_similarity": 0.778
+    },
+    "0xfurai/sqlite-expert": {
+      "neighbour": "buildwithclaude/database-optimizer",
+      "functional_similarity": 0.659
+    },
+    "0xfurai/stripe-expert": {
+      "neighbour": "wshobson/payment-integration",
+      "functional_similarity": 0.743
+    },
+    "0xfurai/svelte-expert": {
+      "neighbour": "0xfurai/vue-expert",
+      "functional_similarity": 0.556
+    },
+    "0xfurai/swift-expert": {
+      "neighbour": "voltagent/swift-expert",
+      "functional_similarity": 0.85
+    },
+    "0xfurai/swiftui-expert": {
+      "neighbour": "voltagent/swift-expert",
+      "functional_similarity": 0.819
+    },
+    "0xfurai/tailwind-expert": {
+      "neighbour": "vijaythecoder/tailwind-frontend-expert",
+      "functional_similarity": 0.667
+    },
+    "0xfurai/tauri-expert": {
+      "neighbour": "voltagent/electron-pro",
+      "functional_similarity": 0.548
+    },
+    "0xfurai/tensorflow-expert": {
+      "neighbour": "0xfurai/pytorch-expert",
+      "functional_similarity": 0.734
+    },
+    "0xfurai/terraform-expert": {
+      "neighbour": "buildwithclaude/terraform-specialist",
+      "functional_similarity": 0.842
+    },
+    "0xfurai/testcafe-expert": {
+      "neighbour": "voltagent/ui-ux-tester",
+      "functional_similarity": 0.667
+    },
+    "0xfurai/trpc-expert": {
+      "neighbour": "voltagent/backend-developer",
+      "functional_similarity": 0.643
+    },
+    "0xfurai/typeorm-expert": {
+      "neighbour": "0xfurai/knex-expert",
+      "functional_similarity": 0.658
+    },
+    "0xfurai/typescript-expert": {
+      "neighbour": "lst97/typescript-pro",
+      "functional_similarity": 0.837
+    },
+    "0xfurai/vector-db-expert": {
+      "neighbour": "wshobson/vector-database-engineer",
+      "functional_similarity": 0.683
+    },
+    "0xfurai/vitest-expert": {
+      "neighbour": "wshobson/incident-response-test-automator",
+      "functional_similarity": 0.664
+    },
+    "0xfurai/vue-expert": {
+      "neighbour": "voltagent-codex/vue-expert",
+      "functional_similarity": 0.829
+    },
+    "0xfurai/webpack-expert": {
+      "neighbour": "0xfurai/rollup-expert",
+      "functional_similarity": 0.708
+    },
+    "0xfurai/websocket-expert": {
+      "neighbour": "voltagent-codex/websocket-engineer",
+      "functional_similarity": 0.77
+    },
+    "contains-studio/joker": {
+      "neighbour": "buildwithclaude/dev-cynic",
+      "functional_similarity": 0.554
+    },
+    "contains-studio/studio-coach": {
+      "neighbour": "contains-studio/studio-producer",
+      "functional_similarity": 0.686
+    },
+    "contains-studio/brand-guardian": {
+      "neighbour": "contains-studio/ui-designer",
+      "functional_similarity": 0.723
+    },
+    "contains-studio/ui-designer": {
+      "neighbour": "voltagent/ui-designer",
+      "functional_similarity": 0.818
+    },
+    "contains-studio/ux-researcher": {
+      "neighbour": "voltagent/ux-researcher",
+      "functional_similarity": 0.862
+    },
+    "contains-studio/visual-storyteller": {
+      "neighbour": "contains-studio/ui-designer",
+      "functional_similarity": 0.741
+    },
+    "contains-studio/whimsy-injector": {
+      "neighbour": "contains-studio/ui-designer",
+      "functional_similarity": 0.629
+    },
+    "contains-studio/ai-engineer": {
+      "neighbour": "voltagent/ai-engineer",
+      "functional_similarity": 0.813
+    },
+    "contains-studio/backend-architect": {
+      "neighbour": "voltagent/backend-developer",
+      "functional_similarity": 0.776
+    },
+    "contains-studio/devops-automator": {
+      "neighbour": "lst97/deployment-engineer",
+      "functional_similarity": 0.822
+    },
+    "contains-studio/frontend-developer": {
+      "neighbour": "wshobson/application-performance-frontend-developer",
+      "functional_similarity": 0.812
+    },
+    "contains-studio/mobile-app-builder": {
+      "neighbour": "voltagent/mobile-app-developer",
+      "functional_similarity": 0.821
+    },
+    "contains-studio/rapid-prototyper": {
+      "neighbour": "contains-studio/ui-designer",
+      "functional_similarity": 0.705
+    },
+    "contains-studio/test-writer-fixer": {
+      "neighbour": "wshobson/incident-response-test-automator",
+      "functional_similarity": 0.653
+    },
+    "contains-studio/app-store-optimizer": {
+      "neighbour": "contains-studio/support-responder",
+      "functional_similarity": 0.678
+    },
+    "contains-studio/tiktok-strategist": {
+      "neighbour": "contains-studio/trend-researcher",
+      "functional_similarity": 0.719
+    },
+    "contains-studio/feedback-synthesizer": {
+      "neighbour": "contains-studio/ux-researcher",
+      "functional_similarity": 0.79
+    },
+    "contains-studio/sprint-prioritizer": {
+      "neighbour": "voltagent/product-manager",
+      "functional_similarity": 0.738
+    },
+    "contains-studio/trend-researcher": {
+      "neighbour": "contains-studio/tiktok-strategist",
+      "functional_similarity": 0.719
+    },
+    "contains-studio/experiment-tracker": {
+      "neighbour": "contains-studio/test-results-analyzer",
+      "functional_similarity": 0.65
+    },
+    "contains-studio/project-shipper": {
+      "neighbour": "contains-studio/sprint-prioritizer",
+      "functional_similarity": 0.716
+    },
+    "contains-studio/studio-producer": {
+      "neighbour": "contains-studio/sprint-prioritizer",
+      "functional_similarity": 0.696
+    },
+    "contains-studio/analytics-reporter": {
+      "neighbour": "contains-studio/finance-tracker",
+      "functional_similarity": 0.816
+    },
+    "contains-studio/finance-tracker": {
+      "neighbour": "contains-studio/analytics-reporter",
+      "functional_similarity": 0.816
+    },
+    "contains-studio/infrastructure-maintainer": {
+      "neighbour": "voltagent/performance-engineer",
+      "functional_similarity": 0.766
+    },
+    "contains-studio/legal-compliance-checker": {
+      "neighbour": "voltagent/legal-advisor",
+      "functional_similarity": 0.733
+    },
+    "contains-studio/support-responder": {
+      "neighbour": "contains-studio/feedback-synthesizer",
+      "functional_similarity": 0.735
+    },
+    "contains-studio/api-tester": {
+      "neighbour": "contains-studio/performance-benchmarker",
+      "functional_similarity": 0.684
+    },
+    "contains-studio/performance-benchmarker": {
+      "neighbour": "voltagent/performance-engineer",
+      "functional_similarity": 0.787
+    },
+    "contains-studio/test-results-analyzer": {
+      "neighbour": "voltagent/qa-expert",
+      "functional_similarity": 0.764
+    },
+    "contains-studio/tool-evaluator": {
+      "neighbour": "contains-studio/finance-tracker",
+      "functional_similarity": 0.719
+    },
+    "contains-studio/workflow-optimizer": {
+      "neighbour": "lst97/agent-organizer",
+      "functional_similarity": 0.724
+    },
+    "pentest/ad-attacker": {
+      "neighbour": "voltagent/ad-security-reviewer",
+      "functional_similarity": 0.708
+    },
+    "pentest/ai-recon": {
+      "neighbour": "pentest/llm-redteam",
+      "functional_similarity": 0.734
+    },
+    "pentest/api-security": {
+      "neighbour": "pentest/exploit-guide",
+      "functional_similarity": 0.711
+    },
+    "pentest/attack-planner": {
+      "neighbour": "pentest/exploit-chainer",
+      "functional_similarity": 0.832
+    },
+    "pentest/bizlogic-hunter": {
+      "neighbour": "pentest/poc-validator",
+      "functional_similarity": 0.718
+    },
+    "pentest/bug-bounty": {
+      "neighbour": "pentest/exploit-guide",
+      "functional_similarity": 0.669
+    },
+    "pentest/c2-operator": {
+      "neighbour": "pentest/payload-crafter",
+      "functional_similarity": 0.726
+    },
+    "pentest/cicd-redteam": {
+      "neighbour": "pentest/swarm-orchestrator",
+      "functional_similarity": 0.733
+    },
+    "pentest/cloud-security": {
+      "neighbour": "wshobson/cicd-automation-cloud-architect",
+      "functional_similarity": 0.768
+    },
+    "pentest/code-auditor": {
+      "neighbour": "pentest/database-attacker",
+      "functional_similarity": 0.702
+    },
+    "pentest/compliance-mapper": {
+      "neighbour": "voltagent/compliance-auditor",
+      "functional_similarity": 0.693
+    },
+    "pentest/container-breakout": {
+      "neighbour": "0xfurai/kubernetes-expert",
+      "functional_similarity": 0.691
+    },
+    "pentest/credential-tester": {
+      "neighbour": "pentest/ad-attacker",
+      "functional_similarity": 0.681
+    },
+    "pentest/crypto-analyzer": {
+      "neighbour": "pentest/code-auditor",
+      "functional_similarity": 0.642
+    },
+    "pentest/ctf-solver": {
+      "neighbour": "pentest/credential-tester",
+      "functional_similarity": 0.613
+    },
+    "pentest/data-exfiltrator": {
+      "neighbour": "pentest/evasion-specialist",
+      "functional_similarity": 0.618
+    },
+    "pentest/database-attacker": {
+      "neighbour": "pentest/code-auditor",
+      "functional_similarity": 0.702
+    },
+    "pentest/detection-engineer": {
+      "neighbour": "pentest/exploit-guide",
+      "functional_similarity": 0.736
+    },
+    "pentest/engagement-planner": {
+      "neighbour": "pentest/attack-planner",
+      "functional_similarity": 0.712
+    },
+    "pentest/evasion-specialist": {
+      "neighbour": "pentest/payload-crafter",
+      "functional_similarity": 0.685
+    },
+    "pentest/exploit-chainer": {
+      "neighbour": "pentest/attack-planner",
+      "functional_similarity": 0.832
+    },
+    "pentest/exploit-guide": {
+      "neighbour": "pentest/threat-modeler",
+      "functional_similarity": 0.784
+    },
+    "pentest/fix-verifier": {
+      "neighbour": "pentest/poc-validator",
+      "functional_similarity": 0.708
+    },
+    "pentest/forensics-analyst": {
+      "neighbour": "pentest/malware-analyst",
+      "functional_similarity": 0.73
+    },
+    "pentest/iot-pentester": {
+      "neighbour": "pentest/mobile-pentester",
+      "functional_similarity": 0.682
+    },
+    "pentest/lateral-movement": {
+      "neighbour": "pentest/exploit-chainer",
+      "functional_similarity": 0.622
+    },
+    "pentest/llm-redteam": {
+      "neighbour": "pentest/ai-recon",
+      "functional_similarity": 0.734
+    },
+    "pentest/malware-analyst": {
+      "neighbour": "wshobson/malware-analyst",
+      "functional_similarity": 0.841
+    },
+    "pentest/mobile-pentester": {
+      "neighbour": "wshobson/mobile-security-coder",
+      "functional_similarity": 0.717
+    },
+    "pentest/network-attacker": {
+      "neighbour": "pentest/exploit-guide",
+      "functional_similarity": 0.637
+    },
+    "pentest/opsec-anonymizer": {
+      "neighbour": "pentest/osint-collector",
+      "functional_similarity": 0.697
+    },
+    "pentest/osint-collector": {
+      "neighbour": "pentest/detection-engineer",
+      "functional_similarity": 0.732
+    },
+    "pentest/password-auditor": {
+      "neighbour": "pentest/credential-tester",
+      "functional_similarity": 0.65
+    },
+    "pentest/payload-crafter": {
+      "neighbour": "pentest/c2-operator",
+      "functional_similarity": 0.726
+    },
+    "pentest/persistence-planner": {
+      "neighbour": "pentest/c2-operator",
+      "functional_similarity": 0.595
+    },
+    "pentest/phishing-operator": {
+      "neighbour": "pentest/social-engineer",
+      "functional_similarity": 0.668
+    },
+    "pentest/poc-validator": {
+      "neighbour": "pentest/vuln-scanner",
+      "functional_similarity": 0.768
+    },
+    "pentest/privesc-advisor": {
+      "neighbour": "pentest/malware-analyst",
+      "functional_similarity": 0.691
+    },
+    "pentest/recon-advisor": {
+      "neighbour": "pentest/vuln-scanner",
+      "functional_similarity": 0.772
+    },
+    "pentest/report-generator": {
+      "neighbour": "voltagent/penetration-tester",
+      "functional_similarity": 0.736
+    },
+    "pentest/reverse-engineer": {
+      "neighbour": "wshobson/reverse-engineer",
+      "functional_similarity": 0.853
+    },
+    "pentest/risk-scorer": {
+      "neighbour": "pentest/attack-planner",
+      "functional_similarity": 0.62
+    },
+    "pentest/scada-attacker": {
+      "neighbour": "pentest/network-attacker",
+      "functional_similarity": 0.602
+    },
+    "pentest/social-engineer": {
+      "neighbour": "pentest/osint-collector",
+      "functional_similarity": 0.725
+    },
+    "pentest/stig-analyst": {
+      "neighbour": "pentest/compliance-mapper",
+      "functional_similarity": 0.657
+    },
+    "pentest/supply-chain-auditor": {
+      "neighbour": "voltagent/dependency-manager",
+      "functional_similarity": 0.675
+    },
+    "pentest/swarm-orchestrator": {
+      "neighbour": "pentest/cicd-redteam",
+      "functional_similarity": 0.733
+    },
+    "pentest/threat-modeler": {
+      "neighbour": "pentest/exploit-guide",
+      "functional_similarity": 0.784
+    },
+    "pentest/traffic-analyzer": {
+      "neighbour": "pentest/recon-advisor",
+      "functional_similarity": 0.644
+    },
+    "pentest/vuln-scanner": {
+      "neighbour": "pentest/recon-advisor",
+      "functional_similarity": 0.772
+    },
+    "pentest/web-hunter": {
+      "neighbour": "pentest/api-security",
+      "functional_similarity": 0.688
+    },
+    "pentest/wireless-pentester": {
+      "neighbour": "pentest/iot-pentester",
+      "functional_similarity": 0.667
+    },
+    "vijaythecoder/code-archaeologist": {
+      "neighbour": "voltagent/code-reviewer",
+      "functional_similarity": 0.711
+    },
+    "vijaythecoder/code-reviewer": {
+      "neighbour": "voltagent/code-reviewer",
+      "functional_similarity": 0.836
+    },
+    "vijaythecoder/documentation-specialist": {
+      "neighbour": "voltagent/documentation-engineer",
+      "functional_similarity": 0.752
+    },
+    "vijaythecoder/performance-optimizer": {
+      "neighbour": "voltagent/performance-engineer",
+      "functional_similarity": 0.757
+    },
+    "vijaythecoder/project-analyst": {
+      "neighbour": "vijaythecoder/code-archaeologist",
+      "functional_similarity": 0.626
+    },
+    "vijaythecoder/team-configurator": {
+      "neighbour": "lst97/agent-organizer",
+      "functional_similarity": 0.682
+    },
+    "vijaythecoder/tech-lead-orchestrator": {
+      "neighbour": "lst97/agent-organizer",
+      "functional_similarity": 0.659
+    },
+    "vijaythecoder/django-api-developer": {
+      "neighbour": "vijaythecoder/django-backend-expert",
+      "functional_similarity": 0.826
+    },
+    "vijaythecoder/django-backend-expert": {
+      "neighbour": "vijaythecoder/django-api-developer",
+      "functional_similarity": 0.826
+    },
+    "vijaythecoder/django-orm-expert": {
+      "neighbour": "vijaythecoder/django-backend-expert",
+      "functional_similarity": 0.749
+    },
+    "vijaythecoder/laravel-backend-expert": {
+      "neighbour": "voltagent/laravel-specialist",
+      "functional_similarity": 0.737
+    },
+    "vijaythecoder/laravel-eloquent-expert": {
+      "neighbour": "0xfurai/laravel-expert",
+      "functional_similarity": 0.768
+    },
+    "vijaythecoder/Python_DevOps/CI-CD_Expert": {
+      "neighbour": "voltagent/devops-engineer",
+      "functional_similarity": 0.622
+    },
+    "vijaythecoder/django-expert": {
+      "neighbour": "vijaythecoder/django-backend-expert",
+      "functional_similarity": 0.795
+    },
+    "vijaythecoder/fastapi-expert": {
+      "neighbour": "vijaythecoder/python-expert",
+      "functional_similarity": 0.714
+    },
+    "vijaythecoder/ml-data-expert": {
+      "neighbour": "0xfurai/tensorflow-expert",
+      "functional_similarity": 0.601
+    },
+    "vijaythecoder/Python_Performance_Expert": {
+      "neighbour": "buildwithclaude/python-expert",
+      "functional_similarity": 0.631
+    },
+    "vijaythecoder/python-expert": {
+      "neighbour": "vijaythecoder/fastapi-expert",
+      "functional_similarity": 0.714
+    },
+    "vijaythecoder/Python_Security_Expert": {
+      "neighbour": "vijaythecoder/Python_Testing_Expert",
+      "functional_similarity": 0.629
+    },
+    "vijaythecoder/Python_Testing_Expert": {
+      "neighbour": "vijaythecoder/python-expert",
+      "functional_similarity": 0.64
+    },
+    "vijaythecoder/Python_Web_Scraping_Expert": {
+      "neighbour": "vijaythecoder/Python_Security_Expert",
+      "functional_similarity": 0.573
+    },
+    "vijaythecoder/rails-activerecord-expert": {
+      "neighbour": "vijaythecoder/rails-backend-expert",
+      "functional_similarity": 0.678
+    },
+    "vijaythecoder/rails-api-developer": {
+      "neighbour": "vijaythecoder/rails-backend-expert",
+      "functional_similarity": 0.721
+    },
+    "vijaythecoder/rails-backend-expert": {
+      "neighbour": "vijaythecoder/rails-api-developer",
+      "functional_similarity": 0.721
+    },
+    "vijaythecoder/react-component-architect": {
+      "neighbour": "lst97/react-pro",
+      "functional_similarity": 0.76
+    },
+    "vijaythecoder/react-nextjs-expert": {
+      "neighbour": "lst97/nextjs-pro",
+      "functional_similarity": 0.823
+    },
+    "vijaythecoder/vue-component-architect": {
+      "neighbour": "vijaythecoder/vue-component-architect~2",
+      "functional_similarity": 0.799
+    },
+    "vijaythecoder/vue-nuxt-expert": {
+      "neighbour": "voltagent/vue-expert",
+      "functional_similarity": 0.608
+    },
+    "vijaythecoder/vue-component-architect~2": {
+      "neighbour": "vijaythecoder/vue-component-architect",
+      "functional_similarity": 0.799
+    },
+    "vijaythecoder/api-architect": {
+      "neighbour": "voltagent/api-designer",
+      "functional_similarity": 0.729
+    },
+    "vijaythecoder/backend-developer": {
+      "neighbour": "voltagent/backend-developer",
+      "functional_similarity": 0.682
+    },
+    "vijaythecoder/tailwind-frontend-expert": {
+      "neighbour": "0xfurai/tailwind-expert",
+      "functional_similarity": 0.667
+    },
+    "taches/skill-auditor": {
+      "neighbour": "taches/subagent-auditor",
+      "functional_similarity": 0.797
+    },
+    "taches/slash-command-auditor": {
+      "neighbour": "taches/subagent-auditor",
+      "functional_similarity": 0.678
+    },
+    "taches/subagent-auditor": {
+      "neighbour": "taches/skill-auditor",
+      "functional_similarity": 0.797
+    }
+  },
+  "clusters": [
+    [
+      "wshobson/agent-orchestration-context-manager",
+      "buildwithclaude/context-manager"
+    ],
+    [
+      "wshobson/api-scaffolding-backend-architect",
+      "voltagent/backend-developer"
+    ],
+    [
+      "wshobson/api-scaffolding-django-pro",
+      "voltagent/django-developer",
+      "voltagent-codex/django-developer",
+      "0xfurai/django-expert"
+    ],
+    [
+      "wshobson/api-scaffolding-fastapi-pro",
+      "voltagent/fastapi-developer",
+      "voltagent-codex/fastapi-developer"
+    ],
+    [
+      "wshobson/api-scaffolding-graphql-architect",
+      "voltagent/graphql-architect",
+      "lst97/graphql-architect",
+      "voltagent-codex/graphql-architect",
+      "buildwithclaude/graphql-architect",
+      "0xfurai/graphql-expert"
+    ],
+    [
+      "wshobson/api-testing-observability-api-documenter",
+      "voltagent/api-designer",
+      "voltagent/documentation-engineer",
+      "voltagent/api-documenter",
+      "voltagent/technical-writer",
+      "lst97/api-documenter",
+      "lst97/documentation-expert",
+      "voltagent-codex/api-documenter",
+      "buildwithclaude/api-documenter",
+      "0xfurai/openapi-expert"
+    ],
+    [
+      "wshobson/application-performance-frontend-developer",
+      "voltagent/nextjs-developer",
+      "lst97/nextjs-pro",
+      "voltagent-codex/nextjs-developer",
+      "buildwithclaude/frontend-developer",
+      "buildwithclaude/nextjs-app-router-developer",
+      "0xfurai/nextjs-expert",
+      "contains-studio/frontend-developer",
+      "vijaythecoder/react-nextjs-expert"
+    ],
+    [
+      "wshobson/application-performance-observability-engineer",
+      "voltagent/sre-engineer",
+      "voltagent/chaos-engineer",
+      "voltagent-codex/sre-engineer",
+      "voltagent-codex/chaos-engineer"
+    ],
+    [
+      "wshobson/application-performance-performance-engineer",
+      "wshobson/database-cloud-optimization-database-architect",
+      "wshobson/database-cloud-optimization-database-optimizer",
+      "wshobson/sql-pro",
+      "voltagent/sql-pro",
+      "voltagent/performance-engineer",
+      "voltagent/database-optimizer",
+      "lst97/database-optimizer",
+      "lst97/performance-engineer",
+      "voltagent-codex/sql-pro",
+      "voltagent-codex/performance-engineer",
+      "voltagent-codex/database-optimizer",
+      "buildwithclaude/database-optimization",
+      "buildwithclaude/database-optimizer",
+      "buildwithclaude/performance-engineer",
+      "contains-studio/infrastructure-maintainer",
+      "contains-studio/performance-benchmarker"
+    ],
+    [
+      "wshobson/backend-api-security-backend-security-coder",
+      "wshobson/frontend-security-coder",
+      "wshobson/mobile-security-coder"
+    ],
+    [
+      "wshobson/backend-development-security-auditor",
+      "buildwithclaude/security-auditor"
+    ],
+    [
+      "wshobson/backend-development-tdd-orchestrator",
+      "wshobson/backend-development-test-automator",
+      "wshobson/codebase-cleanup-test-automator",
+      "voltagent/test-automator",
+      "lst97/test-automator",
+      "buildwithclaude/test-automator"
+    ],
+    [
+      "wshobson/blockchain-developer",
+      "voltagent/blockchain-developer",
+      "voltagent-codex/blockchain-developer",
+      "buildwithclaude/blockchain-developer"
+    ],
+    [
+      "wshobson/business-analyst",
+      "voltagent/data-analyst",
+      "buildwithclaude/business-analyst"
+    ],
+    [
+      "wshobson/c4-code",
+      "wshobson/c4-component",
+      "wshobson/c4-container",
+      "wshobson/c4-context"
+    ],
+    [
+      "wshobson/cicd-automation-cloud-architect",
+      "wshobson/hybrid-cloud-architect",
+      "wshobson/database-admin",
+      "voltagent/cloud-architect",
+      "lst97/cloud-architect",
+      "buildwithclaude/cloud-architect"
+    ],
+    [
+      "wshobson/cicd-automation-deployment-engineer",
+      "voltagent/deployment-engineer",
+      "voltagent/devops-engineer",
+      "voltagent-codex/devops-engineer"
+    ],
+    [
+      "wshobson/cicd-automation-devops-troubleshooter",
+      "lst97/devops-incident-responder",
+      "buildwithclaude/devops-troubleshooter"
+    ],
+    [
+      "wshobson/cicd-automation-kubernetes-architect",
+      "voltagent/kubernetes-specialist",
+      "voltagent-codex/kubernetes-specialist",
+      "buildwithclaude/mcp-deployment-orchestrator",
+      "0xfurai/kubernetes-expert"
+    ],
+    [
+      "wshobson/cicd-automation-terraform-specialist",
+      "voltagent-codex/terraform-engineer"
+    ],
+    [
+      "wshobson/cloud-infrastructure-network-engineer",
+      "voltagent/network-engineer"
+    ],
+    [
+      "wshobson/code-documentation-code-reviewer",
+      "wshobson/incident-response-code-reviewer",
+      "wshobson/review",
+      "voltagent/code-reviewer",
+      "lst97/code-reviewer-pro",
+      "voltagent-codex/code-reviewer",
+      "buildwithclaude/code-reviewer",
+      "vijaythecoder/code-reviewer"
+    ],
+    [
+      "wshobson/code-documentation-docs-architect",
+      "wshobson/reference-builder"
+    ],
+    [
+      "wshobson/code-refactoring-legacy-modernizer",
+      "voltagent/legacy-modernizer",
+      "lst97/legacy-modernizer",
+      "voltagent-codex/legacy-modernizer",
+      "buildwithclaude/legacy-modernizer"
+    ],
+    [
+      "wshobson/comprehensive-review-security-auditor",
+      "lst97/security-auditor"
+    ],
+    [
+      "wshobson/content-marketer",
+      "voltagent/content-marketer"
+    ],
+    [
+      "wshobson/search-specialist",
+      "voltagent/search-specialist",
+      "buildwithclaude/search-specialist"
+    ],
+    [
+      "wshobson/sales-automator",
+      "buildwithclaude/sales-automator"
+    ],
+    [
+      "wshobson/data-engineer",
+      "voltagent/data-engineer",
+      "lst97/data-engineer",
+      "voltagent-codex/data-engineer",
+      "buildwithclaude/data-engineer"
+    ],
+    [
+      "wshobson/debugging-toolkit-debugger",
+      "lst97/debugger",
+      "buildwithclaude/debugger"
+    ],
+    [
+      "wshobson/debugging-toolkit-dx-optimizer",
+      "lst97/dx-optimizer",
+      "buildwithclaude/dx-optimizer"
+    ],
+    [
+      "wshobson/distributed-debugging-error-detective",
+      "buildwithclaude/error-detective"
+    ],
+    [
+      "wshobson/dotnet-architect",
+      "voltagent/csharp-developer",
+      "voltagent/dotnet-core-expert",
+      "voltagent-codex/csharp-developer",
+      "voltagent-codex/dotnet-core-expert",
+      "0xfurai/aspnet-core-expert"
+    ],
+    [
+      "wshobson/frontend-mobile-development-mobile-developer",
+      "voltagent/mobile-developer",
+      "voltagent/mobile-app-developer",
+      "lst97/mobile-developer",
+      "buildwithclaude/mobile-developer",
+      "contains-studio/mobile-app-builder"
+    ],
+    [
+      "wshobson/elixir-pro",
+      "voltagent/elixir-expert",
+      "voltagent-codex/elixir-expert",
+      "0xfurai/elixir-expert"
+    ],
+    [
+      "wshobson/haskell-pro",
+      "0xfurai/haskell-expert"
+    ],
+    [
+      "wshobson/unity-developer",
+      "voltagent/game-developer",
+      "voltagent-codex/game-developer",
+      "buildwithclaude/game-developer"
+    ],
+    [
+      "wshobson/legal-advisor",
+      "buildwithclaude/legal-advisor"
+    ],
+    [
+      "wshobson/incident-responder",
+      "voltagent/devops-incident-responder",
+      "voltagent/incident-responder",
+      "lst97/incident-responder",
+      "buildwithclaude/incident-responder"
+    ],
+    [
+      "wshobson/javascript-pro",
+      "voltagent/javascript-pro",
+      "voltagent/node-specialist",
+      "voltagent-codex/javascript-pro",
+      "voltagent-codex/node-specialist",
+      "buildwithclaude/javascript-developer",
+      "0xfurai/javascript-expert",
+      "0xfurai/nodejs-expert"
+    ],
+    [
+      "wshobson/typescript-pro",
+      "voltagent/typescript-pro",
+      "lst97/typescript-pro",
+      "voltagent-codex/typescript-pro",
+      "buildwithclaude/typescript-expert",
+      "0xfurai/typescript-expert"
+    ],
+    [
+      "wshobson/csharp-pro",
+      "0xfurai/csharp-expert"
+    ],
+    [
+      "wshobson/java-pro",
+      "buildwithclaude/java-developer"
+    ],
+    [
+      "wshobson/scala-pro",
+      "0xfurai/scala-expert"
+    ],
+    [
+      "wshobson/ai-engineer",
+      "lst97/ai-engineer",
+      "buildwithclaude/ai-engineer"
+    ],
+    [
+      "wshobson/prompt-engineer",
+      "voltagent/prompt-engineer",
+      "lst97/prompt-engineer",
+      "voltagent-codex/prompt-engineer",
+      "buildwithclaude/prompt-engineer"
+    ],
+    [
+      "wshobson/vector-database-engineer",
+      "0xfurai/vector-db-expert"
+    ],
+    [
+      "wshobson/llm-finetuning-architect",
+      "wshobson/llm-finetuning-eval-engineer",
+      "wshobson/llm-finetuning-training-engineer"
+    ],
+    [
+      "wshobson/data-scientist",
+      "voltagent/data-scientist"
+    ],
+    [
+      "wshobson/ml-engineer",
+      "voltagent/ai-engineer",
+      "voltagent/machine-learning-engineer",
+      "voltagent/ml-engineer",
+      "lst97/ml-engineer",
+      "buildwithclaude/ml-engineer",
+      "contains-studio/ai-engineer"
+    ],
+    [
+      "wshobson/mlops-engineer",
+      "voltagent/mlops-engineer",
+      "buildwithclaude/mlops-engineer"
+    ],
+    [
+      "wshobson/gallery-researcher",
+      "buildwithclaude/gallery-researcher"
+    ],
+    [
+      "wshobson/image-generator",
+      "buildwithclaude/image-generator"
+    ],
+    [
+      "wshobson/prompt-crafter",
+      "buildwithclaude/prompt-crafter"
+    ],
+    [
+      "wshobson/flutter-expert",
+      "voltagent/flutter-expert",
+      "voltagent-codex/flutter-expert",
+      "0xfurai/flutter-expert"
+    ],
+    [
+      "wshobson/ios-developer",
+      "buildwithclaude/ios-developer",
+      "0xfurai/ios-expert"
+    ],
+    [
+      "wshobson/ui-ux-designer",
+      "wshobson/design-system-architect",
+      "wshobson/ui-designer",
+      "voltagent/ui-designer",
+      "lst97/ui-designer",
+      "voltagent-codex/ui-designer",
+      "buildwithclaude/ui-ux-designer",
+      "buildwithclaude/iris",
+      "contains-studio/brand-guardian",
+      "contains-studio/ui-designer",
+      "contains-studio/visual-storyteller",
+      "contains-studio/rapid-prototyper"
+    ],
+    [
+      "wshobson/deploy-with-verification",
+      "wshobson/session-end",
+      "wshobson/session-start"
+    ],
+    [
+      "wshobson/payment-integration",
+      "voltagent/payment-integration",
+      "voltagent-codex/payment-integration",
+      "buildwithclaude/payment-integration",
+      "0xfurai/stripe-expert"
+    ],
+    [
+      "wshobson/eval-judge",
+      "wshobson/eval-orchestrator"
+    ],
+    [
+      "wshobson/policy-enforcer",
+      "wshobson/review-policy-author"
+    ],
+    [
+      "wshobson/python-pro",
+      "voltagent/python-pro",
+      "lst97/python-pro",
+      "voltagent-codex/python-pro",
+      "buildwithclaude/python-expert",
+      "0xfurai/python-expert"
+    ],
+    [
+      "wshobson/quant-analyst",
+      "voltagent/quant-analyst",
+      "buildwithclaude/quant-analyst"
+    ],
+    [
+      "wshobson/risk-manager",
+      "buildwithclaude/risk-manager"
+    ],
+    [
+      "wshobson/malware-analyst",
+      "pentest/malware-analyst"
+    ],
+    [
+      "wshobson/reverse-engineer",
+      "pentest/reverse-engineer"
+    ],
+    [
+      "wshobson/seo-content-auditor",
+      "wshobson/seo-content-planner",
+      "wshobson/seo-content-writer",
+      "buildwithclaude/content-marketer"
+    ],
+    [
+      "wshobson/bash-pro",
+      "wshobson/posix-shell-pro",
+      "0xfurai/bash-expert"
+    ],
+    [
+      "wshobson/architect",
+      "wshobson/implement",
+      "wshobson/orchestrate"
+    ],
+    [
+      "wshobson/c-pro",
+      "buildwithclaude/c-developer",
+      "0xfurai/c-expert"
+    ],
+    [
+      "wshobson/cpp-pro",
+      "voltagent/cpp-pro",
+      "voltagent-codex/cpp-pro",
+      "buildwithclaude/cpp-engineer",
+      "0xfurai/cpp-expert"
+    ],
+    [
+      "wshobson/golang-pro",
+      "voltagent/golang-pro",
+      "lst97/golang-pro",
+      "voltagent-codex/golang-pro",
+      "buildwithclaude/golang-expert",
+      "0xfurai/go-expert"
+    ],
+    [
+      "wshobson/rust-pro",
+      "voltagent/rust-engineer",
+      "voltagent-codex/rust-engineer",
+      "buildwithclaude/rust-expert",
+      "0xfurai/rust-expert"
+    ],
+    [
+      "wshobson/accessibility-expert",
+      "voltagent/accessibility-tester",
+      "voltagent-codex/accessibility-tester",
+      "buildwithclaude/accessibility-specialist"
+    ],
+    [
+      "wshobson/php-pro",
+      "buildwithclaude/php-developer"
+    ],
+    [
+      "wshobson/ruby-pro",
+      "buildwithclaude/ruby-expert",
+      "0xfurai/ruby-expert"
+    ],
+    [
+      "voltagent/auth-integration-engineer",
+      "0xfurai/auth0-expert",
+      "0xfurai/keycloak-expert",
+      "0xfurai/oauth-oidc-expert"
+    ],
+    [
+      "voltagent/design-bridge",
+      "voltagent-codex/design-bridge"
+    ],
+    [
+      "voltagent/electron-pro",
+      "lst97/electron-pro",
+      "voltagent-codex/electron-pro",
+      "0xfurai/electron-expert"
+    ],
+    [
+      "voltagent/websocket-engineer",
+      "voltagent-codex/websocket-engineer",
+      "0xfurai/websocket-expert"
+    ],
+    [
+      "voltagent/angular-architect",
+      "voltagent-codex/angular-architect",
+      "0xfurai/angular-expert",
+      "0xfurai/angularjs-expert"
+    ],
+    [
+      "voltagent/dotnet-framework-4.8-expert",
+      "voltagent-codex/dotnet-framework-4.8-expert"
+    ],
+    [
+      "voltagent/expo-react-native-expert",
+      "voltagent-codex/expo-react-native-expert",
+      "0xfurai/expo-expert"
+    ],
+    [
+      "voltagent/java-architect",
+      "voltagent/spring-boot-engineer"
+    ],
+    [
+      "voltagent/kotlin-specialist",
+      "voltagent-codex/kotlin-specialist",
+      "0xfurai/kotlin-expert"
+    ],
+    [
+      "voltagent/laravel-specialist",
+      "voltagent-codex/laravel-specialist",
+      "0xfurai/laravel-expert",
+      "vijaythecoder/laravel-backend-expert",
+      "vijaythecoder/laravel-eloquent-expert"
+    ],
+    [
+      "voltagent/php-pro",
+      "voltagent-codex/php-pro",
+      "0xfurai/php-expert"
+    ],
+    [
+      "voltagent/powershell-5.1-expert",
+      "voltagent/windows-infra-admin",
+      "voltagent-codex/windows-infra-admin"
+    ],
+    [
+      "voltagent/powershell-7-expert",
+      "voltagent/azure-infra-engineer",
+      "voltagent/it-ops-orchestrator",
+      "voltagent-codex/azure-infra-engineer"
+    ],
+    [
+      "voltagent/rails-expert",
+      "voltagent-codex/rails-expert",
+      "buildwithclaude/rails-expert",
+      "0xfurai/rails-expert"
+    ],
+    [
+      "voltagent/swift-expert",
+      "voltagent-codex/swift-expert",
+      "0xfurai/swift-expert",
+      "0xfurai/swiftui-expert"
+    ],
+    [
+      "voltagent/symfony-specialist",
+      "voltagent-codex/symfony-specialist"
+    ],
+    [
+      "voltagent/vue-expert",
+      "voltagent-codex/vue-expert",
+      "0xfurai/vue-expert",
+      "vijaythecoder/vue-component-architect",
+      "vijaythecoder/vue-component-architect~2"
+    ],
+    [
+      "voltagent/database-administrator",
+      "buildwithclaude/database-admin"
+    ],
+    [
+      "voltagent/docker-expert",
+      "voltagent-codex/docker-expert",
+      "0xfurai/docker-expert"
+    ],
+    [
+      "voltagent/platform-engineer",
+      "voltagent-codex/platform-engineer",
+      "voltagent-codex/golden-path-designer",
+      "voltagent-codex/idp-architect"
+    ],
+    [
+      "voltagent/terraform-engineer",
+      "buildwithclaude/terraform-specialist",
+      "0xfurai/terraform-expert"
+    ],
+    [
+      "voltagent/ad-security-reviewer",
+      "voltagent-codex/ad-security-reviewer"
+    ],
+    [
+      "voltagent/ai-writing-auditor",
+      "voltagent/content-quality-editor",
+      "voltagent-codex/ai-writing-auditor",
+      "voltagent-codex/content-quality-editor"
+    ],
+    [
+      "voltagent/architect-reviewer",
+      "voltagent-codex/architect-reviewer",
+      "voltagent-codex/llm-architect"
+    ],
+    [
+      "voltagent/compliance-auditor",
+      "voltagent/penetration-tester",
+      "voltagent/security-auditor"
+    ],
+    [
+      "voltagent/debugger",
+      "voltagent/error-detective"
+    ],
+    [
+      "voltagent/gdpr-ccpa-compliance",
+      "voltagent-codex/gdpr-ccpa-compliance"
+    ],
+    [
+      "voltagent/powershell-security-hardening",
+      "voltagent-codex/powershell-security-hardening"
+    ],
+    [
+      "voltagent/qa-expert",
+      "lst97/qa-expert",
+      "voltagent-codex/qa-expert",
+      "contains-studio/test-results-analyzer"
+    ],
+    [
+      "voltagent/ui-ux-tester",
+      "voltagent-codex/browser-debugger",
+      "voltagent-codex/ui-ux-tester"
+    ],
+    [
+      "voltagent/nlp-engineer",
+      "voltagent-codex/nlp-engineer"
+    ],
+    [
+      "voltagent/postgres-pro",
+      "voltagent-codex/postgres-pro",
+      "0xfurai/postgres-expert"
+    ],
+    [
+      "voltagent/reinforcement-learning-engineer",
+      "voltagent-codex/reinforcement-learning-engineer"
+    ],
+    [
+      "voltagent/build-engineer",
+      "voltagent/dx-optimizer",
+      "voltagent-codex/dx-optimizer",
+      "voltagent-codex/tooling-engineer"
+    ],
+    [
+      "voltagent/cli-developer",
+      "voltagent/tooling-engineer"
+    ],
+    [
+      "voltagent/dependency-manager",
+      "voltagent-codex/dependency-manager"
+    ],
+    [
+      "voltagent/git-workflow-manager",
+      "voltagent-codex/git-workflow-manager"
+    ],
+    [
+      "voltagent/mcp-developer",
+      "voltagent-codex/mcp-developer",
+      "buildwithclaude/mcp-expert",
+      "buildwithclaude/mcp-server-architect",
+      "buildwithclaude/mcp-testing-engineer"
+    ],
+    [
+      "voltagent/powershell-module-architect",
+      "voltagent-codex/powershell-module-architect",
+      "voltagent-codex/powershell-ui-architect"
+    ],
+    [
+      "voltagent/readme-generator",
+      "voltagent-codex/readme-generator"
+    ],
+    [
+      "voltagent/refactoring-specialist",
+      "voltagent-codex/refactoring-specialist"
+    ],
+    [
+      "voltagent/slack-expert",
+      "voltagent-codex/slack-expert"
+    ],
+    [
+      "voltagent/visual-asset-generator",
+      "voltagent-codex/visual-asset-generator"
+    ],
+    [
+      "voltagent/embedded-systems",
+      "voltagent-codex/embedded-systems"
+    ],
+    [
+      "voltagent/fintech-engineer",
+      "voltagent-codex/fintech-engineer"
+    ],
+    [
+      "voltagent/healthcare-admin",
+      "voltagent-codex/healthcare-admin"
+    ],
+    [
+      "voltagent/hipaa-compliance",
+      "voltagent-codex/hipaa-compliance"
+    ],
+    [
+      "voltagent/iot-engineer",
+      "voltagent-codex/iot-engineer"
+    ],
+    [
+      "voltagent/m365-admin",
+      "voltagent-codex/m365-admin"
+    ],
+    [
+      "voltagent/seo-specialist",
+      "voltagent-codex/seo-specialist"
+    ],
+    [
+      "voltagent/assumption-mapping",
+      "voltagent-codex/assumption-mapping"
+    ],
+    [
+      "voltagent/backlog-grooming",
+      "voltagent-codex/backlog-grooming"
+    ],
+    [
+      "voltagent/growth-loops",
+      "voltagent-codex/growth-loops"
+    ],
+    [
+      "voltagent/license-engineer",
+      "voltagent-codex/license-engineer"
+    ],
+    [
+      "voltagent/sales-engineer",
+      "voltagent-codex/sales-engineer"
+    ],
+    [
+      "voltagent/ux-researcher",
+      "contains-studio/ux-researcher",
+      "contains-studio/feedback-synthesizer"
+    ],
+    [
+      "voltagent/wordpress-master",
+      "voltagent-codex/wordpress-master",
+      "buildwithclaude/drupal-developer",
+      "buildwithclaude/wordpress-developer"
+    ],
+    [
+      "voltagent/agent-installer",
+      "voltagent/search"
+    ],
+    [
+      "voltagent/agent-organizer",
+      "voltagent/multi-agent-coordinator",
+      "voltagent/task-distributor",
+      "voltagent/workflow-orchestrator"
+    ],
+    [
+      "voltagent/codebase-orchestrator",
+      "voltagent-codex/codebase-orchestrator"
+    ],
+    [
+      "voltagent/error-coordinator",
+      "voltagent/knowledge-synthesizer",
+      "voltagent/performance-monitor"
+    ],
+    [
+      "voltagent/ab-test-analysis",
+      "voltagent-codex/ab-test-analysis"
+    ],
+    [
+      "voltagent/cohort-analysis",
+      "voltagent-codex/cohort-analysis"
+    ],
+    [
+      "voltagent/first-principles-thinking",
+      "voltagent-codex/first-principles-thinking"
+    ],
+    [
+      "voltagent/market-researcher",
+      "buildwithclaude/market-research-analyst"
+    ],
+    [
+      "voltagent/project-idea-validator",
+      "voltagent-codex/project-idea-validator"
+    ],
+    [
+      "voltagent/research-analyst",
+      "buildwithclaude/academic-researcher",
+      "buildwithclaude/research-synthesizer"
+    ],
+    [
+      "voltagent/scientific-literature-researcher",
+      "voltagent-codex/scientific-literature-researcher"
+    ],
+    [
+      "voltagent/trend-analyst",
+      "voltagent-codex/trend-analyst"
+    ],
+    [
+      "voltagent/fetch",
+      "voltagent/list"
+    ],
+    [
+      "lst97/agent-organizer",
+      "contains-studio/workflow-optimizer"
+    ],
+    [
+      "lst97/product-manager",
+      "buildwithclaude/prometeo-pm"
+    ],
+    [
+      "lst97/data-scientist",
+      "buildwithclaude/data-scientist"
+    ],
+    [
+      "lst97/frontend-developer",
+      "lst97/react-pro",
+      "0xfurai/react-expert"
+    ],
+    [
+      "lst97/deployment-engineer",
+      "buildwithclaude/deployment-engineer",
+      "contains-studio/devops-automator"
+    ],
+    [
+      "lst97/architect-reviewer",
+      "buildwithclaude/architect-review"
+    ],
+    [
+      "voltagent-codex/backend-developer",
+      "voltagent-codex/fullstack-developer"
+    ],
+    [
+      "voltagent-codex/erlang-expert",
+      "0xfurai/erlang-expert"
+    ],
+    [
+      "voltagent-codex/powershell-5.1-expert",
+      "voltagent-codex/powershell-7-expert"
+    ],
+    [
+      "voltagent-codex/network-engineer",
+      "buildwithclaude/network-engineer"
+    ],
+    [
+      "voltagent-codex/data-analyst",
+      "voltagent-codex/data-scientist"
+    ],
+    [
+      "voltagent-codex/agent-organizer",
+      "voltagent-codex/multi-agent-coordinator",
+      "voltagent-codex/task-distributor",
+      "voltagent-codex/workflow-orchestrator"
+    ],
+    [
+      "buildwithclaude/ag2-architect",
+      "buildwithclaude/ag2-prompt-engineer",
+      "buildwithclaude/ag2-reviewer"
+    ],
+    [
+      "buildwithclaude/project-supervisor-orchestrator",
+      "buildwithclaude/episode-orchestrator"
+    ],
+    [
+      "buildwithclaude/arbitrage-bot",
+      "buildwithclaude/crypto-analyst",
+      "buildwithclaude/crypto-risk-manager",
+      "buildwithclaude/crypto-trader"
+    ],
+    [
+      "buildwithclaude/markdown-syntax-formatter",
+      "buildwithclaude/visual-analysis-ocr",
+      "buildwithclaude/text-comparison-validator"
+    ],
+    [
+      "buildwithclaude/sql-expert",
+      "0xfurai/sql-expert"
+    ],
+    [
+      "buildwithclaude/audio-quality-controller",
+      "buildwithclaude/podcast-transcriber",
+      "buildwithclaude/timestamp-precision-specialist"
+    ],
+    [
+      "buildwithclaude/ocr-grammar-fixer",
+      "buildwithclaude/ocr-quality-assurance"
+    ],
+    [
+      "buildwithclaude/podcast-content-analyzer",
+      "buildwithclaude/podcast-metadata-specialist",
+      "buildwithclaude/podcast-trend-scout",
+      "buildwithclaude/seo-podcast-optimizer",
+      "buildwithclaude/social-media-copywriter"
+    ],
+    [
+      "buildwithclaude/research-brief-generator",
+      "buildwithclaude/query-clarifier"
+    ],
+    [
+      "buildwithclaude/builder",
+      "buildwithclaude/verifier"
+    ],
+    [
+      "buildwithclaude/planner",
+      "buildwithclaude/specifier"
+    ],
+    [
+      "buildwithclaude/infra-monitor",
+      "buildwithclaude/monitor-agent"
+    ],
+    [
+      "buildwithclaude/revenue-tracker",
+      "buildwithclaude/yolo-cfo"
+    ],
+    [
+      "buildwithclaude/yolo-ceo",
+      "buildwithclaude/yolo-coo",
+      "buildwithclaude/yolo-cto"
+    ],
+    [
+      "buildwithclaude/gsd-ai-researcher",
+      "buildwithclaude/gsd-domain-researcher",
+      "buildwithclaude/gsd-eval-auditor",
+      "buildwithclaude/gsd-eval-planner",
+      "buildwithclaude/gsd-framework-selector"
+    ],
+    [
+      "buildwithclaude/gsd-code-fixer",
+      "buildwithclaude/gsd-code-reviewer"
+    ],
+    [
+      "buildwithclaude/gsd-codebase-mapper",
+      "buildwithclaude/gsd-intel-updater",
+      "buildwithclaude/gsd-pattern-mapper"
+    ],
+    [
+      "buildwithclaude/gsd-debug-session-manager",
+      "buildwithclaude/gsd-debugger"
+    ],
+    [
+      "buildwithclaude/gsd-doc-classifier",
+      "buildwithclaude/gsd-doc-synthesizer"
+    ],
+    [
+      "buildwithclaude/gsd-doc-verifier",
+      "buildwithclaude/gsd-doc-writer"
+    ],
+    [
+      "buildwithclaude/gsd-executor",
+      "buildwithclaude/gsd-phase-researcher",
+      "buildwithclaude/gsd-plan-checker",
+      "buildwithclaude/gsd-planner",
+      "buildwithclaude/gsd-project-researcher",
+      "buildwithclaude/gsd-roadmapper",
+      "buildwithclaude/gsd-verifier"
+    ],
+    [
+      "buildwithclaude/gsd-ui-checker",
+      "buildwithclaude/gsd-ui-researcher"
+    ],
+    [
+      "buildwithclaude/business-boss",
+      "buildwithclaude/product-boss"
+    ],
+    [
+      "buildwithclaude/business-cynic",
+      "buildwithclaude/design-cynic",
+      "buildwithclaude/dev-cynic",
+      "buildwithclaude/life-cynic",
+      "buildwithclaude/product-cynic"
+    ],
+    [
+      "buildwithclaude/business-pusher",
+      "buildwithclaude/life-pusher",
+      "buildwithclaude/product-pusher"
+    ],
+    [
+      "buildwithclaude/business-rookie",
+      "buildwithclaude/design-rookie",
+      "buildwithclaude/dev-rookie",
+      "buildwithclaude/life-rookie",
+      "buildwithclaude/product-rookie"
+    ],
+    [
+      "buildwithclaude/design-boss",
+      "buildwithclaude/dev-boss"
+    ],
+    [
+      "buildwithclaude/dev-pusher",
+      "buildwithclaude/dev-watcher"
+    ],
+    [
+      "buildwithclaude/haiku-reviewer",
+      "buildwithclaude/opus-reviewer",
+      "buildwithclaude/sonnet-reviewer"
+    ],
+    [
+      "buildwithclaude/hypotheses-manager",
+      "buildwithclaude/interview-analyst",
+      "buildwithclaude/lean-startup-advisor"
+    ],
+    [
+      "0xfurai/elasticsearch-expert",
+      "0xfurai/elk-expert",
+      "0xfurai/opensearch-expert"
+    ],
+    [
+      "0xfurai/flyway-expert",
+      "0xfurai/liquibase-expert"
+    ],
+    [
+      "0xfurai/grafana-expert",
+      "0xfurai/prometheus-expert"
+    ],
+    [
+      "0xfurai/jasmine-expert",
+      "0xfurai/jest-expert"
+    ],
+    [
+      "0xfurai/knex-expert",
+      "0xfurai/typeorm-expert"
+    ],
+    [
+      "0xfurai/mqtt-expert",
+      "0xfurai/rabbitmq-expert"
+    ],
+    [
+      "0xfurai/playwright-expert",
+      "0xfurai/selenium-expert"
+    ],
+    [
+      "0xfurai/pytorch-expert",
+      "0xfurai/tensorflow-expert"
+    ],
+    [
+      "0xfurai/rollup-expert",
+      "0xfurai/webpack-expert"
+    ],
+    [
+      "0xfurai/tailwind-expert",
+      "vijaythecoder/tailwind-frontend-expert"
+    ],
+    [
+      "contains-studio/tiktok-strategist",
+      "contains-studio/trend-researcher"
+    ],
+    [
+      "contains-studio/analytics-reporter",
+      "contains-studio/finance-tracker"
+    ],
+    [
+      "pentest/ai-recon",
+      "pentest/llm-redteam"
+    ],
+    [
+      "pentest/attack-planner",
+      "pentest/exploit-chainer"
+    ],
+    [
+      "pentest/c2-operator",
+      "pentest/payload-crafter"
+    ],
+    [
+      "pentest/cicd-redteam",
+      "pentest/swarm-orchestrator"
+    ],
+    [
+      "pentest/code-auditor",
+      "pentest/database-attacker"
+    ],
+    [
+      "pentest/detection-engineer",
+      "pentest/exploit-guide",
+      "pentest/osint-collector",
+      "pentest/threat-modeler"
+    ],
+    [
+      "pentest/poc-validator",
+      "pentest/recon-advisor",
+      "pentest/vuln-scanner"
+    ],
+    [
+      "vijaythecoder/django-api-developer",
+      "vijaythecoder/django-backend-expert",
+      "vijaythecoder/django-expert"
+    ],
+    [
+      "vijaythecoder/fastapi-expert",
+      "vijaythecoder/python-expert"
+    ],
+    [
+      "vijaythecoder/rails-api-developer",
+      "vijaythecoder/rails-backend-expert"
+    ],
+    [
+      "taches/skill-auditor",
+      "taches/slash-command-auditor",
+      "taches/subagent-auditor"
+    ]
+  ]
+}

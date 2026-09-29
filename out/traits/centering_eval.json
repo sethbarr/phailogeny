@@ -1,0 +1,32 @@
+{
+  "centred 0%": {
+    "top1 within twin's repo": 0.771,
+    "codex top1": 0.776,
+    "rewrite top1": 0.828,
+    "same-repo NN": 0.558,
+    "twin in global top5": 0.499,
+    "twin global median rank": 6.0,
+    "codex twin global median rank": 7.0,
+    "pentest within - between sim": 0.278
+  },
+  "centred 50%": {
+    "top1 within twin's repo": 0.801,
+    "codex top1": 0.834,
+    "rewrite top1": 0.828,
+    "same-repo NN": 0.442,
+    "twin in global top5": 0.672,
+    "twin global median rank": 3.0,
+    "codex twin global median rank": 3.0,
+    "pentest within - between sim": 0.13
+  },
+  "centred 100%": {
+    "top1 within twin's repo": 0.815,
+    "codex top1": 0.86,
+    "rewrite top1": 0.812,
+    "same-repo NN": 0.371,
+    "twin in global top5": 0.739,
+    "twin global median rank": 3.0,
+    "codex twin global median rank": 2.0,
+    "pentest within - between sim": 0.024
+  }
+}

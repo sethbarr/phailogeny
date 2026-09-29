@@ -1,0 +1,1 @@
+{"name": "Workflow A", "description": "Runs tasks", "nodes": [{"type": "webhook"}, {"type": "httpRequest"}]}

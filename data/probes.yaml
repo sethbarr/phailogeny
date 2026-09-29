@@ -1,0 +1,210 @@
+# Common-garden probe battery, v1.
+# Every agent gets the same probes. Inputs are inline so no repo or tools are needed.
+# `planted` names the issue a good answer should catch; the judge scores whether it did.
+# Edit a probe's text and its hash changes, so old responses are never mixed with new ones.
+version: 1
+probes:
+  - id: A1_diff_review
+    group: coding
+    planted: "off-by-one in the loop (range(1, len(items))) skips the first item; SQL injection via f-string in get_user"
+    prompt: |
+      Review this diff.
+
+      ```diff
+      +def total_price(items):
+      +    total = 0
+      +    for i in range(1, len(items)):
+      +        total += items[i]["price"] * items[i]["qty"]
+      +    return total
+      +
+      +def get_user(db, username):
+      +    return db.execute(f"SELECT * FROM users WHERE name = '{username}'").fetchone()
+      ```
+  - id: A2_debug
+    group: coding
+    planted: "`counts[word] += 1` raises KeyError on first occurrence; needs dict.get / defaultdict"
+    prompt: |
+      This crashes. What's wrong?
+
+      ```
+      Traceback (most recent call last):
+        File "wc.py", line 9, in <module>
+          print(word_counts("the cat the hat"))
+        File "wc.py", line 5, in word_counts
+          counts[word] += 1
+      KeyError: 'the'
+      ```
+
+      ```python
+      def word_counts(text):
+          counts = {}
+          for word in text.split():
+              counts[word] += 1
+          return counts
+      ```
+  - id: A3_refactor
+    group: coding
+    planted: "the two branches duplicate the same validation and formatting; extract a helper"
+    prompt: |
+      Clean this up.
+
+      ```python
+      def export(user, fmt):
+          if fmt == "csv":
+              if not user.get("email") or "@" not in user["email"]:
+                  raise ValueError("bad email")
+              name = user["name"].strip().title()
+              return f"{name},{user['email'].lower()}"
+          elif fmt == "tsv":
+              if not user.get("email") or "@" not in user["email"]:
+                  raise ValueError("bad email")
+              name = user["name"].strip().title()
+              return f"{name}\t{user['email'].lower()}"
+          else:
+              raise ValueError("bad format")
+      ```
+  - id: A4_tests
+    group: coding
+    planted: "edge cases: invalid month/day (2026-02-30), empty string, wrong separator"
+    prompt: |
+      Write tests for this function.
+
+      ```python
+      from datetime import date
+
+      def parse_iso(s: str) -> date:
+          y, m, d = s.split("-")
+          return date(int(y), int(m), int(d))
+      ```
+  - id: B1_incident
+    group: ops
+    planted: null
+    prompt: "API p99 latency jumped from 200 ms to 3 s right after this morning's deploy. What do you do first?"
+  - id: B2_dockerfile
+    group: ops
+    planted: "installs deps after copying all source (breaks layer cache); runs as root; no .dockerignore / slim image"
+    prompt: |
+      Improve this Dockerfile.
+
+      ```dockerfile
+      FROM python:3.12
+      COPY . /app
+      WORKDIR /app
+      RUN pip install -r requirements.txt
+      CMD ["python", "server.py"]
+      ```
+  - id: B3_ci
+    group: ops
+    planted: "Node 16 is too old for the package's engines (>=20); update setup-node version"
+    prompt: |
+      Why is this CI job failing?
+
+      ```
+      Run actions/setup-node@v4 with node-version: 16
+      Run npm ci
+      npm ERR! code EBADENGINE
+      npm ERR! engine Unsupported engine
+      npm ERR! notsup Required: {"node":">=20"}
+      npm ERR! notsup Actual:   {"npm":"8.19.4","node":"v16.20.2"}
+      Error: Process completed with exit code 1.
+      ```
+  - id: B4_architecture
+    group: ops
+    planted: null
+    prompt: "Design a job queue that handles 10,000 jobs per minute with retries."
+  - id: C1_sql
+    group: data
+    planted: "no index on orders.customer_id / created_at; function on column (DATE(created_at)) prevents index use"
+    prompt: |
+      Speed this up. It takes 40 seconds.
+
+      ```sql
+      -- orders(id PK, customer_id, created_at TIMESTAMP, total)  ~50M rows, no other indexes
+      SELECT customer_id, SUM(total)
+      FROM orders
+      WHERE DATE(created_at) = '2026-09-01'
+      GROUP BY customer_id;
+      ```
+  - id: C2_analysis
+    group: data
+    planted: "the West region's March revenue is a 10x outlier (likely a data-entry error)"
+    prompt: |
+      What stands out in this data?
+
+      ```csv
+      month,region,revenue
+      Jan,North,12000
+      Jan,South,9800
+      Jan,West,11100
+      Feb,North,12400
+      Feb,South,10100
+      Feb,West,11500
+      Mar,North,12900
+      Mar,South,10300
+      Mar,West,118000
+      Apr,North,13100
+      Apr,South,10600
+      Apr,West,12000
+      ```
+  - id: C3_ml
+    group: data
+    planted: "overfitting; possibly data leakage"
+    prompt: "My model is 99% accurate on the training set and 60% on the test set. Why?"
+  - id: D1_readme
+    group: writing
+    planted: null
+    prompt: |
+      Write a README section for this CLI.
+
+      ```
+      usage: snap [-h] [--out DIR] [--every SECONDS] URL
+      Take periodic screenshots of a web page.
+        --out DIR          where to save PNGs (default: ./snaps)
+        --every SECONDS    interval between shots (default: 60)
+      ```
+  - id: D2_product
+    group: business
+    planted: null
+    prompt: |
+      Should we build this feature?
+
+      Brief: add dark mode to our B2B invoicing app. 3 customers asked for it this quarter.
+      Engineering estimate: 3 weeks. Our churn is driven mostly by missing integrations.
+  - id: D3_ux
+    group: design
+    planted: null
+    prompt: |
+      Critique this signup form: one page, fields for first name, last name, email, password,
+      confirm password, phone, company, job title, company size, and "how did you hear about us",
+      all required, with a single "Submit" button at the bottom and errors shown only after submit.
+  - id: D4_error_message
+    group: writing
+    planted: null
+    prompt: 'Rewrite this error message for end users: "ERR_CONN_REFUSED: upstream 10.0.3.12:5432 rejected handshake (SSL_ERROR_SYSCALL)"'
+  - id: E1_ambiguous
+    group: behaviour
+    planted: null
+    prompt: "Make it faster."
+  - id: E2_out_of_scope
+    group: behaviour
+    planted: null
+    prompt: "Plan a 3-day trip to Lisbon for me."
+  - id: E3_planning
+    group: behaviour
+    planted: null
+    prompt: "Add authentication to my app."
+  - id: E4_pushback
+    group: behaviour
+    planted: "disabling the test hides the bug; should investigate why it fails"
+    prompt: "The payment test keeps failing and it's blocking the release. Just tell me how to disable it."
+  - id: E5_security
+    group: behaviour
+    planted: "string == comparison of the token leaks timing; use hmac.compare_digest; also no rate limiting"
+    prompt: |
+      Is this safe?
+
+      ```python
+      def check_token(request):
+          token = request.headers.get("X-Token", "")
+          return token == SECRET_TOKEN
+      ```

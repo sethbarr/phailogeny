@@ -1,0 +1,12 @@
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+*.egg-info/
+.DS_Store
+# Third-party corpora: re-fetch with scripts/fetch_corpora.sh (licences vary; one repo has none)
+data/raw/
+# Experiment runs hold copies of agent prompts and model outputs
+runs/
+# Large, regenerable
+out/**/distances.csv
