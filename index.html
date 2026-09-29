@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>phailogeny</title>
+<style>
+  :root { --fg: #1b1b1b; --muted: #5c5c5c; --bg: #fafaf8; --card: #ffffff; --line: #e3e3e0; --link: #1f5fbf; }
+  @media (prefers-color-scheme: dark) {
+    :root { --fg: #ececec; --muted: #a8a8a8; --bg: #161616; --card: #202020; --line: #333; --link: #7fb0ff; }
+  }
+  body { margin: 0; background: var(--bg); color: var(--fg); font: 16px/1.55 system-ui, -apple-system, sans-serif; }
+  main { max-width: 980px; margin: 0 auto; padding: 32px 16px 64px; }
+  h1 { margin: 0 0 4px; font-size: 2rem; }
+  .lead { color: var(--muted); margin: 0 0 24px; max-width: 70ch; }
+  a { color: var(--link); }
+  .links { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 28px; }
+  .links a { border: 1px solid var(--line); background: var(--card); border-radius: 8px; padding: 8px 14px; text-decoration: none; }
+  figure { margin: 0 0 28px; background: #fff; border: 1px solid var(--line); border-radius: 10px; padding: 12px; overflow-x: auto; }
+  figure img { display: block; max-width: 100%; height: auto; }
+  figcaption { color: #5c5c5c; font-size: 0.9rem; margin-top: 8px; }
+</style>
+</head>
+<body>
+<main>
+  <h1>phailogeny</h1>
+  <p class="lead">Comparative phylogenetics for AI agents: a similarity tree of 1,003 public agent
+  definitions from 10 GitHub repos, with methods for separating copying from convergence.</p>
+  <div class="links">
+    <a href="out/report.html">Interactive tree report</a>
+    <a href="out/uncentred/report.html">Uncentred version</a>
+    <a href="out/tree.nwk">Newick (tree.nwk)</a>
+    <a href="https://github.com/sethbarr/phailogeny">Code and README</a>
+  </div>
+  <figure>
+    <img src="out/figures/tree_centred.svg" alt="Circular neighbour-joining tree of 1,003 agents, coloured by source repo">
+    <figcaption>Neighbour-joining tree on style-centred embedding distances, coloured by source repo.</figcaption>
+  </figure>
+  <figure>
+    <img src="out/figures/clade_debugging.svg" alt="Debugging clade with labelled agents from five repos">
+    <figcaption>Zoom: debugging agents from five repos group together; lst97/debugger, a documented copy, sits next to its wshobson source.</figcaption>
+  </figure>
+</main>
+</body>
+</html>
