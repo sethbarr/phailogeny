@@ -113,3 +113,7 @@ data/            probes.yaml, traits.yaml, tool_aliases.yaml
 
 Corpus licences: most repos are MIT. `contains-studio/agents` has no licence; it is analysed in
 aggregate and its text is not redistributed here.
+
+## Licence
+
+Code: [Apache-2.0](LICENSE). Copyright 2026 Seth Barribeau.
