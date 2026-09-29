@@ -4,6 +4,14 @@ Comparative "phylogenetics" for AI agents: measure how similar agent definitions
 and separate shared ancestry (copying) from convergence (independently written for the same job).
 The design borrows from comparative biology; see [SPEC.md](SPEC.md) for the full rationale.
 
+Two motivations, two measures:
+
+- **For organisations running many agents:** which agents do the same job? That is a merge or
+  shared-service question, and it doesn't matter whether two agents converged or one was copied.
+  Measure: style-centred embedding similarity.
+- **Phylogeny done right:** separating descent from convergence. Function similarity cannot do
+  this (finding 5); shared rare features can (finding 6).
+
 Status: research prototype, September 2026. Everything below runs locally except the optional
 behaviour experiment (`phailogeny garden`), which calls Claude.
 
@@ -92,6 +100,26 @@ with a Mantel test (`phailogeny/phenotype/common_garden.py`).
    "same ancestry"; once text is rewritten, homology needs other evidence (see question 3).
    Distributions: `out/paraphrase/similarity_distributions.json`.
 
+6. **Shared rare features separate copies from convergence** (`scripts/rare_features.py`,
+   offline). Score = IDF-weighted count of terms two agents share that at most 3 other agents
+   use (the pair itself excluded from rarity). Known rewrites keep idiosyncratic details of their
+   source (`asnotracking`, `benchmarkdotnet`, `webapplicationfactory` for a .NET agent) that
+   independent same-job agents don't. At matched functional similarity (+/-0.03), separating
+   known copies from presumed-independent twins:
+
+   | Copies | AUC, shared rare features | AUC, functional similarity |
+   | --- | --- | --- |
+   | Full rewrites | 0.90 | 0.56 |
+   | Codex-style rewrites | 0.87 | 0.47 |
+
+   The natural data agree: documented rewrites (lst97 from wshobson) share a median rare score of
+   54, against 12 for other same-name pairs and 6 for close non-twin pairs. Caveats: the synthetic
+   copies were written by an LLM that saw the source, which may keep more detail than a human
+   would; and "other repos" twins may include undocumented copies, which would make the
+   comparison conservative. In phylogenetic terms this is synapomorphy counting with rarity as a
+   proxy for "derived", so homoplasy in rare domain terms (two .NET agents both citing Dapper) is
+   the main risk.
+
 ## Questions for a phylogeneticist
 
 1. **Tree or network?** Agents swap parts across lineages (prompt sections, tool configs). Is NJ
@@ -106,10 +134,12 @@ with a Mantel test (`phailogeny/phenotype/common_garden.py`).
 4. **Repo style as non-independence.** Style centring resembles removing a shared-ancestry
    effect before comparing traits. Is there a comparative-methods analogue (PGLS-like, random
    effect per repo) that would be more principled than subtracting fitted offsets?
-5. **Support values.** What would a sensible bootstrap be? Resampling prompt chunks, probe tasks
+5. **Rare features as synapomorphies.** Is corpus rarity a reasonable proxy for derived
+   character states? How would you model homoplasy in rare domain vocabulary?
+6. **Support values.** What would a sensible bootstrap be? Resampling prompt chunks, probe tasks
    (for behaviour), or embedding dimensions?
-6. **Mantel test** for genotype vs behaviour: fine here, or use something less criticised?
-7. **Rooting.** Midpoint for now. Would an outgroup (a clearly unrelated domain such as the
+7. **Mantel test** for genotype vs behaviour: fine here, or use something less criticised?
+8. **Rooting.** Midpoint for now. Would an outgroup (a clearly unrelated domain such as the
    security-testing repo) be more meaningful?
 
 ## Layout

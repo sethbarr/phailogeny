@@ -1,0 +1,370 @@
+{
+  "max_others": 3,
+  "groups": {
+    "known copy: paraphrase codex": {
+      "n": 50,
+      "functional_similarity_median": 0.701,
+      "rare_score_median": 64.69,
+      "rare_score_p90": 166.61,
+      "share_with_any_rare_term": 0.98,
+      "examples": [
+        {
+          "a": "paraphrase-codex/dotnet-architect",
+          "b": "wshobson/dotnet-architect",
+          "shared_rare": [
+            ".net backend",
+            "asnotracking",
+            "cancellationtoken",
+            "dapper",
+            "benchmarkdotnet",
+            "nullable annotations",
+            "primary constructors",
+            "webapplicationfactory"
+          ]
+        },
+        {
+          "a": "paraphrase-codex/llm-finetuning-training-engineer",
+          "b": "wshobson/llm-finetuning-training-engineer",
+          "shared_rare": [
+            "chat template",
+            "dataset card",
+            "hardware run",
+            "ladder",
+            "poll logs",
+            "promote verdict",
+            "run spark",
+            "spark preflight"
+          ]
+        },
+        {
+          "a": "paraphrase-codex/payment-integration",
+          "b": "wshobson/payment-integration",
+          "shared_rare": [
+            "api never",
+            "disputes refunds",
+            "official sdks",
+            "stripe elements",
+            "test cards",
+            "2xx",
+            "provider api",
+            "square"
+          ]
+        }
+      ]
+    },
+    "known copy: paraphrase light": {
+      "n": 50,
+      "functional_similarity_median": 0.942,
+      "rare_score_median": 1709.63,
+      "rare_score_p90": 3725.03,
+      "share_with_any_rare_term": 1.0,
+      "examples": [
+        {
+          "a": "paraphrase-light/dotnet-architect",
+          "b": "wshobson/dotnet-architect",
+          "shared_rare": [
+            "### asp.net",
+            ".net api",
+            ".net architect",
+            ".net backend",
+            ".net documentation",
+            ".net features",
+            ".net kubernetes",
+            "100k items"
+          ]
+        },
+        {
+          "a": "paraphrase-light/payment-integration",
+          "b": "wshobson/payment-integration",
+          "shared_rare": [
+            "### pci",
+            "200ms before",
+            "2xx status",
+            "accept test",
+            "api never",
+            "apis stripe",
+            "apis timeouts",
+            "async events"
+          ]
+        },
+        {
+          "a": "paraphrase-light/seo-content-refresher",
+          "b": "wshobson/seo-content-refresher",
+          "shared_rare": [
+            "actions update",
+            "additional faq",
+            "analysis refresh",
+            "areas outdated",
+            "changed information",
+            "comment engagement",
+            "competitor freshness",
+            "content decay"
+          ]
+        }
+      ]
+    },
+    "known copy: paraphrase rewrite": {
+      "n": 50,
+      "functional_similarity_median": 0.811,
+      "rare_score_median": 261.29,
+      "rare_score_p90": 852.97,
+      "share_with_any_rare_term": 1.0,
+      "examples": [
+        {
+          "a": "paraphrase-rewrite/dotnet-architect",
+          "b": "wshobson/dotnet-architect",
+          "shared_rare": [
+            "argumentexception.throwifnullorwhitespace",
+            "arraypool stackalloc",
+            "asnotracking",
+            "asnotracking split",
+            "await cache.getasync",
+            "cache ilogger",
+            "cache.getasync",
+            "cancellationtoken"
+          ]
+        },
+        {
+          "a": "paraphrase-rewrite/payment-integration",
+          "b": "wshobson/payment-integration",
+          "shared_rare": [
+            "accept test",
+            "apis stripe",
+            "card numbers",
+            "elements paypal",
+            "flooded",
+            "official sdks",
+            "paypal sdk",
+            "paypal square"
+          ]
+        },
+        {
+          "a": "paraphrase-rewrite/seo-content-refresher",
+          "b": "wshobson/seo-content-refresher",
+          "shared_rare": [
+            "dated",
+            "modified date",
+            "sitemap priority",
+            "years ago",
+            "older content",
+            "recent developments",
+            "internal links",
+            "current trends"
+          ]
+        }
+      ]
+    },
+    "natural twins: other repos": {
+      "n": 305,
+      "functional_similarity_median": 0.731,
+      "rare_score_median": 12.03,
+      "rare_score_p90": 85.71,
+      "share_with_any_rare_term": 0.738,
+      "examples": [
+        {
+          "a": "wshobson/agent-orchestration-context-manager",
+          "b": "voltagent/context-manager",
+          "shared_rare": [
+            "agent workflow"
+          ]
+        },
+        {
+          "a": "wshobson/agent-orchestration-context-manager",
+          "b": "voltagent-codex/context-manager",
+          "shared_rare": []
+        },
+        {
+          "a": "voltagent/context-manager",
+          "b": "buildwithclaude/context-manager",
+          "shared_rare": [
+            "prune"
+          ]
+        }
+      ]
+    },
+    "natural twins: edited copy": {
+      "n": 54,
+      "functional_similarity_median": 0.804,
+      "rare_score_median": 62.06,
+      "rare_score_p90": 226.92,
+      "share_with_any_rare_term": 0.963,
+      "examples": [
+        {
+          "a": "wshobson/agent-orchestration-context-manager",
+          "b": "buildwithclaude/context-manager",
+          "shared_rare": [
+            "agent specific",
+            "coherent state",
+            "context across",
+            "state across",
+            "key information"
+          ]
+        },
+        {
+          "a": "wshobson/api-scaffolding-backend-architect",
+          "b": "buildwithclaude/backend-architect",
+          "shared_rare": [
+            "apis contract",
+            "responses service",
+            "system architect",
+            "backend system",
+            "diagram mermaid",
+            "example requests",
+            "scalable api",
+            "technology recommendations"
+          ]
+        },
+        {
+          "a": "wshobson/api-scaffolding-graphql-architect",
+          "b": "buildwithclaude/graphql-architect",
+          "shared_rare": [
+            "dataloader pattern",
+            "schema composition",
+            "apollo server",
+            "level authorization"
+          ]
+        }
+      ]
+    },
+    "natural twins: format change (same org, Claude -> Codex)": {
+      "n": 154,
+      "functional_similarity_median": 0.74,
+      "rare_score_median": 11.74,
+      "rare_score_p90": 190.67,
+      "share_with_any_rare_term": 0.779,
+      "examples": [
+        {
+          "a": "voltagent/context-manager",
+          "b": "voltagent-codex/context-manager",
+          "shared_rare": []
+        },
+        {
+          "a": "voltagent/graphql-architect",
+          "b": "voltagent-codex/graphql-architect",
+          "shared_rare": [
+            "distributed graph",
+            "subscription event",
+            "deprecation strategy",
+            "persisted queries",
+            "persisted",
+            "query planning",
+            "subgraph"
+          ]
+        },
+        {
+          "a": "voltagent/api-documenter",
+          "b": "voltagent-codex/api-documenter",
+          "shared_rare": []
+        }
+      ]
+    },
+    "natural twins: full rewrite (documented ancestry)": {
+      "n": 32,
+      "functional_similarity_median": 0.772,
+      "rare_score_median": 53.47,
+      "rare_score_p90": 135.48,
+      "share_with_any_rare_term": 0.938,
+      "examples": [
+        {
+          "a": "wshobson/api-scaffolding-backend-architect",
+          "b": "lst97/backend-architect",
+          "shared_rare": [
+            "design microservices",
+            "maintainable backend",
+            "technology recommendations"
+          ]
+        },
+        {
+          "a": "wshobson/api-scaffolding-graphql-architect",
+          "b": "lst97/graphql-architect",
+          "shared_rare": [
+            "efficient resolvers",
+            "secure graphql",
+            "apollo client",
+            "apollo federation",
+            "depth limiting",
+            "federated graphql",
+            "federation patterns",
+            "query cost"
+          ]
+        },
+        {
+          "a": "wshobson/api-testing-observability-api-documenter",
+          "b": "lst97/api-documenter",
+          "shared_rare": [
+            "postman collection",
+            "specifications code",
+            "comprehensive developer",
+            "documentation workflows",
+            "examples over",
+            "multiple languages",
+            "python javascript"
+          ]
+        }
+      ]
+    },
+    "control: close non-twin pairs (sim >= 0.6)": {
+      "n": 435,
+      "functional_similarity_median": 0.636,
+      "rare_score_median": 5.52,
+      "rare_score_p90": 35.18,
+      "share_with_any_rare_term": 0.52,
+      "examples": [
+        {
+          "a": "voltagent-codex/performance-engineer",
+          "b": "buildwithclaude/react-performance-optimization",
+          "shared_rare": []
+        },
+        {
+          "a": "lst97/data-engineer",
+          "b": "0xfurai/kafka-expert",
+          "shared_rare": []
+        },
+        {
+          "a": "wshobson/service-mesh-expert",
+          "b": "voltagent/cloud-architect",
+          "shared_rare": [
+            "current infrastructure",
+            "observability metrics"
+          ]
+        }
+      ]
+    },
+    "control: random cross-repo pairs": {
+      "n": 2000,
+      "functional_similarity_median": 0.314,
+      "rare_score_median": 0.0,
+      "rare_score_p90": 0.0,
+      "share_with_any_rare_term": 0.087,
+      "examples": [
+        {
+          "a": "voltagent-codex/hipaa-compliance",
+          "b": "buildwithclaude/mcp-testing-engineer",
+          "shared_rare": []
+        },
+        {
+          "a": "voltagent/search",
+          "b": "vijaythecoder/rails-api-developer",
+          "shared_rare": []
+        },
+        {
+          "a": "voltagent/performance-monitor",
+          "b": "buildwithclaude/terraform-specialist",
+          "shared_rare": []
+        }
+      ]
+    }
+  },
+  "copy_vs_independent_at_matched_similarity": {
+    "rewrite": {
+      "matched_independent_pairs": 2968,
+      "auc_rare_sharing": 0.896,
+      "auc_functional_similarity": 0.556
+    },
+    "codex": {
+      "matched_independent_pairs": 3096,
+      "auc_rare_sharing": 0.867,
+      "auc_functional_similarity": 0.465
+    }
+  }
+}
