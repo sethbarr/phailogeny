@@ -32,7 +32,13 @@
         "minimal_fix_with_verification": 1.0,
         "prevention_monitoring": 1.0,
         "reproduction_construction": 1.0
-      }
+      },
+      "passes": 26,
+      "runs": 26,
+      "wilson95": [
+        0.871,
+        1.0
+      ]
     },
     {
       "agent_id": "buildwithclaude/devops-troubleshooter",
@@ -60,7 +66,13 @@
         "minimal_fix_with_verification": 1.0,
         "prevention_monitoring": 1.0,
         "reproduction_construction": 1.0
-      }
+      },
+      "passes": 26,
+      "runs": 26,
+      "wilson95": [
+        0.871,
+        1.0
+      ]
     },
     {
       "agent_id": "buildwithclaude/error-detective",
@@ -88,7 +100,13 @@
         "minimal_fix_with_verification": 1.0,
         "prevention_monitoring": 1.0,
         "reproduction_construction": 1.0
-      }
+      },
+      "passes": 26,
+      "runs": 26,
+      "wilson95": [
+        0.871,
+        1.0
+      ]
     },
     {
       "agent_id": "control/generic-expert",
@@ -116,7 +134,13 @@
         "minimal_fix_with_verification": 1.0,
         "prevention_monitoring": 1.0,
         "reproduction_construction": 1.0
-      }
+      },
+      "passes": 26,
+      "runs": 26,
+      "wilson95": [
+        0.871,
+        1.0
+      ]
     },
     {
       "agent_id": "control/no-prompt",
@@ -144,7 +168,13 @@
         "minimal_fix_with_verification": 1.0,
         "prevention_monitoring": 1.0,
         "reproduction_construction": 1.0
-      }
+      },
+      "passes": 26,
+      "runs": 26,
+      "wilson95": [
+        0.871,
+        1.0
+      ]
     },
     {
       "agent_id": "lst97/debugger",
@@ -172,7 +202,13 @@
         "minimal_fix_with_verification": 1.0,
         "prevention_monitoring": 1.0,
         "reproduction_construction": 1.0
-      }
+      },
+      "passes": 26,
+      "runs": 26,
+      "wilson95": [
+        0.871,
+        1.0
+      ]
     },
     {
       "agent_id": "lst97/devops-incident-responder",
@@ -200,7 +236,13 @@
         "minimal_fix_with_verification": 1.0,
         "prevention_monitoring": 1.0,
         "reproduction_construction": 1.0
-      }
+      },
+      "passes": 26,
+      "runs": 26,
+      "wilson95": [
+        0.871,
+        1.0
+      ]
     },
     {
       "agent_id": "voltagent-codex/debugger",
@@ -228,7 +270,13 @@
         "minimal_fix_with_verification": 1.0,
         "prevention_monitoring": 1.0,
         "reproduction_construction": 1.0
-      }
+      },
+      "passes": 26,
+      "runs": 26,
+      "wilson95": [
+        0.871,
+        1.0
+      ]
     },
     {
       "agent_id": "voltagent-codex/error-coordinator",
@@ -256,7 +304,13 @@
         "minimal_fix_with_verification": 1.0,
         "prevention_monitoring": 1.0,
         "reproduction_construction": 1.0
-      }
+      },
+      "passes": 26,
+      "runs": 26,
+      "wilson95": [
+        0.871,
+        1.0
+      ]
     },
     {
       "agent_id": "voltagent-codex/error-detective",
@@ -284,7 +338,13 @@
         "minimal_fix_with_verification": 1.0,
         "prevention_monitoring": 1.0,
         "reproduction_construction": 1.0
-      }
+      },
+      "passes": 26,
+      "runs": 26,
+      "wilson95": [
+        0.871,
+        1.0
+      ]
     },
     {
       "agent_id": "voltagent-codex/hallucination-investigator",
@@ -312,7 +372,13 @@
         "minimal_fix_with_verification": 1.0,
         "prevention_monitoring": 1.0,
         "reproduction_construction": 1.0
-      }
+      },
+      "passes": 26,
+      "runs": 26,
+      "wilson95": [
+        0.871,
+        1.0
+      ]
     },
     {
       "agent_id": "voltagent/debugger",
@@ -340,7 +406,13 @@
         "minimal_fix_with_verification": 1.0,
         "prevention_monitoring": 1.0,
         "reproduction_construction": 1.0
-      }
+      },
+      "passes": 26,
+      "runs": 26,
+      "wilson95": [
+        0.871,
+        1.0
+      ]
     },
     {
       "agent_id": "voltagent/error-detective",
@@ -368,7 +440,13 @@
         "minimal_fix_with_verification": 1.0,
         "prevention_monitoring": 1.0,
         "reproduction_construction": 1.0
-      }
+      },
+      "passes": 26,
+      "runs": 26,
+      "wilson95": [
+        0.871,
+        1.0
+      ]
     },
     {
       "agent_id": "wshobson/cicd-automation-devops-troubleshooter",
@@ -396,7 +474,13 @@
         "minimal_fix_with_verification": 1.0,
         "prevention_monitoring": 1.0,
         "reproduction_construction": 1.0
-      }
+      },
+      "passes": 26,
+      "runs": 26,
+      "wilson95": [
+        0.871,
+        1.0
+      ]
     },
     {
       "agent_id": "wshobson/debugging-toolkit-debugger",
@@ -424,7 +508,13 @@
         "minimal_fix_with_verification": 1.0,
         "prevention_monitoring": 1.0,
         "reproduction_construction": 1.0
-      }
+      },
+      "passes": 26,
+      "runs": 26,
+      "wilson95": [
+        0.871,
+        1.0
+      ]
     },
     {
       "agent_id": "wshobson/distributed-debugging-error-detective",
@@ -452,7 +542,13 @@
         "minimal_fix_with_verification": 1.0,
         "prevention_monitoring": 1.0,
         "reproduction_construction": 1.0
-      }
+      },
+      "passes": 26,
+      "runs": 26,
+      "wilson95": [
+        0.871,
+        1.0
+      ]
     },
     {
       "agent_id": "wshobson/incident-response-debugger",
@@ -480,7 +576,13 @@
         "minimal_fix_with_verification": 1.0,
         "prevention_monitoring": 1.0,
         "reproduction_construction": 1.0
-      }
+      },
+      "passes": 26,
+      "runs": 26,
+      "wilson95": [
+        0.871,
+        1.0
+      ]
     },
     {
       "agent_id": "wshobson/incident-response-error-detective",
@@ -508,7 +610,13 @@
         "minimal_fix_with_verification": 1.0,
         "prevention_monitoring": 1.0,
         "reproduction_construction": 1.0
-      }
+      },
+      "passes": 26,
+      "runs": 26,
+      "wilson95": [
+        0.871,
+        1.0
+      ]
     },
     {
       "agent_id": "wshobson/prod-logs-health-check",
@@ -536,7 +644,13 @@
         "minimal_fix_with_verification": 1.0,
         "prevention_monitoring": 1.0,
         "reproduction_construction": 1.0
-      }
+      },
+      "passes": 26,
+      "runs": 26,
+      "wilson95": [
+        0.871,
+        1.0
+      ]
     },
     {
       "agent_id": "wshobson/team-debugger",
@@ -564,7 +678,13 @@
         "minimal_fix_with_verification": 1.0,
         "prevention_monitoring": 1.0,
         "reproduction_construction": 1.0
-      }
+      },
+      "passes": 26,
+      "runs": 26,
+      "wilson95": [
+        0.871,
+        1.0
+      ]
     }
   ],
   "task_difficulty": {

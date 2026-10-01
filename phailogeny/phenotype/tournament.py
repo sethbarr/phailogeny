@@ -482,6 +482,17 @@ def run_verifiable(
     return status
 
 
+def wilson_interval(successes: int, n: int, z: float = 1.96) -> tuple[float, float]:
+    """95% Wilson score interval for a binomial proportion. Unlike a bootstrap, it stays honest
+    at 0 or n successes (26 of 26 gives about 0.87 to 1.00, not a zero-width interval)."""
+    if n == 0:
+        return (0.0, 1.0)
+    p = successes / n
+    centre = (p + z * z / (2 * n)) / (1 + z * z / n)
+    half = z * ((p * (1 - p) / n + z * z / (4 * n * n)) ** 0.5) / (1 + z * z / n)
+    return (max(0.0, centre - half), min(1.0, centre + half))
+
+
 def rank(name: str, model: str = "claude-opus-5-5", runs_root: Path = Path("runs/tournaments"),
          data_root: Path = Path("data/tournaments"), n_boot: int = 2000, seed: int = 0) -> dict:
     """Pass rate per agent (mean over tasks of the replicate mean) with bootstrap CIs over tasks,
@@ -530,6 +541,10 @@ def rank(name: str, model: str = "claude-opus-5-5", runs_root: Path = Path("runs
             "cost_ci95": [round(float(np.percentile(cost_boots[:, i], 2.5)), 4), round(float(np.percentile(cost_boots[:, i], 97.5)), 4)],
             "by_capability": {c: round(float(score[i, [k for k, t in enumerate(tasks) if capability[t] == c]].mean()), 3) for c in caps},
         })
+    for row in table:
+        runs = [float(r["passed"]) for r in rows if r["agent_id"] == row["agent_id"]]
+        row["passes"], row["runs"] = int(sum(runs)), len(runs)
+        row["wilson95"] = [round(v, 3) for v in wilson_interval(row["passes"], row["runs"])]
     table.sort(key=lambda row: -row["pass_rate"])
     result = {
         "model": model, "n_tasks": len(tasks), "n_agents": len(agents), "replicates": max(r["rep"] for r in rows) + 1,

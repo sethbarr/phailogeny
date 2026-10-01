@@ -106,3 +106,10 @@ def test_unlabelled_snippet_does_not_overwrite_a_file_when_answer_labels_files()
     original = {"a.py": "def f():\n    return 1\n\ndef g():\n    return 2\n", "b.py": "def h():\n    return 3\n"}
     answer = "Look at this:\n```python\ndef h():\n    pass\n```\nFix:\n```python\n# file: a.py\ndef f():\n    return 10\n\ndef g():\n    return 2\n```"
     assert set(extract_files(answer, original)) == {"a.py"}
+
+
+def test_wilson_interval_is_honest_at_a_perfect_score() -> None:
+    from phailogeny.phenotype.tournament import wilson_interval
+
+    low, high = wilson_interval(26, 26)
+    assert 0.86 < low < 0.88 and high == 1.0

@@ -202,6 +202,66 @@ def ranking_svg(
     return f'<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{height}" viewBox="0 0 {width} {height}">{"".join(parts)}</svg>'
 
 
+def slide_ranking_svg(
+    ranking: list[dict],
+    value_key: str,
+    ci_key: str,
+    axis_label: str,
+    fmt,
+    step: float,
+    width: int = 1664,
+    height: int = 700,
+    font_px: int = 24,
+    reference_value: float | None = None,
+    reference_label: str = "",
+    palette: dict | None = None,
+    lo: float | None = None,
+    hi: float | None = None,
+) -> str:
+    """A dot-and-interval chart sized to a slide's content box, so text renders at `font_px`
+    on the slide itself (no title: the slide carries it). Agents are dots, controls diamonds."""
+    theme = SPECIMEN | (palette or {})
+    font, ink, muted, grid = theme["font"], theme["ink"], theme["muted"], theme["grid"]
+    label_w = int(max(len(r["agent_id"]) for r in ranking) * font_px * 0.55) + 24
+    value_w = int(font_px * 4.2)
+    top, bottom = 34, int(font_px * 3.2)
+    row = (height - top - bottom) / len(ranking)
+    plot_w = width - label_w - value_w - 16
+    lo = lo if lo is not None else math.floor(min(r[ci_key][0] for r in ranking) / step) * step
+    hi = hi if hi is not None else math.ceil(max(r[ci_key][1] for r in ranking) / step) * step
+
+    def x(v: float) -> float:
+        return label_w + (v - lo) / (hi - lo) * plot_w
+
+    axis_y = top + len(ranking) * row + 6
+    parts = [f'<rect width="{width}" height="{height}" fill="{theme["background"]}"/>']
+    for k in range(int(round((hi - lo) / step)) + 1):
+        t = lo + k * step
+        parts.append(f'<line x1="{x(t):.1f}" y1="{top - 8}" x2="{x(t):.1f}" y2="{axis_y:.1f}" stroke="{grid}" stroke-width="1"/>')
+        parts.append(f'<text x="{x(t):.1f}" y="{axis_y + font_px + 4:.1f}" font-family="{font}" font-size="{font_px - 2}" fill="{muted}" text-anchor="middle">{fmt(t)}</text>')
+    parts.append(f'<text x="{label_w + plot_w / 2:.1f}" y="{axis_y + 2 * font_px + 14:.1f}" font-family="{font}" font-size="{font_px - 2}" fill="{muted}" text-anchor="middle">{escape(axis_label)}</text>')
+    if reference_value is not None:
+        rx = x(reference_value)
+        near_right = rx > label_w + plot_w - 260
+        anchor = ' text-anchor="end"' if near_right else ""
+        parts.append(f'<line x1="{rx:.1f}" y1="{top - 8}" x2="{rx:.1f}" y2="{axis_y:.1f}" stroke="{theme["control"]}" stroke-width="2" stroke-dasharray="6 5"/>')
+        parts.append(f'<text x="{rx - 8 if near_right else rx + 8:.1f}" y="{top - 12}" font-family="{font}" font-size="{font_px - 4}" fill="{muted}"{anchor}>{escape(reference_label)}</text>')
+    for k, r in enumerate(ranking):
+        cy = top + k * row + row / 2
+        control = r["agent_id"].startswith("control/")
+        colour = theme["control"] if control else theme["agent"]
+        style = ' font-style="italic"' if control else ""
+        parts.append(f'<text x="{label_w - 16}" y="{cy + font_px * 0.35:.1f}" font-family="{font}" font-size="{font_px}" fill="{ink}" text-anchor="end"{style}>{escape(r["agent_id"])}</text>')
+        parts.append(f'<line x1="{x(r[ci_key][0]):.1f}" y1="{cy:.1f}" x2="{x(r[ci_key][1]):.1f}" y2="{cy:.1f}" stroke="{colour}" stroke-width="3" stroke-linecap="round"/>')
+        px, m = x(r[value_key]), font_px * 0.42
+        if control:
+            parts.append(f'<path d="M{px:.1f} {cy - m:.1f} L{px + m:.1f} {cy:.1f} L{px:.1f} {cy + m:.1f} L{px - m:.1f} {cy:.1f} Z" fill="{colour}" stroke="{theme["background"]}" stroke-width="2"/>')
+        else:
+            parts.append(f'<circle cx="{px:.1f}" cy="{cy:.1f}" r="{m * 0.85:.1f}" fill="{colour}" stroke="{theme["background"]}" stroke-width="2"/>')
+        parts.append(f'<text x="{label_w + plot_w + 16}" y="{cy + font_px * 0.35:.1f}" font-family="{font}" font-size="{font_px}" fill="{muted}">{escape(fmt(r[value_key]))}</text>')
+    return f'<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{height}" viewBox="0 0 {width} {height}">{"".join(parts)}</svg>'
+
+
 SPECIMEN = {"agent": "#0a5d94", "control": "#b07400", "ink": "#15202b", "muted": "#4b5763",
             "grid": "#c2cbc4", "background": "#f8f9f6", "font": "'Public Sans','Helvetica Neue',Arial,sans-serif"}
 
