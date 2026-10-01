@@ -69,7 +69,7 @@ def test_run_and_rank_with_a_fake_model(tmp_path) -> None:
     assert status["done"] == 8  # 2 members + 2 controls, 1 task, 2 reps
     again = run_verifiable("t", records, replicates=2, workers=2, call=fake_call, data_root=data, runs_root=runs)
     assert again["queued"] == 0  # resumes; nothing paid twice
-    result = rank("t", runs_root=runs, data_root=data, n_boot=50)
+    result = rank("t", model="claude-opus-5-5", runs_root=runs, data_root=data, n_boot=50)
     scores = {row["agent_id"]: row["pass_rate"] for row in result["ranking"]}
     assert scores["a/good"] == 1.0 and scores["a/bad"] == 0.0 and scores["control/no-prompt"] == 1.0
 

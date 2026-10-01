@@ -219,12 +219,14 @@ def _tournament(args: argparse.Namespace) -> dict[str, object]:
     from phailogeny.phenotype.tournament import prepare, rank, run_verifiable
 
     if args.tournament_command == "rank":
-        result = rank(args.name)
+        result = rank(args.name, model=args.model)
         return {k: v for k, v in result.items() if k != "task_difficulty"}
     records = dedupe_copies(load_subagent_dirs(args.dir))
     assign_ids(records)
     if args.tournament_command == "run":
-        return run_verifiable(args.name, records, replicates=args.replicates, workers=args.workers, limit=args.limit)
+        effort = None if args.effort == "none" else args.effort
+        return run_verifiable(args.name, records, replicates=args.replicates, workers=args.workers, limit=args.limit,
+                              model=args.model, effort=effort)
     tree = TreeNode.read(args.tree)
     return prepare(
         tree, args.anchor, records,
@@ -319,8 +321,11 @@ def build_parser() -> argparse.ArgumentParser:
     run.add_argument("--replicates", type=int, default=2)
     run.add_argument("--workers", type=int, default=8)
     run.add_argument("--limit", type=int, default=None, help="Only this many calls (smoke test).")
+    run.add_argument("--model", default="claude-opus-5-5", help="The common-garden model every agent runs on.")
+    run.add_argument("--effort", default="low", help="Effort level, or 'none' to omit it.")
     ranker = tournament_sub.add_parser("rank", help="Pass rates with bootstrap confidence intervals.")
     ranker.add_argument("--name", required=True)
+    ranker.add_argument("--model", default="claude-opus-5-5")
 
     return parser
 

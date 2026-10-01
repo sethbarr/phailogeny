@@ -132,7 +132,9 @@ def ranking_svg(
     ranking: list[dict],
     title: str,
     subtitle: str,
-    reference: str = "control/no-prompt",
+    reference: str | None = "control/no-prompt",
+    reference_value: float | None = None,
+    reference_label: str = "no-prompt control",
     value_key: str = "pass_rate",
     ci_key: str = "ci95",
     axis_label: str = "Share of bug-fix tasks whose tests pass (95% bootstrap interval over tasks)",
@@ -152,7 +154,9 @@ def ranking_svg(
     label_w, plot_w, right_w, row, top = 470, 760, 90, 34, 104
     width = label_w + plot_w + right_w
     height = top + len(ranking) * row + 64
-    lo = max(0.0, math.floor(min(r[ci_key][0] for r in ranking) / step) * step)
+    lo = math.floor(min(r[ci_key][0] for r in ranking) / step) * step
+    if value_key == "pass_rate":
+        lo = max(0.0, lo)
     hi = math.ceil(max(r[ci_key][1] for r in ranking) / step) * step
     if value_key == "pass_rate":
         hi = 1.0
@@ -171,11 +175,15 @@ def ranking_svg(
         parts.append(f'<line x1="{x(t):.1f}" y1="{top - 14}" x2="{x(t):.1f}" y2="{axis_y}" stroke="{grid}" stroke-width="1"/>')
         parts.append(f'<text x="{x(t):.1f}" y="{axis_y + 20}" font-family="{font}" font-size="13" fill="{muted}" text-anchor="middle">{fmt(t)}</text>')
     parts.append(f'<text x="{label_w + plot_w / 2:.1f}" y="{axis_y + 44}" font-family="{font}" font-size="13" fill="{muted}" text-anchor="middle">{escape(axis_label)}</text>')
-    ref = next((r for r in ranking if r["agent_id"] == reference), None)
-    if ref:
-        rx = x(ref[value_key])
+    ref = next((r for r in ranking if r["agent_id"] == reference), None) if reference else None
+    ref_value = ref[value_key] if ref else reference_value
+    if ref_value is not None:
+        rx = x(ref_value)
         parts.append(f'<line x1="{rx:.1f}" y1="{top - 14}" x2="{rx:.1f}" y2="{axis_y}" stroke="{control_colour}" stroke-width="1.5" stroke-dasharray="5 4"/>')
-        parts.append(f'<text x="{rx + 6:.1f}" y="{top - 20}" font-family="{font}" font-size="13" fill="{muted}">no-prompt control</text>')
+        near_right = rx > label_w + plot_w - 160
+        anchor = ' text-anchor="end"' if near_right else ""
+        tx = rx - 6 if near_right else rx + 6
+        parts.append(f'<text x="{tx:.1f}" y="{top - 20}" font-family="{font}" font-size="13" fill="{muted}"{anchor}>{escape(reference_label)}</text>')
     for k, r in enumerate(ranking):
         cy = top + k * row + row / 2
         control = r["agent_id"].startswith("control/")

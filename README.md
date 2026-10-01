@@ -138,10 +138,12 @@ with a Mantel test (`phailogeny/phenotype/common_garden.py`).
 
 7. **First clade tournament** ([design and results](docs/clade_tournament.md)). The 18 agents of
    the debugging clade and two controls each fixed 26 planted bugs; patches were tested in a
-   sandbox. All 520 passed, including with no system prompt, and every agent cost more than no
-   prompt (median +30%). On simple fixes, these prompts add cost, not capability.
+   sandbox. On Claude Opus 5.5 all 520 passed, including with no system prompt, and every agent
+   cost more than no prompt (paired, median +27%, range +10% to +42%). Rerun on Haiku 4.5, 511 of
+   520 passed, both controls fixed every bug, and no agent was reliably better or worse. On simple
+   fixes these prompts add cost, not capability; separating agents needs harder tasks.
 
-   ![Cost per task by agent; all patches pass](out/figures/tournament_debugging.svg)
+   ![Extra cost of each agent compared with no prompt](out/figures/tournament_debugging_paired_cost.svg)
 
 ## Questions for a phylogeneticist
 

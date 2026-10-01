@@ -419,6 +419,7 @@ def run_verifiable(
                     continue
                 _log(out, {
                     "key": key, "agent_id": agent, "task_id": task["id"], "capability": task["capability"], "rep": rep,
+                    "requested_model": model,
                     "model": answer.get("model"), "effort": effort, "passed": tested["passed"],
                     "code_found": tested["output"] != "no code block", "sandboxed": tested.get("sandboxed"),
                     "test_output": tested["output"][-600:], "cost_usd": answer.get("cost_usd"),
@@ -432,12 +433,14 @@ def run_verifiable(
     return status
 
 
-def rank(name: str, runs_root: Path = Path("runs/tournaments"), data_root: Path = Path("data/tournaments"),
-         n_boot: int = 2000, seed: int = 0) -> dict:
-    """Pass rate per agent (mean over tasks of the replicate mean) with bootstrap CIs over tasks."""
+def rank(name: str, model: str = "claude-opus-5-5", runs_root: Path = Path("runs/tournaments"),
+         data_root: Path = Path("data/tournaments"), n_boot: int = 2000, seed: int = 0) -> dict:
+    """Pass rate per agent (mean over tasks of the replicate mean) with bootstrap CIs over tasks,
+    for one garden model. Rows from before `requested_model` was recorded were all Opus 5.5."""
     import numpy as np
 
     rows = [json.loads(line) for line in (runs_root / name / "results.jsonl").read_text(encoding="utf-8").splitlines() if line.strip()]
+    rows = [r for r in rows if r.get("requested_model", "claude-opus-5-5") == model]
     agents = sorted({r["agent_id"] for r in rows})
     tasks = sorted({r["task_id"] for r in rows})
     capability = {r["task_id"]: r["capability"] for r in rows}
@@ -480,12 +483,12 @@ def rank(name: str, runs_root: Path = Path("runs/tournaments"), data_root: Path 
         })
     table.sort(key=lambda row: -row["pass_rate"])
     result = {
-        "n_tasks": len(tasks), "n_agents": len(agents), "replicates": max(r["rep"] for r in rows) + 1,
+        "model": model, "n_tasks": len(tasks), "n_agents": len(agents), "replicates": max(r["rep"] for r in rows) + 1,
         "n_results": len(rows), "total_cost_usd": round(sum(sum(v) for v in cost.values()), 2),
         "ranking": table,
         "task_difficulty": {t: round(float(score[:, k].mean()), 3) for k, t in enumerate(tasks)},
     }
-    (data_root / name / "ranking.json").write_text(json.dumps(result, indent=2), encoding="utf-8")
+    (data_root / name / f"ranking_{model}.json").write_text(json.dumps(result, indent=2), encoding="utf-8")
     return result
 
 
@@ -509,3 +512,33 @@ def rescore(name: str, runs_root: Path = Path("runs/tournaments"), data_root: Pa
         row.update({"passed": tested["passed"], "test_output": tested["output"][-600:], "scorer_version": scorer_version})
     path.write_text("".join(json.dumps(r, sort_keys=True) + "\n" for r in rows), encoding="utf-8")
     return {"rows": len(rows), "verdicts_changed": changed, "passed": sum(r["passed"] for r in rows)}
+
+
+def paired_cost_vs_control(name: str, model: str = "claude-opus-5-5", control: str = "control/no-prompt",
+                           runs_root: Path = Path("runs/tournaments"), n_boot: int = 2000, seed: int = 0) -> list[dict]:
+    """Per agent: total cost / control's total cost over the same tasks, minus 1, with a bootstrap
+    CI over tasks (both totals resampled together, so the comparison stays paired).
+
+    A ratio of means, not a mean of per-task ratios, which a few tasks where the control was very
+    cheap would skew. This is the test behind "agents cost X% more".
+    """
+    import numpy as np
+
+    rows = [json.loads(line) for line in (runs_root / name / "results.jsonl").read_text(encoding="utf-8").splitlines() if line.strip()]
+    rows = [r for r in rows if r.get("requested_model", "claude-opus-5-5") == model]
+    cost: dict[tuple[str, str], list[float]] = {}
+    for r in rows:
+        cost.setdefault((r["agent_id"], r["task_id"]), []).append(r.get("cost_usd") or 0.0)
+    tasks = sorted({t for a, t in cost if a == control})
+    base = np.array([np.mean(cost[(control, t)]) for t in tasks])
+    rng = np.random.default_rng(seed)
+    draws = [rng.integers(0, len(tasks), len(tasks)) for _ in range(n_boot)]
+    out = []
+    for agent in sorted({a for a, _ in cost} - {control}):
+        if not all((agent, t) in cost for t in tasks):
+            continue
+        mine = np.array([np.mean(cost[(agent, t)]) for t in tasks])
+        boots = [mine[d].sum() / base[d].sum() - 1.0 for d in draws]
+        out.append({"agent_id": agent, "extra_cost": round(float(mine.sum() / base.sum() - 1.0), 4),
+                    "ci95": [round(float(np.percentile(boots, 2.5)), 4), round(float(np.percentile(boots, 97.5)), 4)]})
+    return sorted(out, key=lambda r: r["extra_cost"])

@@ -35,15 +35,35 @@ bug-fix tasks × 1 replicate, Claude Opus 5.5 at low effort, patches tested in a
 
 - **All 520 patches pass**, the no-prompt control included: a full ceiling. These tasks are too
   easy to separate agents on this model.
-- **Agents cost more for the same result.** Paired over tasks, all 18 agents cost significantly
-  more than no prompt: 12-46% more, median 30%, because their prompts lengthen answers.
+- **Agents cost more for the same result.** Paired over the same tasks (ratio of total costs),
+  all 18 agents cost significantly more than no prompt: 10-42% more, median 27%, because their
+  prompts lengthen answers. (An earlier mean-of-per-task-ratios figure, +30%, was skewed by tasks
+  where the control was very cheap.)
 - Scoring fixes made along the way (stored answers were re-scored offline): the extractor now
   picks the block that defines the module (agents often append a test block) and accepts
   four-backtick fences. Both bugs had marked correct patches as failures.
 
-Plot: `out/figures/tournament_debugging.svg`; numbers: `data/tournaments/debugging/ranking.json`.
-Next: harder tasks (multi-file, subtle, under-specified), the rubric and disposition tasks, and a
-weaker model in the garden to lift the ceiling.
+Plots: `out/figures/tournament_debugging_paired_cost.svg` (the paired test) and
+`out/figures/tournament_debugging.svg` (absolute cost); numbers:
+`data/tournaments/debugging/ranking_claude-opus-5-5.json`.
+
+## Results: Haiku 4.5 rerun (2026-10-01)
+
+Same agents, tasks and sandbox on Claude Haiku 4.5 (low effort), to push agents off the ceiling.
+Cost: $9.96 at list price.
+
+- **511 of 520 patches pass.** Both controls fix all 26 bugs. The 9 misses (audited: all genuine
+  wrong fixes, none extraction errors) are spread over 8 agents and concentrated in 2 tasks.
+- **No reliable ranking.** Every agent's pass-rate interval overlaps 100%; rank intervals span
+  most of the field. Agents vs controls, 9/468 vs 0/52 failures: Fisher p = 0.61.
+- **Cost:** Haiku answers cost about half of Opus answers (1.9 vs 4.1 cents per task). On Haiku,
+  agent prompts barely change cost (median +2%; 2 of 18 significant).
+- **Reading:** the model decision moves cost far more than the agent decision moves quality, and
+  ranking these agents needs harder tasks.
+
+Plots: `out/figures/tournament_debugging_haiku.svg`, `out/figures/tournament_debugging_paired_cost_haiku.svg`.
+Next: harder tasks (multi-file, subtle, under-specified), and the rubric and disposition tasks,
+where a prompt's rules should matter more than its knowledge.
 
 ## Future test suites (logged, not built)
 
