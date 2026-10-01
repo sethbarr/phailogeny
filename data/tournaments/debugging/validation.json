@@ -1,0 +1,45 @@
+{
+  "members": 18,
+  "capabilities": [
+    "hypothesis_testing",
+    "code_path_tracing",
+    "log_error_correlation",
+    "change_regression_isolation",
+    "reproduction_construction",
+    "minimal_fix_with_verification",
+    "prevention_monitoring",
+    "infra_incident_troubleshooting",
+    "error_triage_prioritization"
+  ],
+  "tasks_by_type": {
+    "verifiable": {
+      "total": 27,
+      "valid": 26
+    },
+    "rubric": {
+      "total": 9,
+      "valid": 9
+    },
+    "disposition": {
+      "total": 9,
+      "valid": 9
+    },
+    "robustness": {
+      "total": 9,
+      "valid": 9
+    },
+    "holdout": {
+      "total": 3,
+      "valid": 3
+    }
+  },
+  "invalid": [
+    {
+      "id": "change_regression_isolation_3",
+      "reasons": [
+        "test fails on reference fix"
+      ]
+    }
+  ],
+  "generation_cost_usd": 5.741
+}

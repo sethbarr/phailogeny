@@ -1,0 +1,114 @@
+{
+  "anchor": "wshobson/debugging-toolkit-debugger",
+  "frozen_at": "2026-10-01T18:05:51+00:00",
+  "members": [
+    {
+      "agent_id": "wshobson/team-debugger",
+      "source": "wshobson",
+      "source_path": "data/raw/wshobson/plugins/agent-teams/agents/team-debugger.md",
+      "prompt_sha": "7cd314122af3d445"
+    },
+    {
+      "agent_id": "wshobson/incident-response-debugger",
+      "source": "wshobson",
+      "source_path": "data/raw/wshobson/plugins/incident-response/agents/debugger.md",
+      "prompt_sha": "ef9a8d83c9c1bd23"
+    },
+    {
+      "agent_id": "wshobson/debugging-toolkit-debugger",
+      "source": "wshobson",
+      "source_path": "data/raw/wshobson/plugins/debugging-toolkit/agents/debugger.md",
+      "prompt_sha": "7b3250f721aecfd3"
+    },
+    {
+      "agent_id": "lst97/debugger",
+      "source": "lst97",
+      "source_path": "data/raw/lst97/agents/quality-testing/debugger.md",
+      "prompt_sha": "fde625145236edba"
+    },
+    {
+      "agent_id": "buildwithclaude/debugger",
+      "source": "buildwithclaude",
+      "source_path": "data/raw/buildwithclaude/plugins/agents-quality-security/agents/debugger.md",
+      "prompt_sha": "1febc4ee69e77f82"
+    },
+    {
+      "agent_id": "voltagent-codex/debugger",
+      "source": "voltagent-codex",
+      "source_path": "data/raw/voltagent-codex/categories/04-quality-security/debugger.toml",
+      "prompt_sha": "2589501743b0921c"
+    },
+    {
+      "agent_id": "voltagent-codex/error-coordinator",
+      "source": "voltagent-codex",
+      "source_path": "data/raw/voltagent-codex/categories/09-meta-orchestration/error-coordinator.toml",
+      "prompt_sha": "2a3d121c321b6498"
+    },
+    {
+      "agent_id": "voltagent-codex/hallucination-investigator",
+      "source": "voltagent-codex",
+      "source_path": "data/raw/voltagent-codex/categories/13-llmops-evals-observability/hallucination-investigator.toml",
+      "prompt_sha": "a79079a8cbe60f41"
+    },
+    {
+      "agent_id": "wshobson/cicd-automation-devops-troubleshooter",
+      "source": "wshobson",
+      "source_path": "data/raw/wshobson/plugins/cicd-automation/agents/devops-troubleshooter.md",
+      "prompt_sha": "1691f6434b94783b"
+    },
+    {
+      "agent_id": "lst97/devops-incident-responder",
+      "source": "lst97",
+      "source_path": "data/raw/lst97/agents/infrastructure/devops-incident-responder.md",
+      "prompt_sha": "63165a2bec52f440"
+    },
+    {
+      "agent_id": "buildwithclaude/devops-troubleshooter",
+      "source": "buildwithclaude",
+      "source_path": "data/raw/buildwithclaude/plugins/agents-infrastructure-operations/agents/devops-troubleshooter.md",
+      "prompt_sha": "cb841463f97eb453"
+    },
+    {
+      "agent_id": "wshobson/distributed-debugging-error-detective",
+      "source": "wshobson",
+      "source_path": "data/raw/wshobson/plugins/distributed-debugging/agents/error-detective.md",
+      "prompt_sha": "dc1c5c08a4669f53"
+    },
+    {
+      "agent_id": "buildwithclaude/error-detective",
+      "source": "buildwithclaude",
+      "source_path": "data/raw/buildwithclaude/plugins/agents-quality-security/agents/error-detective.md",
+      "prompt_sha": "116e7d71bb08bb0e"
+    },
+    {
+      "agent_id": "wshobson/prod-logs-health-check",
+      "source": "wshobson",
+      "source_path": "data/raw/wshobson/plugins/operating-kit/agents/prod-logs-health-check.md",
+      "prompt_sha": "4b2849dd70e90c16"
+    },
+    {
+      "agent_id": "wshobson/incident-response-error-detective",
+      "source": "wshobson",
+      "source_path": "data/raw/wshobson/plugins/incident-response/agents/error-detective.md",
+      "prompt_sha": "99a33e5c043d6695"
+    },
+    {
+      "agent_id": "voltagent-codex/error-detective",
+      "source": "voltagent-codex",
+      "source_path": "data/raw/voltagent-codex/categories/04-quality-security/error-detective.toml",
+      "prompt_sha": "f8144260f22e3f22"
+    },
+    {
+      "agent_id": "voltagent/debugger",
+      "source": "voltagent",
+      "source_path": "data/raw/voltagent/categories/04-quality-security/debugger.md",
+      "prompt_sha": "855acd3f00efe690"
+    },
+    {
+      "agent_id": "voltagent/error-detective",
+      "source": "voltagent",
+      "source_path": "data/raw/voltagent/categories/04-quality-security/error-detective.md",
+      "prompt_sha": "b674cb1faf30a084"
+    }
+  ]
+}

@@ -1,0 +1,209 @@
+{
+  "capabilities": [
+    {
+      "id": "hypothesis_testing",
+      "name": "Evidence-based hypothesis testing",
+      "definition": "Forms explicit root-cause hypotheses and confirms or rules them out with cited evidence, ranking them by confidence and keeping confirmed findings clearly separate from inference."
+    },
+    {
+      "id": "code_path_tracing",
+      "name": "Code path tracing",
+      "definition": "Traces control flow and data flow from the entry point to the exact failure location, identifies where expected and actual behavior diverge, and cites specific files and lines."
+    },
+    {
+      "id": "log_error_correlation",
+      "name": "Log and error correlation",
+      "definition": "Parses logs and stack traces, groups error signatures, separates first failures from cascading or retried noise, and correlates events across services and time windows into an accurate timeline."
+    },
+    {
+      "id": "change_regression_isolation",
+      "name": "Change and regression isolation",
+      "definition": "Ties the failure to recent changes (git diff or history, bisect, deployments, config drift) and identifies the specific change that introduced it."
+    },
+    {
+      "id": "reproduction_construction",
+      "name": "Minimal reproduction",
+      "definition": "Builds a minimal, reliable reproduction of the failure and states the exact conditions that trigger it."
+    },
+    {
+      "id": "minimal_fix_with_verification",
+      "name": "Minimal fix with verification",
+      "definition": "Implements or recommends the smallest fix that removes the root cause rather than the symptom, and checks it with targeted tests covering both success and failure paths."
+    },
+    {
+      "id": "prevention_monitoring",
+      "name": "Prevention and monitoring",
+      "definition": "Produces concrete measures to prevent recurrence, such as monitoring queries, alerts, runbooks, or regression safeguards, that would catch the same issue early."
+    },
+    {
+      "id": "infra_incident_troubleshooting",
+      "name": "Production infrastructure troubleshooting",
+      "definition": "Diagnoses production outages and restores service across containers/Kubernetes, networking/DNS, and observability tooling, giving runnable debugging commands and both temporary and permanent fixes."
+    },
+    {
+      "id": "error_triage_prioritization",
+      "name": "Error triage and prioritization",
+      "definition": "Groups multiple errors or incidents, rates their severity and user impact or blast radius, and gives a justified order for investigating them."
+    }
+  ],
+  "claims": [
+    {
+      "agent_id": "wshobson/team-debugger",
+      "capability_ids": [
+        "hypothesis_testing",
+        "code_path_tracing",
+        "change_regression_isolation",
+        "reproduction_construction"
+      ]
+    },
+    {
+      "agent_id": "wshobson/incident-response-debugger",
+      "capability_ids": [
+        "hypothesis_testing",
+        "code_path_tracing",
+        "change_regression_isolation"
+      ]
+    },
+    {
+      "agent_id": "wshobson/debugging-toolkit-debugger",
+      "capability_ids": [
+        "hypothesis_testing",
+        "change_regression_isolation",
+        "reproduction_construction",
+        "minimal_fix_with_verification",
+        "prevention_monitoring"
+      ]
+    },
+    {
+      "agent_id": "lst97/debugger",
+      "capability_ids": [
+        "log_error_correlation",
+        "code_path_tracing",
+        "prevention_monitoring"
+      ]
+    },
+    {
+      "agent_id": "buildwithclaude/debugger",
+      "capability_ids": [
+        "hypothesis_testing",
+        "code_path_tracing",
+        "change_regression_isolation",
+        "reproduction_construction",
+        "minimal_fix_with_verification",
+        "prevention_monitoring"
+      ]
+    },
+    {
+      "agent_id": "voltagent-codex/debugger",
+      "capability_ids": [
+        "hypothesis_testing",
+        "code_path_tracing",
+        "reproduction_construction",
+        "minimal_fix_with_verification"
+      ]
+    },
+    {
+      "agent_id": "voltagent-codex/error-coordinator",
+      "capability_ids": [
+        "error_triage_prioritization",
+        "hypothesis_testing",
+        "log_error_correlation",
+        "change_regression_isolation"
+      ]
+    },
+    {
+      "agent_id": "voltagent-codex/hallucination-investigator",
+      "capability_ids": [
+        "reproduction_construction",
+        "minimal_fix_with_verification"
+      ]
+    },
+    {
+      "agent_id": "wshobson/cicd-automation-devops-troubleshooter",
+      "capability_ids": [
+        "infra_incident_troubleshooting",
+        "log_error_correlation",
+        "prevention_monitoring"
+      ]
+    },
+    {
+      "agent_id": "lst97/devops-incident-responder",
+      "capability_ids": [
+        "infra_incident_troubleshooting",
+        "error_triage_prioritization",
+        "log_error_correlation",
+        "prevention_monitoring"
+      ]
+    },
+    {
+      "agent_id": "buildwithclaude/devops-troubleshooter",
+      "capability_ids": [
+        "infra_incident_troubleshooting",
+        "hypothesis_testing",
+        "log_error_correlation",
+        "prevention_monitoring"
+      ]
+    },
+    {
+      "agent_id": "wshobson/distributed-debugging-error-detective",
+      "capability_ids": [
+        "log_error_correlation",
+        "change_regression_isolation",
+        "hypothesis_testing",
+        "prevention_monitoring"
+      ]
+    },
+    {
+      "agent_id": "buildwithclaude/error-detective",
+      "capability_ids": [
+        "log_error_correlation",
+        "change_regression_isolation",
+        "prevention_monitoring"
+      ]
+    },
+    {
+      "agent_id": "wshobson/prod-logs-health-check",
+      "capability_ids": [
+        "log_error_correlation",
+        "hypothesis_testing"
+      ]
+    },
+    {
+      "agent_id": "wshobson/incident-response-error-detective",
+      "capability_ids": [
+        "log_error_correlation",
+        "error_triage_prioritization",
+        "change_regression_isolation",
+        "reproduction_construction"
+      ]
+    },
+    {
+      "agent_id": "voltagent-codex/error-detective",
+      "capability_ids": [
+        "log_error_correlation",
+        "error_triage_prioritization",
+        "hypothesis_testing",
+        "minimal_fix_with_verification"
+      ]
+    },
+    {
+      "agent_id": "voltagent/debugger",
+      "capability_ids": [
+        "hypothesis_testing",
+        "reproduction_construction",
+        "code_path_tracing",
+        "log_error_correlation",
+        "minimal_fix_with_verification",
+        "prevention_monitoring"
+      ]
+    },
+    {
+      "agent_id": "voltagent/error-detective",
+      "capability_ids": [
+        "log_error_correlation",
+        "error_triage_prioritization",
+        "prevention_monitoring"
+      ]
+    }
+  ]
+}

@@ -211,6 +211,25 @@ def _garden(args: argparse.Namespace) -> dict[str, object]:
     raise ValueError(args.garden_command)
 
 
+def _tournament(args: argparse.Namespace) -> dict[str, object]:
+    """Prepare a clade tournament: claim matrix, generated tasks, local validation."""
+    from skbio import TreeNode
+
+    from phailogeny.estate import assign_ids, dedupe_copies, load_subagent_dirs
+    from phailogeny.phenotype.tournament import prepare
+
+    records = dedupe_copies(load_subagent_dirs(args.dir))
+    assign_ids(records)
+    tree = TreeNode.read(args.tree)
+    return prepare(
+        tree, args.anchor, records,
+        out_dir=Path("data/tournaments") / args.name,
+        log_path=Path("runs/tournaments") / args.name / "generation.jsonl",
+        tasks_per_capability=args.tasks_per_capability,
+        workers=args.workers,
+    )
+
+
 def build_parser() -> argparse.ArgumentParser:
     """Create the CLI argument parser."""
     parser = argparse.ArgumentParser(prog="phailogeny", description="Analyze agent estates.")
@@ -280,6 +299,16 @@ def build_parser() -> argparse.ArgumentParser:
     for sub in garden_sub.choices.values():
         sub.add_argument("--runs", default="runs", help="Root for the shared store and run folders.")
 
+    tournament = subparsers.add_parser("tournament", help="Rank agents within a clade on a shared test battery.")
+    tournament_sub = tournament.add_subparsers(dest="tournament_command", required=True)
+    prep = tournament_sub.add_parser("prepare", help="Claim matrix, task generation and local validation.")
+    prep.add_argument("--dir", action="append", default=[], required=True)
+    prep.add_argument("--tree", default="out/tree.nwk")
+    prep.add_argument("--anchor", required=True, help="An agent id inside the clade.")
+    prep.add_argument("--name", required=True, help="Output folder name under data/tournaments/.")
+    prep.add_argument("--tasks-per-capability", type=int, default=6)
+    prep.add_argument("--workers", type=int, default=6)
+
     return parser
 
 
@@ -327,6 +356,10 @@ def main(argv: list[str] | None = None) -> int:
             parser.error("tree needs --dir or --corpus")
         result = _tree(args.dir, args.corpus, args.out, args.top, args.weights)
         print(json.dumps(result, sort_keys=True, indent=2))
+        return 0
+
+    if args.command == "tournament":
+        print(json.dumps(_tournament(args), sort_keys=True, indent=2))
         return 0
 
     if args.command == "garden":
