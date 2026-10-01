@@ -141,6 +141,7 @@ def ranking_svg(
     fmt=lambda v: f"{v * 100:.0f}%",
     step: float = 0.1,
     note_key: str | None = None,
+    palette: dict | None = None,
 ) -> str:
     """Dot-and-interval chart: pass rate per agent with its 95% CI, best at the top.
 
@@ -148,9 +149,11 @@ def ranking_svg(
     line marks the reference control's score. The x-axis starts where the data does (a dot plot,
     not a bar, so it need not start at zero) and the range is printed on the axis.
     """
-    agent_colour, control_colour = "#2160A8", "#B04E17"
-    ink, muted, grid = "#17212B", "#5C6570", "#E3DFD6"
-    font = "Helvetica,Arial,sans-serif"
+    theme = {"agent": "#2160A8", "control": "#B04E17", "ink": "#17212B", "muted": "#5C6570",
+             "grid": "#E3DFD6", "background": "#FFFFFF", "font": "Helvetica,Arial,sans-serif"} | (palette or {})
+    agent_colour, control_colour = theme["agent"], theme["control"]
+    ink, muted, grid = theme["ink"], theme["muted"], theme["grid"]
+    font = theme["font"]
     label_w, plot_w, right_w, row, top = 470, 760, 90, 34, 104
     width = label_w + plot_w + right_w
     height = top + len(ranking) * row + 64
@@ -165,7 +168,7 @@ def ranking_svg(
         return label_w + (v - lo) / (hi - lo) * plot_w
 
     parts = [
-        f'<rect width="{width}" height="{height}" fill="#FFFFFF"/>',
+        f'<rect width="{width}" height="{height}" fill="{theme["background"]}"/>',
         f'<text x="16" y="34" font-family="{font}" font-size="20" font-weight="bold" fill="{ink}">{escape(title)}</text>',
         f'<text x="16" y="60" font-family="{font}" font-size="14" fill="{muted}">{escape(subtitle)}</text>',
     ]
@@ -192,11 +195,15 @@ def ranking_svg(
         parts.append(f'<line x1="{x(r[ci_key][0]):.1f}" y1="{cy:.1f}" x2="{x(r[ci_key][1]):.1f}" y2="{cy:.1f}" stroke="{colour}" stroke-width="2" stroke-linecap="round"/>')
         px = x(r[value_key])
         if control:
-            parts.append(f'<path d="M{px:.1f} {cy - 8:.1f} L{px + 8:.1f} {cy:.1f} L{px:.1f} {cy + 8:.1f} L{px - 8:.1f} {cy:.1f} Z" fill="{colour}" stroke="#FFFFFF" stroke-width="2"/>')
+            parts.append(f'<path d="M{px:.1f} {cy - 8:.1f} L{px + 8:.1f} {cy:.1f} L{px:.1f} {cy + 8:.1f} L{px - 8:.1f} {cy:.1f} Z" fill="{colour}" stroke="{theme["background"]}" stroke-width="2"/>')
         else:
-            parts.append(f'<circle cx="{px:.1f}" cy="{cy:.1f}" r="6.5" fill="{colour}" stroke="#FFFFFF" stroke-width="2"/>')
+            parts.append(f'<circle cx="{px:.1f}" cy="{cy:.1f}" r="6.5" fill="{colour}" stroke="{theme["background"]}" stroke-width="2"/>')
         parts.append(f'<text x="{label_w + plot_w + 14}" y="{cy + 5:.1f}" font-family="{font}" font-size="15" fill="{muted}">{escape(r[note_key]) if note_key else fmt(r[value_key])}</text>')
     return f'<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{height}" viewBox="0 0 {width} {height}">{"".join(parts)}</svg>'
+
+
+SPECIMEN = {"agent": "#0a5d94", "control": "#b07400", "ink": "#15202b", "muted": "#4b5763",
+            "grid": "#c2cbc4", "background": "#f8f9f6", "font": "'Public Sans','Helvetica Neue',Arial,sans-serif"}
 
 
 def clade_around(tree: object, tip_name: str, min_tips: int = 20, max_tips: int = 45) -> object:
