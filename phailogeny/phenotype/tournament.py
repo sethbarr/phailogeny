@@ -162,24 +162,42 @@ Unused fields are empty strings or empty lists."""
     return tasks, result
 
 
+def _sandbox_profile(workdir: str) -> str:
+    """macOS sandbox: no network, writes only inside `workdir`, no reading the user's files
+    except the Python runtime and `workdir`."""
+    home = str(Path.home())
+    python_dirs = {sys.prefix, sys.base_prefix}
+    reads = " ".join(f'(subpath "{d}")' for d in sorted(python_dirs | {workdir}))
+    return (
+        "(version 1)\n(allow default)\n(deny network*)\n(deny file-write*)\n"
+        f'(allow file-write* (subpath "{workdir}") (literal "/dev/null") (literal "/dev/tty"))\n'
+        f'(deny file-read-data (subpath "{home}"))\n'
+        f"(allow file-read-data {reads})\n"
+    )
+
+
 def run_tests(module_code: str, test_code: str, timeout: int = 30) -> dict:
     """Run a task's pytest file against one version of the module, in a throwaway directory.
 
-    Minimal environment (no inherited credentials), isolated Python, hard timeout. The code was
-    written by a model for this study; this is containment, not a security sandbox.
+    On macOS the run is wrapped in `sandbox-exec` (no network, no writes outside the directory,
+    no reading the user's files). Elsewhere it falls back to a stripped environment and a timeout
+    only, and says so in the result.
     """
     with tempfile.TemporaryDirectory(prefix="phailogeny-tests-") as tmp:
+        tmp = os.path.realpath(tmp)
         Path(tmp, "buggy.py").write_text(module_code, encoding="utf-8")
         Path(tmp, "test_buggy.py").write_text(test_code, encoding="utf-8")
         env = {"PATH": os.environ.get("PATH", ""), "HOME": tmp, "PYTHONDONTWRITEBYTECODE": "1"}
+        cmd = [sys.executable, "-I", "-m", "pytest", "-q", "-p", "no:cacheprovider", "test_buggy.py"]
+        sandboxed = sys.platform == "darwin" and Path("/usr/bin/sandbox-exec").exists()
+        if sandboxed:
+            Path(tmp, "profile.sb").write_text(_sandbox_profile(tmp), encoding="utf-8")
+            cmd = ["/usr/bin/sandbox-exec", "-f", str(Path(tmp, "profile.sb")), *cmd]
         try:
-            proc = subprocess.run(
-                [sys.executable, "-m", "pytest", "-q", "-p", "no:cacheprovider", "test_buggy.py"],
-                cwd=tmp, env=env, capture_output=True, text=True, timeout=timeout,
-            )
+            proc = subprocess.run(cmd, cwd=tmp, env=env, capture_output=True, text=True, timeout=timeout)
         except subprocess.TimeoutExpired:
-            return {"passed": False, "timeout": True, "output": ""}
-    return {"passed": proc.returncode == 0, "timeout": False, "output": proc.stdout[-1500:]}
+            return {"passed": False, "timeout": True, "output": "", "sandboxed": sandboxed}
+    return {"passed": proc.returncode == 0, "timeout": False, "output": proc.stdout[-1500:], "sandboxed": sandboxed}
 
 
 def validate_task(task: dict) -> dict:
@@ -278,3 +296,216 @@ def prepare(
     }
     (out_dir / "validation.json").write_text(json.dumps(report, indent=2), encoding="utf-8")
     return report
+
+
+# ---------------------------------------------------------------- run and rank (verifiable tasks)
+
+BASELINE_SYSTEM = "You are a helpful assistant."
+GENERIC_SYSTEM = (
+    "You are an expert software engineer. When given a bug, find the root cause, make the smallest fix "
+    "that removes it, and check the fix against the reported symptoms."
+)
+CONTROLS = {"control/no-prompt": BASELINE_SYSTEM, "control/generic-expert": GENERIC_SYSTEM}
+
+
+def _code_blocks(text: str) -> list[tuple[str, str]]:
+    blocks, inside, current, lang = [], False, [], ""
+    for line in text.splitlines():
+        stripped = line.strip()
+        fence = stripped[:3] in ("```", "~~~")
+        if fence and inside and not stripped.strip("`~"):
+            blocks.append((lang, "\n".join(current)))
+            inside, current = False, []
+            continue
+        if fence and not inside:
+            inside, lang = True, stripped.lstrip("`~").strip().lower()
+            continue
+        if inside:
+            current.append(line)
+    return blocks
+
+
+def _top_level_names(code: str) -> set[str]:
+    import ast
+
+    try:
+        tree = ast.parse(code)
+    except SyntaxError:
+        return set()
+    names = set()
+    for node in tree.body:
+        if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)):
+            names.add(node.name)
+        elif isinstance(node, ast.Assign):
+            names.update(t.id for t in node.targets if isinstance(t, ast.Name))
+    return names
+
+
+def extract_code(text: str, reference_code: str = "") -> str | None:
+    """The answer's corrected module: the Python block that defines most of the reference module's
+    top-level names (so a test block the agent adds after its fix is not graded instead).
+    Ties go to the later block. Without a reference, the last Python block."""
+    blocks = [code for lang, code in _code_blocks(text) if lang in ("python", "py", "")] or [c for _, c in _code_blocks(text)]
+    if not blocks:
+        return None
+    wanted = _top_level_names(reference_code)
+    if not wanted:
+        return blocks[-1]
+    scored = [(len(wanted & _top_level_names(code)), k) for k, code in enumerate(blocks)]
+    return blocks[max(scored)[1]]
+
+
+def task_hash(task: dict) -> str:
+    return sha(f"{task['prompt']}\n{task['test_code']}", 16)
+
+
+def run_key(model: str, effort: str, system: str, task: dict, rep: int) -> str:
+    return sha(f"{model}|{effort}|{sha(system)}|{task['id']}|{task_hash(task)}|{rep}", 32)
+
+
+def run_verifiable(
+    name: str,
+    records: list[dict],
+    replicates: int = 2,
+    workers: int = 8,
+    model: str = "claude-opus-5-5",
+    effort: str = "low",
+    limit: int | None = None,
+    call=claude_cli_call,
+    data_root: Path = Path("data/tournaments"),
+    runs_root: Path = Path("runs/tournaments"),
+) -> dict:
+    """Every member and control answers every valid verifiable task; answers are scored by tests.
+
+    Results append to runs/tournaments/<name>/results.jsonl keyed by model, effort, system-prompt
+    hash, task id + hash and replicate, so an interrupted run resumes and nothing is paid twice.
+    """
+    import threading
+    from concurrent.futures import as_completed
+
+    members = json.loads((data_root / name / "members.json").read_text(encoding="utf-8"))["members"]
+    tasks = [t for t in yaml.safe_load((data_root / name / "tasks.yaml").read_text(encoding="utf-8"))["tasks"]
+             if t["type"] == "verifiable" and t["validation"]["valid"]]
+    by_id = {str(r["agent_id"]): r for r in records}
+    systems = {m["agent_id"]: str(by_id[m["agent_id"]]["prompt"]) for m in members} | CONTROLS
+    out = runs_root / name / "results.jsonl"
+    done = set()
+    if out.exists():
+        done = {json.loads(line)["key"] for line in out.read_text(encoding="utf-8").splitlines() if line.strip()}
+    jobs = [
+        (agent, system, task, rep, run_key(model, effort, system, task, rep))
+        for rep in range(replicates) for task in tasks for agent, system in systems.items()
+    ]
+    jobs = [job for job in jobs if job[4] not in done][: limit or None]
+    lock = threading.Lock()
+    status = {"queued": len(jobs), "done": 0, "failed_calls": 0, "passed": 0, "cost_usd": 0.0}
+
+    def work(job: tuple) -> tuple[tuple, dict, dict | None]:
+        agent, system, task, rep, key = job
+        answer = call(system, task["prompt"], model, effort)
+        if not answer.get("ok"):
+            return job, answer, None
+        code = extract_code(answer.get("text") or "", task["reference_code"])
+        tested = run_tests(code, task["test_code"]) if code else {"passed": False, "output": "no code block", "sandboxed": None}
+        return job, answer, tested
+
+    with ThreadPoolExecutor(max_workers=workers) as pool:
+        for future in as_completed(pool.submit(work, job) for job in jobs):
+            (agent, system, task, rep, key), answer, tested = future.result()
+            with lock:
+                if tested is None:
+                    status["failed_calls"] += 1
+                    _log(runs_root / name / "errors.jsonl", {"key": key, "agent": agent, "task": task["id"], "at": _now(), "error": answer.get("error")})
+                    continue
+                _log(out, {
+                    "key": key, "agent_id": agent, "task_id": task["id"], "capability": task["capability"], "rep": rep,
+                    "model": answer.get("model"), "effort": effort, "passed": tested["passed"],
+                    "code_found": tested["output"] != "no code block", "sandboxed": tested.get("sandboxed"),
+                    "test_output": tested["output"][-600:], "cost_usd": answer.get("cost_usd"),
+                    "usage": answer.get("usage"), "duration_ms": answer.get("duration_ms"),
+                    "session_id": answer.get("session_id"), "at": _now(), "answer": answer.get("text"),
+                })
+                status["done"] += 1
+                status["passed"] += int(tested["passed"])
+                status["cost_usd"] += answer.get("cost_usd") or 0.0
+    status["cost_usd"] = round(status["cost_usd"], 3)
+    return status
+
+
+def rank(name: str, runs_root: Path = Path("runs/tournaments"), data_root: Path = Path("data/tournaments"),
+         n_boot: int = 2000, seed: int = 0) -> dict:
+    """Pass rate per agent (mean over tasks of the replicate mean) with bootstrap CIs over tasks."""
+    import numpy as np
+
+    rows = [json.loads(line) for line in (runs_root / name / "results.jsonl").read_text(encoding="utf-8").splitlines() if line.strip()]
+    agents = sorted({r["agent_id"] for r in rows})
+    tasks = sorted({r["task_id"] for r in rows})
+    capability = {r["task_id"]: r["capability"] for r in rows}
+    score = np.full((len(agents), len(tasks)), np.nan)
+    cost = {a: [] for a in agents}
+    cost_cell = np.full((len(agents), len(tasks)), np.nan)
+    cells: dict[tuple[int, int], list[float]] = {}
+    costs: dict[tuple[int, int], list[float]] = {}
+    for r in rows:
+        key = (agents.index(r["agent_id"]), tasks.index(r["task_id"]))
+        cells.setdefault(key, []).append(float(r["passed"]))
+        costs.setdefault(key, []).append(r.get("cost_usd") or 0.0)
+        cost[r["agent_id"]].append(r.get("cost_usd") or 0.0)
+    for (i, j), values in cells.items():
+        score[i, j] = float(np.mean(values))
+        cost_cell[i, j] = float(np.mean(costs[(i, j)]))
+    complete = ~np.isnan(score).any(axis=0)
+    score = score[:, complete]
+    cost_cell = cost_cell[:, complete]
+    tasks = [t for t, keep in zip(tasks, complete) if keep]
+    rng = np.random.default_rng(seed)
+    draws = [rng.integers(0, len(tasks), len(tasks)) for _ in range(n_boot)]
+    boots = np.array([score[:, d].mean(axis=1) for d in draws])
+    cost_boots = np.array([cost_cell[:, d].mean(axis=1) for d in draws])
+    means = score.mean(axis=1)
+    from scipy.stats import rankdata
+
+    rank_boot = np.array([rankdata(-b, method="min") for b in boots])  # ties share the best rank
+    caps = sorted(set(capability[t] for t in tasks))
+    table = []
+    for i, agent in enumerate(agents):
+        table.append({
+            "agent_id": agent,
+            "pass_rate": round(float(means[i]), 3),
+            "ci95": [round(float(np.percentile(boots[:, i], 2.5)), 3), round(float(np.percentile(boots[:, i], 97.5)), 3)],
+            "rank_ci95": [int(np.percentile(rank_boot[:, i], 2.5)), int(np.percentile(rank_boot[:, i], 97.5))],
+            "mean_cost_usd": round(float(cost_cell[i].mean()), 4),
+            "cost_ci95": [round(float(np.percentile(cost_boots[:, i], 2.5)), 4), round(float(np.percentile(cost_boots[:, i], 97.5)), 4)],
+            "by_capability": {c: round(float(score[i, [k for k, t in enumerate(tasks) if capability[t] == c]].mean()), 3) for c in caps},
+        })
+    table.sort(key=lambda row: -row["pass_rate"])
+    result = {
+        "n_tasks": len(tasks), "n_agents": len(agents), "replicates": max(r["rep"] for r in rows) + 1,
+        "n_results": len(rows), "total_cost_usd": round(sum(sum(v) for v in cost.values()), 2),
+        "ranking": table,
+        "task_difficulty": {t: round(float(score[:, k].mean()), 3) for k, t in enumerate(tasks)},
+    }
+    (data_root / name / "ranking.json").write_text(json.dumps(result, indent=2), encoding="utf-8")
+    return result
+
+
+def rescore(name: str, runs_root: Path = Path("runs/tournaments"), data_root: Path = Path("data/tournaments"), scorer_version: int = 2) -> dict:
+    """Re-extract and re-test every stored answer with the current scorer (no model calls).
+
+    Each row keeps its earlier verdict as `passed_v<old>` so the change is traceable.
+    """
+    tasks = {t["id"]: t for t in yaml.safe_load((data_root / name / "tasks.yaml").read_text(encoding="utf-8"))["tasks"]}
+    path = runs_root / name / "results.jsonl"
+    rows = [json.loads(line) for line in path.read_text(encoding="utf-8").splitlines() if line.strip()]
+    changed = 0
+    for row in rows:
+        if row.get("scorer_version", 1) >= scorer_version or not row.get("answer"):
+            continue
+        task = tasks[row["task_id"]]
+        code = extract_code(row["answer"], task["reference_code"])
+        tested = run_tests(code, task["test_code"]) if code else {"passed": False, "output": "no code block"}
+        row[f"passed_v{row.get('scorer_version', 1)}"] = row["passed"]
+        changed += int(tested["passed"] != row["passed"])
+        row.update({"passed": tested["passed"], "test_output": tested["output"][-600:], "scorer_version": scorer_version})
+    path.write_text("".join(json.dumps(r, sort_keys=True) + "\n" for r in rows), encoding="utf-8")
+    return {"rows": len(rows), "verdicts_changed": changed, "passed": sum(r["passed"] for r in rows)}

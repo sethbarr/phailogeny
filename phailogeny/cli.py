@@ -216,10 +216,15 @@ def _tournament(args: argparse.Namespace) -> dict[str, object]:
     from skbio import TreeNode
 
     from phailogeny.estate import assign_ids, dedupe_copies, load_subagent_dirs
-    from phailogeny.phenotype.tournament import prepare
+    from phailogeny.phenotype.tournament import prepare, rank, run_verifiable
 
+    if args.tournament_command == "rank":
+        result = rank(args.name)
+        return {k: v for k, v in result.items() if k != "task_difficulty"}
     records = dedupe_copies(load_subagent_dirs(args.dir))
     assign_ids(records)
+    if args.tournament_command == "run":
+        return run_verifiable(args.name, records, replicates=args.replicates, workers=args.workers, limit=args.limit)
     tree = TreeNode.read(args.tree)
     return prepare(
         tree, args.anchor, records,
@@ -308,6 +313,14 @@ def build_parser() -> argparse.ArgumentParser:
     prep.add_argument("--name", required=True, help="Output folder name under data/tournaments/.")
     prep.add_argument("--tasks-per-capability", type=int, default=6)
     prep.add_argument("--workers", type=int, default=6)
+    run = tournament_sub.add_parser("run", help="Members and controls answer verifiable tasks; tests score them (sandboxed).")
+    run.add_argument("--dir", action="append", default=[], required=True)
+    run.add_argument("--name", required=True)
+    run.add_argument("--replicates", type=int, default=2)
+    run.add_argument("--workers", type=int, default=8)
+    run.add_argument("--limit", type=int, default=None, help="Only this many calls (smoke test).")
+    ranker = tournament_sub.add_parser("rank", help="Pass rates with bootstrap confidence intervals.")
+    ranker.add_argument("--name", required=True)
 
     return parser
 

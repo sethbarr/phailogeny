@@ -128,6 +128,69 @@ def rect_svg(tree: object, source_of: dict[str, str], title: str = "", row: int 
     )
 
 
+def ranking_svg(
+    ranking: list[dict],
+    title: str,
+    subtitle: str,
+    reference: str = "control/no-prompt",
+    value_key: str = "pass_rate",
+    ci_key: str = "ci95",
+    axis_label: str = "Share of bug-fix tasks whose tests pass (95% bootstrap interval over tasks)",
+    fmt=lambda v: f"{v * 100:.0f}%",
+    step: float = 0.1,
+    note_key: str | None = None,
+) -> str:
+    """Dot-and-interval chart: pass rate per agent with its 95% CI, best at the top.
+
+    Agents are blue dots, controls orange diamonds; identity is also in the text label. A dashed
+    line marks the reference control's score. The x-axis starts where the data does (a dot plot,
+    not a bar, so it need not start at zero) and the range is printed on the axis.
+    """
+    agent_colour, control_colour = "#2160A8", "#B04E17"
+    ink, muted, grid = "#17212B", "#5C6570", "#E3DFD6"
+    font = "Helvetica,Arial,sans-serif"
+    label_w, plot_w, right_w, row, top = 470, 760, 90, 34, 104
+    width = label_w + plot_w + right_w
+    height = top + len(ranking) * row + 64
+    lo = max(0.0, math.floor(min(r[ci_key][0] for r in ranking) / step) * step)
+    hi = math.ceil(max(r[ci_key][1] for r in ranking) / step) * step
+    if value_key == "pass_rate":
+        hi = 1.0
+
+    def x(v: float) -> float:
+        return label_w + (v - lo) / (hi - lo) * plot_w
+
+    parts = [
+        f'<rect width="{width}" height="{height}" fill="#FFFFFF"/>',
+        f'<text x="16" y="34" font-family="{font}" font-size="20" font-weight="bold" fill="{ink}">{escape(title)}</text>',
+        f'<text x="16" y="60" font-family="{font}" font-size="14" fill="{muted}">{escape(subtitle)}</text>',
+    ]
+    ticks = [round(lo + k * step, 6) for k in range(int(round((hi - lo) / step)) + 1)]
+    axis_y = top + len(ranking) * row + 8
+    for t in ticks:
+        parts.append(f'<line x1="{x(t):.1f}" y1="{top - 14}" x2="{x(t):.1f}" y2="{axis_y}" stroke="{grid}" stroke-width="1"/>')
+        parts.append(f'<text x="{x(t):.1f}" y="{axis_y + 20}" font-family="{font}" font-size="13" fill="{muted}" text-anchor="middle">{fmt(t)}</text>')
+    parts.append(f'<text x="{label_w + plot_w / 2:.1f}" y="{axis_y + 44}" font-family="{font}" font-size="13" fill="{muted}" text-anchor="middle">{escape(axis_label)}</text>')
+    ref = next((r for r in ranking if r["agent_id"] == reference), None)
+    if ref:
+        rx = x(ref[value_key])
+        parts.append(f'<line x1="{rx:.1f}" y1="{top - 14}" x2="{rx:.1f}" y2="{axis_y}" stroke="{control_colour}" stroke-width="1.5" stroke-dasharray="5 4"/>')
+        parts.append(f'<text x="{rx + 6:.1f}" y="{top - 20}" font-family="{font}" font-size="13" fill="{muted}">no-prompt control</text>')
+    for k, r in enumerate(ranking):
+        cy = top + k * row + row / 2
+        control = r["agent_id"].startswith("control/")
+        colour = control_colour if control else agent_colour
+        parts.append(f'<text x="{label_w - 14}" y="{cy + 5:.1f}" font-family="{font}" font-size="15" fill="{ink}" text-anchor="end"{" font-style=\"italic\"" if control else ""}>{escape(r["agent_id"])}</text>')
+        parts.append(f'<line x1="{x(r[ci_key][0]):.1f}" y1="{cy:.1f}" x2="{x(r[ci_key][1]):.1f}" y2="{cy:.1f}" stroke="{colour}" stroke-width="2" stroke-linecap="round"/>')
+        px = x(r[value_key])
+        if control:
+            parts.append(f'<path d="M{px:.1f} {cy - 8:.1f} L{px + 8:.1f} {cy:.1f} L{px:.1f} {cy + 8:.1f} L{px - 8:.1f} {cy:.1f} Z" fill="{colour}" stroke="#FFFFFF" stroke-width="2"/>')
+        else:
+            parts.append(f'<circle cx="{px:.1f}" cy="{cy:.1f}" r="6.5" fill="{colour}" stroke="#FFFFFF" stroke-width="2"/>')
+        parts.append(f'<text x="{label_w + plot_w + 14}" y="{cy + 5:.1f}" font-family="{font}" font-size="15" fill="{muted}">{escape(r[note_key]) if note_key else fmt(r[value_key])}</text>')
+    return f'<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{height}" viewBox="0 0 {width} {height}">{"".join(parts)}</svg>'
+
+
 def clade_around(tree: object, tip_name: str, min_tips: int = 20, max_tips: int = 45) -> object:
     """Smallest clade containing `tip_name` with at least `min_tips` tips (capped at `max_tips`)."""
     node = tree.find(tip_name)

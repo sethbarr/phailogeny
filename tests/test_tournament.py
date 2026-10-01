@@ -47,3 +47,42 @@ def test_prepare_writes_reviewable_files(tmp_path) -> None:
     assert report["members"] == 4 and report["tasks_by_type"]["verifiable"] == {"total": 1, "valid": 1}
     assert report["tasks_by_type"]["holdout"]["total"] == 1
     assert json.loads((tmp_path / "out" / "claims.json").read_text())["capabilities"][0]["id"] == "fix"
+
+
+def test_run_and_rank_with_a_fake_model(tmp_path) -> None:
+    import yaml
+
+    from phailogeny.phenotype.tournament import rank, run_verifiable
+
+    data, runs = tmp_path / "data", tmp_path / "runs"
+    (data / "t").mkdir(parents=True)
+    (data / "t" / "members.json").write_text(json.dumps({"members": [{"agent_id": "a/good"}, {"agent_id": "a/bad"}]}))
+    task = _verifiable(id="fix_1", capability="fix", validation={"valid": True, "reasons": []})
+    (data / "t" / "tasks.yaml").write_text(yaml.safe_dump({"tasks": [task]}))
+    records = [{"agent_id": "a/good", "prompt": "good"}, {"agent_id": "a/bad", "prompt": "bad"}]
+
+    def fake_call(system, prompt, model, effort, schema=None):
+        code = FIXED if system in ("good", "You are a helpful assistant.") else BUGGY
+        return {"ok": True, "text": f"Here:\n```python\n{code}```", "cost_usd": 0.01}
+
+    status = run_verifiable("t", records, replicates=2, workers=2, call=fake_call, data_root=data, runs_root=runs)
+    assert status["done"] == 8  # 2 members + 2 controls, 1 task, 2 reps
+    again = run_verifiable("t", records, replicates=2, workers=2, call=fake_call, data_root=data, runs_root=runs)
+    assert again["queued"] == 0  # resumes; nothing paid twice
+    result = rank("t", runs_root=runs, data_root=data, n_boot=50)
+    scores = {row["agent_id"]: row["pass_rate"] for row in result["ranking"]}
+    assert scores["a/good"] == 1.0 and scores["a/bad"] == 0.0 and scores["control/no-prompt"] == 1.0
+
+
+def test_extract_code_prefers_the_module_over_a_trailing_test_block() -> None:
+    from phailogeny.phenotype.tournament import extract_code
+
+    answer = f"Fix:\n```python\n{FIXED}```\nAnd a regression test:\n```python\n{TEST}```"
+    assert extract_code(answer, FIXED).strip() == FIXED.strip()
+
+
+def test_extract_code_handles_four_backtick_fences() -> None:
+    from phailogeny.phenotype.tournament import extract_code
+
+    answer = f"Snippet:\n```python\nx = 1\n```\nFull module:\n````python\n{FIXED}````\n"
+    assert extract_code(answer, FIXED).strip() == FIXED.strip()

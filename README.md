@@ -136,6 +136,13 @@ with a Mantel test (`phailogeny/phenotype/common_garden.py`).
    proxy for "derived", so homoplasy in rare domain terms (two .NET agents both citing Dapper) is
    the main risk.
 
+7. **First clade tournament** ([design and results](docs/clade_tournament.md)). The 18 agents of
+   the debugging clade and two controls each fixed 26 planted bugs; patches were tested in a
+   sandbox. All 520 passed, including with no system prompt, and every agent cost more than no
+   prompt (median +30%). On simple fixes, these prompts add cost, not capability.
+
+   ![Cost per task by agent; all patches pass](out/figures/tournament_debugging.svg)
+
 ## Questions for a phylogeneticist
 
 1. **Tree or network?** Agents swap parts across lineages (prompt sections, tool configs). Is NJ
