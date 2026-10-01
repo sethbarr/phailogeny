@@ -65,6 +65,26 @@ Plots: `out/figures/tournament_debugging_haiku.svg`, `out/figures/tournament_deb
 Next: harder tasks (multi-file, subtle, under-specified), and the rubric and disposition tasks,
 where a prompt's rules should matter more than its knowledge.
 
+## Results: harder multi-file tasks, Opus vs Haiku (2026-10-01)
+
+12 generated tasks (`data/tournaments/debugging-hard/`): 3-5 modules, 96-154 lines, a bug that
+spans modules with the symptom far from the cause, plus a red herring; all 12 validated (bug fails
+the hidden tests, reference fix passes). Two agents (wshobson and VoltAgent debuggers) + both
+controls, 1 replicate per model. Generation $2.17, runs $3.32.
+
+| Model | Patches passing | Mean cost per task | Cost per correct fix |
+| --- | --- | --- | --- |
+| Opus 5.5 | 48 / 48 | 4.2 cents | 4.2 cents |
+| Haiku 4.5 | 45 / 48 | 2.7 cents | 2.9 cents |
+
+- Opus still solves everything; these "hard" tasks are not hard enough to find its limit.
+- All three Haiku failures are one task, and the same mistake: it found the right file but returned
+  it incomplete, silently dropping a function. A sloppy edit, not a wrong diagnosis.
+- Across both task sets, all 12 tasks where the models disagreed went Opus's way (sign test
+  p = 0.0005): Opus is reliably better, by a few percentage points, at roughly twice the cost.
+- Scorer fix (re-scored offline, 1 verdict changed): when an answer labels its files, unlabelled
+  illustrative snippets are no longer allowed to overwrite a file.
+
 ## Future test suites (logged, not built)
 
 - **Generalisability to a different task.** Run each agent on another clade's battery (e.g.

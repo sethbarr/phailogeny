@@ -1,0 +1,11 @@
+{
+  "frozen_at": "2026-10-01T20:14:50+00:00",
+  "members": [
+    {
+      "agent_id": "wshobson/debugging-toolkit-debugger"
+    },
+    {
+      "agent_id": "voltagent/debugger"
+    }
+  ]
+}

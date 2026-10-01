@@ -177,7 +177,12 @@ def _sandbox_profile(workdir: str) -> str:
 
 
 def run_tests(module_code: str, test_code: str, timeout: int = 30) -> dict:
-    """Run a task's pytest file against one version of the module, in a throwaway directory.
+    """Run a single-module task's tests (module saved as buggy.py)."""
+    return run_files({"buggy.py": module_code}, test_code, timeout)
+
+
+def run_files(files: dict[str, str], test_code: str, timeout: int = 30) -> dict:
+    """Run a task's pytest file against one version of its files, in a throwaway directory.
 
     On macOS the run is wrapped in `sandbox-exec` (no network, no writes outside the directory,
     no reading the user's files). Elsewhere it falls back to a stripped environment and a timeout
@@ -185,7 +190,10 @@ def run_tests(module_code: str, test_code: str, timeout: int = 30) -> dict:
     """
     with tempfile.TemporaryDirectory(prefix="phailogeny-tests-") as tmp:
         tmp = os.path.realpath(tmp)
-        Path(tmp, "buggy.py").write_text(module_code, encoding="utf-8")
+        for name, content in files.items():
+            if "/" in name or "\\" in name or name.startswith(".") or not name.endswith(".py"):
+                return {"passed": False, "timeout": False, "output": f"refused file name {name!r}", "sandboxed": None}
+            Path(tmp, name).write_text(content, encoding="utf-8")
         Path(tmp, "test_buggy.py").write_text(test_code, encoding="utf-8")
         env = {"PATH": os.environ.get("PATH", ""), "HOME": tmp, "PYTHONDONTWRITEBYTECODE": "1"}
         cmd = [sys.executable, "-I", "-m", "pytest", "-q", "-p", "no:cacheprovider", "test_buggy.py"]
@@ -355,6 +363,48 @@ def extract_code(text: str, reference_code: str = "") -> str | None:
     return blocks[max(scored)[1]]
 
 
+FILE_TAG = "# file:"
+
+
+def extract_files(text: str, original: dict[str, str]) -> dict[str, str]:
+    """Files an answer changed: Python blocks whose first line is `# file: <name>` for a known file.
+    Only when no block is labelled are unlabelled blocks matched to the original file sharing most
+    top-level names (otherwise an illustrative snippet could overwrite a whole file)."""
+    changed: dict[str, str] = {}
+    blocks = [(lang, code) for lang, code in _code_blocks(text) if lang in ("python", "py", "")]
+    labelled = any(code.lstrip().lower().startswith(FILE_TAG) for _, code in blocks)
+    for lang, code in blocks:
+        lines = code.splitlines()
+        first = lines[0].strip() if lines else ""
+        if first.lower().startswith(FILE_TAG):
+            name = first[len(FILE_TAG):].strip()
+            if name in original:
+                changed[name] = "\n".join(lines[1:])
+            continue
+        if labelled:
+            continue
+        names = _top_level_names(code)
+        best = max(original, key=lambda f: len(names & _top_level_names(original[f])))
+        if names & _top_level_names(original[best]):
+            changed[best] = code
+    return changed
+
+
+def score_answer(task: dict, text: str) -> dict:
+    """Run the task's hidden tests against the code in an answer."""
+    if task["type"] == "verifiable_multi":
+        original = {f["path"]: f["content"] for f in task["files"]}
+        changed = extract_files(text, original)
+        if not changed:
+            return {"passed": False, "output": "no code block", "sandboxed": None, "files_changed": []}
+        result = run_files(original | changed, task["test_code"])
+        return result | {"files_changed": sorted(changed)}
+    code = extract_code(text, task["reference_code"])
+    if not code:
+        return {"passed": False, "output": "no code block", "sandboxed": None}
+    return run_tests(code, task["test_code"])
+
+
 def task_hash(task: dict) -> str:
     return sha(f"{task['prompt']}\n{task['test_code']}", 16)
 
@@ -385,7 +435,7 @@ def run_verifiable(
 
     members = json.loads((data_root / name / "members.json").read_text(encoding="utf-8"))["members"]
     tasks = [t for t in yaml.safe_load((data_root / name / "tasks.yaml").read_text(encoding="utf-8"))["tasks"]
-             if t["type"] == "verifiable" and t["validation"]["valid"]]
+             if t["type"] in ("verifiable", "verifiable_multi") and t["validation"]["valid"]]
     by_id = {str(r["agent_id"]): r for r in records}
     systems = {m["agent_id"]: str(by_id[m["agent_id"]]["prompt"]) for m in members} | CONTROLS
     out = runs_root / name / "results.jsonl"
@@ -405,8 +455,7 @@ def run_verifiable(
         answer = call(system, task["prompt"], model, effort)
         if not answer.get("ok"):
             return job, answer, None
-        code = extract_code(answer.get("text") or "", task["reference_code"])
-        tested = run_tests(code, task["test_code"]) if code else {"passed": False, "output": "no code block", "sandboxed": None}
+        tested = score_answer(task, answer.get("text") or "")
         return job, answer, tested
 
     with ThreadPoolExecutor(max_workers=workers) as pool:
@@ -505,8 +554,7 @@ def rescore(name: str, runs_root: Path = Path("runs/tournaments"), data_root: Pa
         if row.get("scorer_version", 1) >= scorer_version or not row.get("answer"):
             continue
         task = tasks[row["task_id"]]
-        code = extract_code(row["answer"], task["reference_code"])
-        tested = run_tests(code, task["test_code"]) if code else {"passed": False, "output": "no code block"}
+        tested = score_answer(task, row["answer"])
         row[f"passed_v{row.get('scorer_version', 1)}"] = row["passed"]
         changed += int(tested["passed"] != row["passed"])
         row.update({"passed": tested["passed"], "test_output": tested["output"][-600:], "scorer_version": scorer_version})
@@ -542,3 +590,132 @@ def paired_cost_vs_control(name: str, model: str = "claude-opus-5-5", control: s
         out.append({"agent_id": agent, "extra_cost": round(float(mine.sum() / base.sum() - 1.0), 4),
                     "ci95": [round(float(np.percentile(boots, 2.5)), 4), round(float(np.percentile(boots, 97.5)), 4)]})
     return sorted(out, key=lambda r: r["extra_cost"])
+
+
+# ---------------------------------------------------------------- harder, multi-file tasks
+
+HARD_THEMES = [
+    "a cache in one module that is not invalidated when another module updates the data",
+    "naive vs timezone-aware datetimes mixed between a parser module and a scheduler module",
+    "an off-by-one in pagination split between a repository layer and a service layer",
+    "configuration precedence (defaults, file, environment) merged in the wrong order across modules",
+    "shared mutable state through a module-level singleton or default argument used by two modules",
+    "money rounding split across an invoice module and a tax module so totals drift by a cent",
+    "a retry wrapper in one module that swallows the real exception raised in another",
+    "a sort key in one module that disagrees with the comparison or serialisation in another",
+    "Unicode normalisation that differs between the module that indexes names and the one that looks them up",
+    "a default value computed once at import time in one module and relied on later by another",
+    "a generator or iterator produced in one module and consumed twice in another",
+    "a shallow copy in one module whose nested data another module then mutates",
+]
+
+FILE_ITEM = {
+    "type": "object",
+    "properties": {"path": {"type": "string"}, "content": {"type": "string"}},
+    "required": ["path", "content"],
+    "additionalProperties": False,
+}
+HARD_SCHEMA = {
+    "type": "object",
+    "properties": {
+        "tasks": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "id": {"type": "string"},
+                    "title": {"type": "string"},
+                    "symptom": {"type": "string"},
+                    "files": {"type": "array", "items": FILE_ITEM},
+                    "reference_files": {"type": "array", "items": FILE_ITEM},
+                    "test_code": {"type": "string"},
+                    "red_herring": {"type": "string"},
+                    "root_cause": {"type": "string"},
+                },
+                "required": ["id", "title", "symptom", "files", "reference_files", "test_code", "red_herring", "root_cause"],
+                "additionalProperties": False,
+            },
+        }
+    },
+    "required": ["tasks"],
+    "additionalProperties": False,
+}
+
+
+def hard_prompt(task: dict) -> str:
+    """What the agent sees: the symptom and every file, not the tests or the fix."""
+    shown = "\n\n".join(f"```python\n# file: {f['path']}\n{f['content']}\n```" for f in task["files"])
+    return (
+        f"{task['symptom']}\n\nHere is the code:\n\n{shown}\n\n"
+        "Find the root cause and fix it. Return every file you change in full, each in its own ```python block "
+        "whose first line is `# file: <name>`. Do not return files you leave unchanged."
+    )
+
+
+def generate_hard_tasks(themes: list[str], start: int, call=claude_cli_call, model: str = "claude-opus-5-5") -> tuple[list[dict], dict]:
+    listing = "\n".join(f"- debug_hard_{start + k}: {theme}" for k, theme in enumerate(themes))
+    prompt = f"""Write {len(themes)} hard debugging tasks for evaluating AI coding agents, one per theme, with these ids:
+{listing}
+
+Each task is a small Python 3 package (standard library only, deterministic, no network, no sleeps):
+- `files`: 3 to 5 modules, flat names like `orders.py` (no folders), 80 to 200 lines in total, realistic code.
+- The bug comes from the interaction of at least two modules. The symptom shows up far from the cause.
+- Include one red herring: code that looks suspicious but is correct (describe it in `red_herring`).
+- `symptom`: what a developer would report (wrong output, failing behaviour, an error), without naming the cause.
+- `reference_files`: ONLY the modules the fix changes, in full.
+- `test_code`: a pytest file (imports the modules by name) whose tests FAIL on the buggy files and PASS once
+  the reference files replace them. Test behaviour, not implementation details; no private names.
+- `root_cause`: one sentence.
+A competent engineer skimming for 30 seconds should be tempted to fix the wrong thing."""
+    result = call(SYSTEM, prompt, model, "medium", HARD_SCHEMA)
+    tasks = (result.get("structured") or {}).get("tasks", [])
+    for task in tasks:
+        task["type"] = "verifiable_multi"
+        task["capability"] = "multi_module_debugging"
+        task["prompt"] = hard_prompt(task)
+    return tasks, result
+
+
+def validate_hard(task: dict) -> dict:
+    files = {f["path"]: f["content"] for f in task["files"]}
+    reference = {f["path"]: f["content"] for f in task["reference_files"]}
+    reasons = []
+    if not reference or not set(reference) <= set(files):
+        reasons.append("reference files missing or not among the task files")
+    if not 3 <= len(files) <= 6:
+        reasons.append(f"{len(files)} files (want 3-5)")
+    if reasons:
+        return {"valid": False, "reasons": reasons}
+    buggy = run_files(files, task["test_code"])
+    fixed = run_files(files | reference, task["test_code"])
+    if buggy["passed"]:
+        reasons.append("test passes on buggy code (bug not caught)")
+    if not fixed["passed"]:
+        reasons.append("test fails on reference fix")
+    lines = sum(len(c.splitlines()) for c in files.values())
+    return {"valid": not reasons, "reasons": reasons, "lines": lines, "fixed_output": fixed["output"][-400:]}
+
+
+def prepare_hard(name: str, member_ids: list[str], n_tasks: int = 12, per_call: int = 2, workers: int = 6,
+                 call=claude_cli_call, data_root: Path = Path("data/tournaments"), runs_root: Path = Path("runs/tournaments")) -> dict:
+    out = data_root / name
+    out.mkdir(parents=True, exist_ok=True)
+    (out / "members.json").write_text(json.dumps({"frozen_at": _now(), "members": [{"agent_id": a} for a in member_ids]}, indent=2), encoding="utf-8")
+    themes = HARD_THEMES[:n_tasks]
+    batches = [(themes[k:k + per_call], k + 1) for k in range(0, len(themes), per_call)]
+    tasks, cost = [], 0.0
+    with ThreadPoolExecutor(max_workers=workers) as pool:
+        for generated, result in pool.map(lambda b: generate_hard_tasks(b[0], b[1], call), batches):
+            cost += result.get("cost_usd") or 0.0
+            _log(runs_root / name / "generation.jsonl", {"step": "hard_tasks", "at": _now(), "cost_usd": result.get("cost_usd"), "ok": result.get("ok"), "output": generated})
+            tasks.extend(generated)
+    for task in tasks:
+        task["validation"] = validate_hard(task)
+    (out / "tasks.yaml").write_text(yaml.safe_dump({"gen_version": GEN_VERSION, "tasks": tasks}, sort_keys=False, allow_unicode=True, width=100), encoding="utf-8")
+    report = {
+        "tasks": len(tasks), "valid": sum(t["validation"]["valid"] for t in tasks),
+        "invalid": [{"id": t["id"], "reasons": t["validation"]["reasons"]} for t in tasks if not t["validation"]["valid"]],
+        "lines": [t["validation"].get("lines") for t in tasks], "generation_cost_usd": round(cost, 3),
+    }
+    (out / "validation.json").write_text(json.dumps(report, indent=2), encoding="utf-8")
+    return report

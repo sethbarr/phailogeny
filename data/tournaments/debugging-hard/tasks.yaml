@@ -1,0 +1,1828 @@
+gen_version: 1
+tasks:
+- id: debug_hard_1
+  title: Cart totals keep showing old prices after a supplier price-list import
+  symptom: After we run the supplier price import (admin.apply_price_list), some carts still show the
+    old unit prices. Customers who typed SKUs in lowercase (e.g. 'kb-100') or with stray spaces keep getting
+    the old price for as long as the process runs. Carts using the exact upper-case SKU update correctly.
+    Restarting the process fixes it until the next import. apply_price_list does return the changed SKUs,
+    and catalog.get() shows the new base_price.
+  files:
+  - path: catalog.py
+    content: "\"\"\"Product catalog with change notifications.\"\"\"\nfrom dataclasses import dataclass\n\
+      \n\ndef normalize_sku(sku):\n    \"\"\"Canonical SKU form used for storage: trimmed, upper-case.\"\
+      \"\"\n    return sku.strip().upper()\n\n\n@dataclass\nclass Product:\n    sku: str\n    name: str\n\
+      \    base_price: float\n    category: str = \"general\"\n\n\nclass Catalog:\n    def __init__(self):\n\
+      \        self._products = {}\n        self._listeners = []\n\n    def subscribe(self, callback):\n\
+      \        \"\"\"Register callback(sku) invoked whenever a product changes.\"\"\"\n        self._listeners.append(callback)\n\
+      \n    def _notify(self, sku):\n        for callback in list(self._listeners):\n            callback(sku)\n\
+      \n    def add(self, sku, name, base_price, category=\"general\"):\n        key = normalize_sku(sku)\n\
+      \        self._products[key] = Product(key, name, float(base_price), category)\n        self._notify(key)\n\
+      \n    def get(self, sku):\n        key = normalize_sku(sku)\n        try:\n            return self._products[key]\n\
+      \        except KeyError:\n            raise KeyError(f\"unknown sku: {sku!r}\") from None\n\n \
+      \   def update_price(self, sku, new_price):\n        product = self.get(sku)\n        if new_price\
+      \ < 0:\n            raise ValueError(\"price must be non-negative\")\n        product.base_price\
+      \ = float(new_price)\n        self._notify(product.sku)\n"
+  - path: pricing.py
+    content: "\"\"\"Customer-facing prices with category discounts, cached per SKU.\"\"\"\nimport time\n\
+      \nCATEGORY_DISCOUNTS = {\"clearance\": 0.30, \"seasonal\": 0.10}\n\n\nclass PriceCache:\n    def\
+      \ __init__(self, catalog, ttl=None, clock=time.monotonic):\n        self._catalog = catalog\n  \
+      \      self._ttl = ttl\n        self._clock = clock\n        self._entries = {}\n        self.hits\
+      \ = 0\n        self.misses = 0\n        catalog.subscribe(self.invalidate)\n\n    def invalidate(self,\
+      \ sku):\n        self._entries.pop(sku, None)\n\n    def clear(self):\n        self._entries.clear()\n\
+      \n    def _compute(self, sku):\n        product = self._catalog.get(sku)\n        discount = CATEGORY_DISCOUNTS.get(product.category,\
+      \ 0.0)\n        return round(product.base_price * (1 - discount), 2)\n\n    def price(self, sku):\n\
+      \        entry = self._entries.get(sku)\n        now = self._clock()\n        if entry is not None:\n\
+      \            value, stored_at = entry\n            if self._ttl is None or now - stored_at < self._ttl:\n\
+      \                self.hits += 1\n                return value\n        self.misses += 1\n      \
+      \  value = self._compute(sku)\n        self._entries[sku] = (value, now)\n        return value\n"
+  - path: checkout.py
+    content: "\"\"\"Shopping cart and order totals.\"\"\"\n\n\nclass Cart:\n    def __init__(self, prices):\n\
+      \        self._prices = prices\n        self._lines = {}\n\n    def add(self, sku, qty=1):\n   \
+      \     if qty <= 0:\n            raise ValueError(\"quantity must be positive\")\n        self._lines[sku]\
+      \ = self._lines.get(sku, 0) + qty\n\n    def remove(self, sku, qty=None):\n        if sku not in\
+      \ self._lines:\n            raise KeyError(sku)\n        if qty is None or qty >= self._lines[sku]:\n\
+      \            del self._lines[sku]\n        else:\n            self._lines[sku] -= qty\n\n    def\
+      \ lines(self):\n        return [\n            (sku, qty, self._prices.price(sku))\n            for\
+      \ sku, qty in sorted(self._lines.items())\n        ]\n\n    def subtotal(self):\n        return\
+      \ round(sum(qty * unit for _, qty, unit in self.lines()), 2)\n\n    def total(self, tax_rate=0.0):\n\
+      \        if tax_rate < 0:\n            raise ValueError(\"tax rate must be non-negative\")\n   \
+      \     return round(self.subtotal() * (1 + tax_rate), 2)\n"
+  - path: admin.py
+    content: "\"\"\"Bulk price updates from a supplier price list (CSV text).\"\"\"\nimport csv\nimport\
+      \ io\n\n\ndef parse_price_list(text):\n    reader = csv.DictReader(io.StringIO(text))\n    updates\
+      \ = []\n    for row in reader:\n        sku = row[\"sku\"]\n        price = float(row[\"price\"\
+      ])\n        updates.append((sku, price))\n    return updates\n\n\ndef apply_price_list(catalog,\
+      \ text):\n    \"\"\"Apply a price list; returns canonical SKUs whose price changed.\"\"\"\n    changed\
+      \ = []\n    for sku, price in parse_price_list(text):\n        product = catalog.get(sku)\n    \
+      \    if product.base_price != price:\n            catalog.update_price(sku, price)\n           \
+      \ changed.append(product.sku)\n    return changed\n"
+  reference_files:
+  - path: pricing.py
+    content: "\"\"\"Customer-facing prices with category discounts, cached per SKU.\"\"\"\nimport time\n\
+      \nfrom catalog import normalize_sku\n\nCATEGORY_DISCOUNTS = {\"clearance\": 0.30, \"seasonal\":\
+      \ 0.10}\n\n\nclass PriceCache:\n    def __init__(self, catalog, ttl=None, clock=time.monotonic):\n\
+      \        self._catalog = catalog\n        self._ttl = ttl\n        self._clock = clock\n       \
+      \ self._entries = {}\n        self.hits = 0\n        self.misses = 0\n        catalog.subscribe(self.invalidate)\n\
+      \n    def invalidate(self, sku):\n        self._entries.pop(normalize_sku(sku), None)\n\n    def\
+      \ clear(self):\n        self._entries.clear()\n\n    def _compute(self, sku):\n        product =\
+      \ self._catalog.get(sku)\n        discount = CATEGORY_DISCOUNTS.get(product.category, 0.0)\n   \
+      \     return round(product.base_price * (1 - discount), 2)\n\n    def price(self, sku):\n      \
+      \  key = normalize_sku(sku)\n        entry = self._entries.get(key)\n        now = self._clock()\n\
+      \        if entry is not None:\n            value, stored_at = entry\n            if self._ttl is\
+      \ None or now - stored_at < self._ttl:\n                self.hits += 1\n                return value\n\
+      \        self.misses += 1\n        value = self._compute(key)\n        self._entries[key] = (value,\
+      \ now)\n        return value\n"
+  test_code: "import pytest\n\nfrom catalog import Catalog\nfrom pricing import PriceCache\nfrom checkout\
+    \ import Cart\nfrom admin import apply_price_list\n\n\ndef make_shop():\n    cat = Catalog()\n   \
+    \ cat.add(\"KB-100\", \"Keyboard\", 50.00)\n    cat.add(\"MS-200\", \"Mouse\", 20.00, category=\"\
+    clearance\")\n    prices = PriceCache(cat)\n    return cat, prices\n\n\ndef test_cart_reflects_price_list_import_for_lowercase_skus():\n\
+    \    cat, prices = make_shop()\n    cart = Cart(prices)\n    cart.add(\"kb-100\", 2)\n    cart.add(\"\
+    ms-200\", 1)\n    assert cart.subtotal() == pytest.approx(114.0)\n    changed = apply_price_list(cat,\
+    \ \"sku,price\\nKB-100,40.00\\nMS-200,10.00\\n\")\n    assert sorted(changed) == [\"KB-100\", \"MS-200\"\
+    ]\n    assert cart.subtotal() == pytest.approx(87.0)\n\n\ndef test_price_with_whitespace_sku_updates_after_price_change():\n\
+    \    cat, prices = make_shop()\n    assert prices.price(\" kb-100 \") == pytest.approx(50.0)\n   \
+    \ cat.update_price(\"KB-100\", 45.00)\n    assert prices.price(\" kb-100 \") == pytest.approx(45.0)\n\
+    \n\ndef test_all_spellings_see_update_made_with_another_spelling():\n    cat, prices = make_shop()\n\
+    \    assert prices.price(\"kb-100\") == pytest.approx(50.0)\n    assert prices.price(\"KB-100\") ==\
+    \ pytest.approx(50.0)\n    cat.update_price(\"Kb-100\", 45.00)\n    assert prices.price(\"kb-100\"\
+    ) == pytest.approx(45.0)\n    assert prices.price(\"KB-100\") == pytest.approx(45.0)\n\n\ndef test_cart_total_with_tax_after_import_mixed_case():\n\
+    \    cat, prices = make_shop()\n    cart = Cart(prices)\n    cart.add(\"Ms-200\", 3)\n    assert cart.total(0.10)\
+    \ == pytest.approx(46.2)\n    apply_price_list(cat, \"sku,price\\nms-200,30.00\\n\")\n    assert cart.total(0.10)\
+    \ == pytest.approx(69.3)\n"
+  red_herring: 'In admin.apply_price_list, `if product.base_price != price:` compares floats exactly and
+    skips ''unchanged'' rows, so it looks like it could silently drop updates. It''s correct: both values
+    come from float() of the same decimal text (or the earlier stored float), and skipping rows that really
+    are unchanged is intended. The changed SKUs come back as expected and the catalog holds the new price.
+    Also, PriceCache''s ttl=None (''never expires'') looks like the obvious culprit. But adding a TTL
+    only hides the stale-price window. It doesn''t fix the missed invalidation.'
+  root_cause: PriceCache stores entries under the raw SKU string the caller passed, but Catalog sends
+    change notifications with the normalized (trimmed, upper-case) SKU, so invalidate() never removes
+    entries cached under any other spelling.
+  type: verifiable_multi
+  capability: multi_module_debugging
+  prompt: "After we run the supplier price import (admin.apply_price_list), some carts still show the\
+    \ old unit prices. Customers who typed SKUs in lowercase (e.g. 'kb-100') or with stray spaces keep\
+    \ getting the old price for as long as the process runs. Carts using the exact upper-case SKU update\
+    \ correctly. Restarting the process fixes it until the next import. apply_price_list does return the\
+    \ changed SKUs, and catalog.get() shows the new base_price.\n\nHere is the code:\n\n```python\n# file:\
+    \ catalog.py\n\"\"\"Product catalog with change notifications.\"\"\"\nfrom dataclasses import dataclass\n\
+    \n\ndef normalize_sku(sku):\n    \"\"\"Canonical SKU form used for storage: trimmed, upper-case.\"\
+    \"\"\n    return sku.strip().upper()\n\n\n@dataclass\nclass Product:\n    sku: str\n    name: str\n\
+    \    base_price: float\n    category: str = \"general\"\n\n\nclass Catalog:\n    def __init__(self):\n\
+    \        self._products = {}\n        self._listeners = []\n\n    def subscribe(self, callback):\n\
+    \        \"\"\"Register callback(sku) invoked whenever a product changes.\"\"\"\n        self._listeners.append(callback)\n\
+    \n    def _notify(self, sku):\n        for callback in list(self._listeners):\n            callback(sku)\n\
+    \n    def add(self, sku, name, base_price, category=\"general\"):\n        key = normalize_sku(sku)\n\
+    \        self._products[key] = Product(key, name, float(base_price), category)\n        self._notify(key)\n\
+    \n    def get(self, sku):\n        key = normalize_sku(sku)\n        try:\n            return self._products[key]\n\
+    \        except KeyError:\n            raise KeyError(f\"unknown sku: {sku!r}\") from None\n\n   \
+    \ def update_price(self, sku, new_price):\n        product = self.get(sku)\n        if new_price <\
+    \ 0:\n            raise ValueError(\"price must be non-negative\")\n        product.base_price = float(new_price)\n\
+    \        self._notify(product.sku)\n\n```\n\n```python\n# file: pricing.py\n\"\"\"Customer-facing\
+    \ prices with category discounts, cached per SKU.\"\"\"\nimport time\n\nCATEGORY_DISCOUNTS = {\"clearance\"\
+    : 0.30, \"seasonal\": 0.10}\n\n\nclass PriceCache:\n    def __init__(self, catalog, ttl=None, clock=time.monotonic):\n\
+    \        self._catalog = catalog\n        self._ttl = ttl\n        self._clock = clock\n        self._entries\
+    \ = {}\n        self.hits = 0\n        self.misses = 0\n        catalog.subscribe(self.invalidate)\n\
+    \n    def invalidate(self, sku):\n        self._entries.pop(sku, None)\n\n    def clear(self):\n \
+    \       self._entries.clear()\n\n    def _compute(self, sku):\n        product = self._catalog.get(sku)\n\
+    \        discount = CATEGORY_DISCOUNTS.get(product.category, 0.0)\n        return round(product.base_price\
+    \ * (1 - discount), 2)\n\n    def price(self, sku):\n        entry = self._entries.get(sku)\n    \
+    \    now = self._clock()\n        if entry is not None:\n            value, stored_at = entry\n  \
+    \          if self._ttl is None or now - stored_at < self._ttl:\n                self.hits += 1\n\
+    \                return value\n        self.misses += 1\n        value = self._compute(sku)\n    \
+    \    self._entries[sku] = (value, now)\n        return value\n\n```\n\n```python\n# file: checkout.py\n\
+    \"\"\"Shopping cart and order totals.\"\"\"\n\n\nclass Cart:\n    def __init__(self, prices):\n  \
+    \      self._prices = prices\n        self._lines = {}\n\n    def add(self, sku, qty=1):\n       \
+    \ if qty <= 0:\n            raise ValueError(\"quantity must be positive\")\n        self._lines[sku]\
+    \ = self._lines.get(sku, 0) + qty\n\n    def remove(self, sku, qty=None):\n        if sku not in self._lines:\n\
+    \            raise KeyError(sku)\n        if qty is None or qty >= self._lines[sku]:\n           \
+    \ del self._lines[sku]\n        else:\n            self._lines[sku] -= qty\n\n    def lines(self):\n\
+    \        return [\n            (sku, qty, self._prices.price(sku))\n            for sku, qty in sorted(self._lines.items())\n\
+    \        ]\n\n    def subtotal(self):\n        return round(sum(qty * unit for _, qty, unit in self.lines()),\
+    \ 2)\n\n    def total(self, tax_rate=0.0):\n        if tax_rate < 0:\n            raise ValueError(\"\
+    tax rate must be non-negative\")\n        return round(self.subtotal() * (1 + tax_rate), 2)\n\n```\n\
+    \n```python\n# file: admin.py\n\"\"\"Bulk price updates from a supplier price list (CSV text).\"\"\
+    \"\nimport csv\nimport io\n\n\ndef parse_price_list(text):\n    reader = csv.DictReader(io.StringIO(text))\n\
+    \    updates = []\n    for row in reader:\n        sku = row[\"sku\"]\n        price = float(row[\"\
+    price\"])\n        updates.append((sku, price))\n    return updates\n\n\ndef apply_price_list(catalog,\
+    \ text):\n    \"\"\"Apply a price list; returns canonical SKUs whose price changed.\"\"\"\n    changed\
+    \ = []\n    for sku, price in parse_price_list(text):\n        product = catalog.get(sku)\n      \
+    \  if product.base_price != price:\n            catalog.update_price(sku, price)\n            changed.append(product.sku)\n\
+    \    return changed\n\n```\n\nFind the root cause and fix it. Return every file you change in full,\
+    \ each in its own ```python block whose first line is `# file: <name>`. Do not return files you leave\
+    \ unchanged."
+  validation:
+    valid: true
+    reasons: []
+    lines: 145
+    fixed_output: '....                                                                     [100%]
+
+      4 passed in 0.01s
+
+      '
+- id: debug_hard_2
+  title: Jobs scheduled with UTC/offset timestamps fire hours early or late
+  symptom: Jobs whose 'at' time in the config has an explicit offset (e.g. '2026-03-01T12:00:00Z' or '...T14:00:00+02:00')
+    run at the wrong time. On our US-East box (UTC-5) they run 5 hours late, and the agenda shows '12:00'
+    for a 12:00Z job when it should show '07:00' local. On a Tokyo deployment the same jobs run 9 hours
+    early. Jobs written without an offset ('2026-03-01 07:15') run on time everywhere. No exceptions are
+    raised.
+  files:
+  - path: timeparse.py
+    content: "\"\"\"Parsing of timestamps and durations found in job configuration.\"\"\"\nfrom datetime\
+      \ import datetime, timedelta, timezone\n\n_UNITS = {\"s\": \"seconds\", \"m\": \"minutes\", \"h\"\
+      : \"hours\", \"d\": \"days\"}\n\n\ndef parse_timestamp(text):\n    \"\"\"Parse an ISO-8601 timestamp.\n\
+      \n    Timestamps with an explicit offset (or 'Z') identify an absolute\n    instant. Timestamps\
+      \ without an offset are wall-clock times in the\n    scheduler's local zone.\n    \"\"\"\n    s\
+      \ = text.strip()\n    if not s:\n        raise ValueError(\"empty timestamp\")\n    if s.endswith((\"\
+      Z\", \"z\")):\n        # fromisoformat() before Python 3.11 rejects a trailing 'Z'\n        s =\
+      \ s[:-1] + \"+00:00\"\n    s = s.replace(\" \", \"T\", 1)\n    try:\n        value = datetime.fromisoformat(s)\n\
+      \    except ValueError:\n        raise ValueError(f\"bad timestamp: {text!r}\") from None\n    if\
+      \ value.tzinfo is not None:\n        # normalise everything to UTC\n        value = value.astimezone(timezone.utc).replace(tzinfo=None)\n\
+      \    return value\n\n\ndef parse_duration(text):\n    \"\"\"Parse '90s', '15m', '2h', '1d' into\
+      \ a timedelta.\"\"\"\n    s = text.strip().lower()\n    if len(s) < 2 or s[-1] not in _UNITS or\
+      \ not s[:-1].isdigit():\n        raise ValueError(f\"bad duration: {text!r}\")\n    amount = int(s[:-1])\n\
+      \    if amount <= 0:\n        raise ValueError(\"duration must be positive\")\n    return timedelta(**{_UNITS[s[-1]]:\
+      \ amount})\n"
+  - path: jobs.py
+    content: "\"\"\"Job definitions loaded from configuration dictionaries.\"\"\"\nfrom dataclasses import\
+      \ dataclass\nfrom datetime import datetime, timedelta\nfrom typing import Optional\n\nfrom timeparse\
+      \ import parse_duration, parse_timestamp\n\n\n@dataclass\nclass Job:\n    name: str\n    run_at:\
+      \ Optional[datetime]\n    repeat: Optional[timedelta] = None\n    runs: int = 0\n\n\ndef load_jobs(config):\n\
+      \    jobs = []\n    seen = set()\n    for entry in config:\n        name = entry[\"name\"]\n   \
+      \     if name in seen:\n            raise ValueError(f\"duplicate job name: {name}\")\n        seen.add(name)\n\
+      \        run_at = parse_timestamp(entry[\"at\"])\n        every = entry.get(\"every\")\n       \
+      \ repeat = parse_duration(every) if every else None\n        jobs.append(Job(name, run_at, repeat))\n\
+      \    return jobs\n"
+  - path: scheduler.py
+    content: "\"\"\"In-process job scheduler driven by an injectable clock.\"\"\"\n\n\nclass Scheduler:\n\
+      \    def __init__(self, clock, local_tz):\n        \"\"\"clock() must return a timezone-aware datetime.\"\
+      \"\"\n        self._clock = clock\n        self._local_tz = local_tz\n        self._jobs = []\n\n\
+      \    def _as_aware(self, dt):\n        # Naive config times are wall-clock times in the local zone.\n\
+      \        if dt.tzinfo is None:\n            return dt.replace(tzinfo=self._local_tz)\n        return\
+      \ dt\n\n    def add(self, job):\n        if job.run_at is not None:\n            job.run_at = self._as_aware(job.run_at)\n\
+      \        self._jobs.append(job)\n\n    def jobs(self):\n        return list(self._jobs)\n\n    def\
+      \ next_run(self):\n        pending = [j.run_at for j in self._jobs if j.run_at is not None]\n  \
+      \      return min(pending) if pending else None\n\n    def run_pending(self, handler):\n       \
+      \ now = self._clock()\n        due = [j for j in self._jobs if j.run_at is not None and j.run_at\
+      \ <= now]\n        fired = []\n        for job in sorted(due, key=lambda j: (j.run_at, j.name)):\n\
+      \            handler(job)\n            job.runs += 1\n            fired.append(job.name)\n     \
+      \       if job.repeat:\n                # skip missed occurrences rather than replaying a backlog\n\
+      \                while job.run_at <= now:\n                    job.run_at += job.repeat\n      \
+      \      else:\n                job.run_at = None\n        return fired\n"
+  - path: app.py
+    content: "\"\"\"Wiring: build a scheduler from config and render an agenda.\"\"\"\nfrom jobs import\
+      \ load_jobs\nfrom scheduler import Scheduler\n\n\ndef build_scheduler(config, clock, local_tz):\n\
+      \    sched = Scheduler(clock, local_tz)\n    for job in load_jobs(config):\n        sched.add(job)\n\
+      \    return sched\n\n\ndef agenda(scheduler, local_tz):\n    \"\"\"(name, 'YYYY-MM-DD HH:MM' local)\
+      \ for every pending job, soonest first.\"\"\"\n    rows = []\n    for job in scheduler.jobs():\n\
+      \        if job.run_at is None:\n            continue\n        local = job.run_at.astimezone(local_tz)\n\
+      \        rows.append((job.name, local.strftime(\"%Y-%m-%d %H:%M\")))\n    rows.sort(key=lambda r:\
+      \ r[1])\n    return rows\n"
+  reference_files:
+  - path: timeparse.py
+    content: "\"\"\"Parsing of timestamps and durations found in job configuration.\"\"\"\nfrom datetime\
+      \ import datetime, timedelta, timezone\n\n_UNITS = {\"s\": \"seconds\", \"m\": \"minutes\", \"h\"\
+      : \"hours\", \"d\": \"days\"}\n\n\ndef parse_timestamp(text):\n    \"\"\"Parse an ISO-8601 timestamp.\n\
+      \n    Timestamps with an explicit offset (or 'Z') identify an absolute\n    instant and are returned\
+      \ as aware UTC datetimes. Timestamps without an\n    offset are wall-clock times in the scheduler's\
+      \ local zone and are\n    returned naive.\n    \"\"\"\n    s = text.strip()\n    if not s:\n   \
+      \     raise ValueError(\"empty timestamp\")\n    if s.endswith((\"Z\", \"z\")):\n        # fromisoformat()\
+      \ before Python 3.11 rejects a trailing 'Z'\n        s = s[:-1] + \"+00:00\"\n    s = s.replace(\"\
+      \ \", \"T\", 1)\n    try:\n        value = datetime.fromisoformat(s)\n    except ValueError:\n \
+      \       raise ValueError(f\"bad timestamp: {text!r}\") from None\n    if value.tzinfo is not None:\n\
+      \        # normalise to UTC but keep the instant: stay timezone-aware\n        value = value.astimezone(timezone.utc)\n\
+      \    return value\n\n\ndef parse_duration(text):\n    \"\"\"Parse '90s', '15m', '2h', '1d' into\
+      \ a timedelta.\"\"\"\n    s = text.strip().lower()\n    if len(s) < 2 or s[-1] not in _UNITS or\
+      \ not s[:-1].isdigit():\n        raise ValueError(f\"bad duration: {text!r}\")\n    amount = int(s[:-1])\n\
+      \    if amount <= 0:\n        raise ValueError(\"duration must be positive\")\n    return timedelta(**{_UNITS[s[-1]]:\
+      \ amount})\n"
+  test_code: "from datetime import datetime, timedelta, timezone\n\nfrom app import agenda, build_scheduler\n\
+    \nEST = timezone(timedelta(hours=-5))\nTOKYO = timezone(timedelta(hours=9))\n\n\ndef fixed_clock(*args):\n\
+    \    instant = datetime(*args, tzinfo=timezone.utc)\n    return lambda: instant\n\n\ndef test_utc_job_fires_at_its_instant_and_local_jobs_stay_local():\n\
+    \    config = [\n        {\"name\": \"report\", \"at\": \"2026-03-01T12:00:00Z\"},\n        {\"name\"\
+    : \"local-early\", \"at\": \"2026-03-01 07:15\"},  # 12:15Z\n        {\"name\": \"local-late\", \"\
+    at\": \"2026-03-01 08:00\"},   # 13:00Z\n    ]\n    sched = build_scheduler(config, fixed_clock(2026,\
+    \ 3, 1, 12, 30), EST)\n    fired = sched.run_pending(lambda job: None)\n    assert fired == [\"report\"\
+    , \"local-early\"]\n\n\ndef test_utc_job_does_not_fire_early_in_eastern_zone():\n    config = [\n\
+    \        {\"name\": \"report\", \"at\": \"2026-03-01T12:00:00Z\"},\n        {\"name\": \"tokyo-local\"\
+    , \"at\": \"2026-03-01 14:00\"},  # 05:00Z\n    ]\n    sched = build_scheduler(config, fixed_clock(2026,\
+    \ 3, 1, 6, 0), TOKYO)\n    fired = sched.run_pending(lambda job: None)\n    assert fired == [\"tokyo-local\"\
+    ]\n\n\ndef test_agenda_shows_offset_jobs_in_local_time():\n    config = [\n        {\"name\": \"report\"\
+    , \"at\": \"2026-03-01T12:00:00Z\"},\n        {\"name\": \"backup\", \"at\": \"2026-03-01 06:30\"\
+    },\n    ]\n    sched = build_scheduler(config, fixed_clock(2026, 3, 1, 0, 0), EST)\n    assert agenda(sched,\
+    \ EST) == [\n        (\"backup\", \"2026-03-01 06:30\"),\n        (\"report\", \"2026-03-01 07:00\"\
+    ),\n    ]\n\n\ndef test_next_run_honours_explicit_offset():\n    config = [\n        {\"name\": \"\
+    berlin-ish\", \"at\": \"2026-03-01T14:00:00+02:00\"},  # 12:00Z\n        {\"name\": \"local\", \"\
+    at\": \"2026-03-01 09:00\"},  # 14:00Z\n    ]\n    sched = build_scheduler(config, fixed_clock(2026,\
+    \ 3, 1, 0, 0), EST)\n    assert sched.next_run() == datetime(2026, 3, 1, 12, 0, tzinfo=timezone.utc)\n\
+    \n\ndef test_repeating_utc_job_reschedules_from_true_instant():\n    config = [{\"name\": \"poll\"\
+    , \"at\": \"2026-03-01T10:00:00Z\", \"every\": \"1h\"}]\n    sched = build_scheduler(config, fixed_clock(2026,\
+    \ 3, 1, 12, 30), EST)\n    assert sched.run_pending(lambda job: None) == [\"poll\"]\n    assert sched.next_run()\
+    \ == datetime(2026, 3, 1, 13, 0, tzinfo=timezone.utc)\n"
+  red_herring: Two things look wrong but are correct. In timeparse.parse_timestamp, the trailing 'Z' is
+    rewritten to '+00:00' by hand, and that's a necessary workaround for fromisoformat() before Python
+    3.11. Scheduler._as_aware attaches the local zone to naive datetimes with .replace(tzinfo=local_tz)
+    instead of treating them as UTC. That is also right, because offset-less config times are meant to
+    be local wall-clock times. 'Fixing' the scheduler to treat naive values as UTC makes 'Z' jobs fire
+    on time but breaks every local job, and the tests catch that.
+  root_cause: parse_timestamp converts offset-bearing timestamps to UTC and then strips their tzinfo,
+    so the scheduler can't tell them apart from naive local wall-clock times and re-labels them with the
+    local zone, shifting each one by the local UTC offset.
+  type: verifiable_multi
+  capability: multi_module_debugging
+  prompt: "Jobs whose 'at' time in the config has an explicit offset (e.g. '2026-03-01T12:00:00Z' or '...T14:00:00+02:00')\
+    \ run at the wrong time. On our US-East box (UTC-5) they run 5 hours late, and the agenda shows '12:00'\
+    \ for a 12:00Z job when it should show '07:00' local. On a Tokyo deployment the same jobs run 9 hours\
+    \ early. Jobs written without an offset ('2026-03-01 07:15') run on time everywhere. No exceptions\
+    \ are raised.\n\nHere is the code:\n\n```python\n# file: timeparse.py\n\"\"\"Parsing of timestamps\
+    \ and durations found in job configuration.\"\"\"\nfrom datetime import datetime, timedelta, timezone\n\
+    \n_UNITS = {\"s\": \"seconds\", \"m\": \"minutes\", \"h\": \"hours\", \"d\": \"days\"}\n\n\ndef parse_timestamp(text):\n\
+    \    \"\"\"Parse an ISO-8601 timestamp.\n\n    Timestamps with an explicit offset (or 'Z') identify\
+    \ an absolute\n    instant. Timestamps without an offset are wall-clock times in the\n    scheduler's\
+    \ local zone.\n    \"\"\"\n    s = text.strip()\n    if not s:\n        raise ValueError(\"empty timestamp\"\
+    )\n    if s.endswith((\"Z\", \"z\")):\n        # fromisoformat() before Python 3.11 rejects a trailing\
+    \ 'Z'\n        s = s[:-1] + \"+00:00\"\n    s = s.replace(\" \", \"T\", 1)\n    try:\n        value\
+    \ = datetime.fromisoformat(s)\n    except ValueError:\n        raise ValueError(f\"bad timestamp:\
+    \ {text!r}\") from None\n    if value.tzinfo is not None:\n        # normalise everything to UTC\n\
+    \        value = value.astimezone(timezone.utc).replace(tzinfo=None)\n    return value\n\n\ndef parse_duration(text):\n\
+    \    \"\"\"Parse '90s', '15m', '2h', '1d' into a timedelta.\"\"\"\n    s = text.strip().lower()\n\
+    \    if len(s) < 2 or s[-1] not in _UNITS or not s[:-1].isdigit():\n        raise ValueError(f\"bad\
+    \ duration: {text!r}\")\n    amount = int(s[:-1])\n    if amount <= 0:\n        raise ValueError(\"\
+    duration must be positive\")\n    return timedelta(**{_UNITS[s[-1]]: amount})\n\n```\n\n```python\n\
+    # file: jobs.py\n\"\"\"Job definitions loaded from configuration dictionaries.\"\"\"\nfrom dataclasses\
+    \ import dataclass\nfrom datetime import datetime, timedelta\nfrom typing import Optional\n\nfrom\
+    \ timeparse import parse_duration, parse_timestamp\n\n\n@dataclass\nclass Job:\n    name: str\n  \
+    \  run_at: Optional[datetime]\n    repeat: Optional[timedelta] = None\n    runs: int = 0\n\n\ndef\
+    \ load_jobs(config):\n    jobs = []\n    seen = set()\n    for entry in config:\n        name = entry[\"\
+    name\"]\n        if name in seen:\n            raise ValueError(f\"duplicate job name: {name}\")\n\
+    \        seen.add(name)\n        run_at = parse_timestamp(entry[\"at\"])\n        every = entry.get(\"\
+    every\")\n        repeat = parse_duration(every) if every else None\n        jobs.append(Job(name,\
+    \ run_at, repeat))\n    return jobs\n\n```\n\n```python\n# file: scheduler.py\n\"\"\"In-process job\
+    \ scheduler driven by an injectable clock.\"\"\"\n\n\nclass Scheduler:\n    def __init__(self, clock,\
+    \ local_tz):\n        \"\"\"clock() must return a timezone-aware datetime.\"\"\"\n        self._clock\
+    \ = clock\n        self._local_tz = local_tz\n        self._jobs = []\n\n    def _as_aware(self, dt):\n\
+    \        # Naive config times are wall-clock times in the local zone.\n        if dt.tzinfo is None:\n\
+    \            return dt.replace(tzinfo=self._local_tz)\n        return dt\n\n    def add(self, job):\n\
+    \        if job.run_at is not None:\n            job.run_at = self._as_aware(job.run_at)\n       \
+    \ self._jobs.append(job)\n\n    def jobs(self):\n        return list(self._jobs)\n\n    def next_run(self):\n\
+    \        pending = [j.run_at for j in self._jobs if j.run_at is not None]\n        return min(pending)\
+    \ if pending else None\n\n    def run_pending(self, handler):\n        now = self._clock()\n     \
+    \   due = [j for j in self._jobs if j.run_at is not None and j.run_at <= now]\n        fired = []\n\
+    \        for job in sorted(due, key=lambda j: (j.run_at, j.name)):\n            handler(job)\n   \
+    \         job.runs += 1\n            fired.append(job.name)\n            if job.repeat:\n        \
+    \        # skip missed occurrences rather than replaying a backlog\n                while job.run_at\
+    \ <= now:\n                    job.run_at += job.repeat\n            else:\n                job.run_at\
+    \ = None\n        return fired\n\n```\n\n```python\n# file: app.py\n\"\"\"Wiring: build a scheduler\
+    \ from config and render an agenda.\"\"\"\nfrom jobs import load_jobs\nfrom scheduler import Scheduler\n\
+    \n\ndef build_scheduler(config, clock, local_tz):\n    sched = Scheduler(clock, local_tz)\n    for\
+    \ job in load_jobs(config):\n        sched.add(job)\n    return sched\n\n\ndef agenda(scheduler, local_tz):\n\
+    \    \"\"\"(name, 'YYYY-MM-DD HH:MM' local) for every pending job, soonest first.\"\"\"\n    rows\
+    \ = []\n    for job in scheduler.jobs():\n        if job.run_at is None:\n            continue\n \
+    \       local = job.run_at.astimezone(local_tz)\n        rows.append((job.name, local.strftime(\"\
+    %Y-%m-%d %H:%M\")))\n    rows.sort(key=lambda r: r[1])\n    return rows\n\n```\n\nFind the root cause\
+    \ and fix it. Return every file you change in full, each in its own ```python block whose first line\
+    \ is `# file: <name>`. Do not return files you leave unchanged."
+  validation:
+    valid: true
+    reasons: []
+    lines: 133
+    fixed_output: '.....                                                                    [100%]
+
+      5 passed in 0.01s
+
+      '
+- id: debug_hard_3
+  title: Paginated order export duplicates rows and inflates revenue totals
+  symptom: Finance says the revenue-by-customer report overstates totals for some customers, and the CSV
+    export (reports.export_csv) has duplicate order rows. It only happens when there are more orders than
+    the page size. With page_size >= the number of orders, the output is correct. With page_size=1, the
+    export never finishes and raises RuntimeError('pagination did not terminate'). No errors show up for
+    other page sizes.
+  files:
+  - path: orders.py
+    content: "\"\"\"Order records and a tiny in-memory table sorted by primary key.\"\"\"\nfrom dataclasses\
+      \ import dataclass\n\n\n@dataclass(frozen=True)\nclass Order:\n    id: int\n    customer: str\n\
+      \    amount_cents: int\n\n\nclass OrderStore:\n    \"\"\"In-memory table of orders, always kept\
+      \ sorted by id.\"\"\"\n\n    def __init__(self, orders=()):\n        self._rows = []\n        for\
+      \ order in orders:\n            self.add(order)\n\n    def add(self, order):\n        if any(row.id\
+      \ == order.id for row in self._rows):\n            raise ValueError(f\"duplicate order id {order.id}\"\
+      )\n        self._rows.append(order)\n        self._rows.sort(key=lambda row: row.id)\n\n    def\
+      \ rows(self):\n        return list(self._rows)\n\n    def ids(self):\n        return [row.id for\
+      \ row in self._rows]\n\n    def __len__(self):\n        return len(self._rows)\n"
+  - path: repository.py
+    content: "\"\"\"Data-access layer for orders (keyset pagination).\"\"\"\nimport bisect\n\n\nclass\
+      \ OrderRepository:\n    def __init__(self, store):\n        self._store = store\n\n    def count(self):\n\
+      \        return len(self._store)\n\n    def get(self, order_id):\n        for row in self._store.rows():\n\
+      \            if row.id == order_id:\n                return row\n        return None\n\n    def\
+      \ list_from(self, cursor_id, limit):\n        \"\"\"Return up to `limit` orders in id order, positioned\
+      \ at `cursor_id`.\n\n        A cursor of None means \"start of table\". Cursors need not refer to\
+      \ an\n        existing id (the row may have been deleted since it was issued).\n        \"\"\"\n\
+      \        if limit <= 0:\n            return []\n        rows = self._store.rows()\n        if cursor_id\
+      \ is None:\n            start = 0\n        else:\n            start = bisect.bisect_left(self._store.ids(),\
+      \ cursor_id)\n        return rows[start:start + limit]\n"
+  - path: cursors.py
+    content: "\"\"\"Opaque, URL-safe pagination cursors.\"\"\"\nimport base64\n\nPREFIX = \"ord:\"\n\n\
+      \ndef encode(order_id):\n    raw = f\"{PREFIX}{order_id}\".encode(\"ascii\")\n    return base64.urlsafe_b64encode(raw).decode(\"\
+      ascii\").rstrip(\"=\")\n\n\ndef decode(token):\n    if not token:\n        return None\n    padded\
+      \ = token + \"=\" * (-len(token) % 4)\n    raw = base64.urlsafe_b64decode(padded.encode(\"ascii\"\
+      )).decode(\"ascii\")\n    if not raw.startswith(PREFIX):\n        raise ValueError(\"malformed cursor\"\
+      )\n    return int(raw[len(PREFIX):])\n"
+  - path: service.py
+    content: "\"\"\"Service layer: page-at-a-time listing of orders for API clients.\"\"\"\nfrom dataclasses\
+      \ import dataclass\nfrom typing import List, Optional\n\nimport cursors\n\nMAX_PAGE_SIZE = 100\n\
+      \n\n@dataclass\nclass Page:\n    items: List\n    next_cursor: Optional[str]\n    has_more: bool\n\
+      \n\nclass OrderService:\n    def __init__(self, repo, max_page_size=MAX_PAGE_SIZE):\n        self._repo\
+      \ = repo\n        self._max_page_size = max_page_size\n\n    def list_orders(self, cursor=None,\
+      \ page_size=20):\n        \"\"\"Return one page of orders.\n\n        `next_cursor` encodes the\
+      \ id of the last item on this page; pass it\n        back unchanged to fetch the following page.\n\
+      \        \"\"\"\n        if page_size < 1:\n            raise ValueError(\"page_size must be positive\"\
+      )\n        page_size = min(page_size, self._max_page_size)\n        position = cursors.decode(cursor)\n\
+      \        # Fetch one extra row so we can tell whether another page exists.\n        rows = self._repo.list_from(position,\
+      \ page_size + 1)\n        has_more = len(rows) > page_size\n        items = rows[:page_size]\n \
+      \       next_cursor = cursors.encode(items[-1].id) if has_more else None\n        return Page(items=items,\
+      \ next_cursor=next_cursor, has_more=has_more)\n"
+  - path: reports.py
+    content: "\"\"\"Reports built by walking every page of the order service.\"\"\"\n\n\ndef iter_all_orders(service,\
+      \ page_size=50, max_pages=10_000):\n    cursor = None\n    for _ in range(max_pages):\n        page\
+      \ = service.list_orders(cursor=cursor, page_size=page_size)\n        yield from page.items\n   \
+      \     if not page.has_more:\n            return\n        cursor = page.next_cursor\n    raise RuntimeError(\"\
+      pagination did not terminate\")\n\n\ndef revenue_by_customer(service, page_size=50):\n    totals\
+      \ = {}\n    for order in iter_all_orders(service, page_size=page_size):\n        totals[order.customer]\
+      \ = totals.get(order.customer, 0) + order.amount_cents\n    return dict(sorted(totals.items()))\n\
+      \n\ndef export_csv(service, page_size=50):\n    lines = [\"id,customer,amount_cents\"]\n    for\
+      \ order in iter_all_orders(service, page_size=page_size):\n        lines.append(f\"{order.id},{order.customer},{order.amount_cents}\"\
+      )\n    return \"\\n\".join(lines) + \"\\n\"\n"
+  reference_files:
+  - path: repository.py
+    content: "\"\"\"Data-access layer for orders (keyset pagination).\"\"\"\nimport bisect\n\n\nclass\
+      \ OrderRepository:\n    def __init__(self, store):\n        self._store = store\n\n    def count(self):\n\
+      \        return len(self._store)\n\n    def get(self, order_id):\n        for row in self._store.rows():\n\
+      \            if row.id == order_id:\n                return row\n        return None\n\n    def\
+      \ list_from(self, cursor_id, limit):\n        \"\"\"Return up to `limit` orders in id order, strictly\
+      \ after `cursor_id`.\n\n        A cursor of None means \"start of table\". Cursors need not refer\
+      \ to an\n        existing id (the row may have been deleted since it was issued).\n        \"\"\"\
+      \n        if limit <= 0:\n            return []\n        rows = self._store.rows()\n        if cursor_id\
+      \ is None:\n            start = 0\n        else:\n            start = bisect.bisect_right(self._store.ids(),\
+      \ cursor_id)\n        return rows[start:start + limit]\n"
+  test_code: "import pytest\n\nfrom orders import Order, OrderStore\nfrom repository import OrderRepository\n\
+    from service import OrderService\nimport reports\n\n\ndef make_service(n=10, gap=3):\n    store =\
+    \ OrderStore(\n        Order(id=100 + i * gap, customer=f\"c{i % 3}\", amount_cents=(i + 1) * 100)\n\
+    \        for i in range(n)\n    )\n    return OrderService(OrderRepository(store)), store\n\n\n@pytest.mark.parametrize(\"\
+    size\", [1, 2, 3, 4, 7, 9])\ndef test_walking_all_pages_yields_each_order_once(size):\n    svc, store\
+    \ = make_service()\n    ids = [o.id for o in reports.iter_all_orders(svc, page_size=size)]\n    assert\
+    \ ids == store.ids()\n\n\ndef test_consecutive_pages_do_not_overlap():\n    svc, _ = make_service()\n\
+    \    p1 = svc.list_orders(page_size=4)\n    p2 = svc.list_orders(cursor=p1.next_cursor, page_size=4)\n\
+    \    assert p1.has_more\n    assert not {o.id for o in p1.items} & {o.id for o in p2.items}\n    assert\
+    \ p2.items[0].id > p1.items[-1].id\n\n\ndef test_revenue_totals_match_store():\n    svc, store = make_service(n=11)\n\
+    \    expected = {}\n    for o in store.rows():\n        expected[o.customer] = expected.get(o.customer,\
+    \ 0) + o.amount_cents\n    assert reports.revenue_by_customer(svc, page_size=3) == dict(sorted(expected.items()))\n\
+    \n\ndef test_csv_export_row_count():\n    svc, store = make_service(n=8)\n    csv = reports.export_csv(svc,\
+    \ page_size=3)\n    assert len(csv.strip().splitlines()) == len(store) + 1\n\n\ndef test_last_page_has_no_cursor():\n\
+    \    svc, _ = make_service(n=5)\n    page = svc.list_orders(page_size=5)\n    assert page.has_more\
+    \ is False\n    assert page.next_cursor is None\n    assert len(page.items) == 5\n"
+  red_herring: In service.py, the code asks for `page_size + 1` rows, sets `has_more = len(rows) > page_size`,
+    and slices `rows[:page_size]`. This looks like a classic off-by-one, but it's the standard look-ahead
+    trick and it's correct. The base64 padding expression `-len(token) % 4` in cursors.py also looks odd
+    but is correct. If you 'fix' the +1, has_more breaks and the duplicates stay.
+  root_cause: The service sets next_cursor to the id of the last item it returned, but the repository's
+    list_from uses bisect_left, so the page starts at that id instead of just after it, and the boundary
+    row is repeated on every following page.
+  type: verifiable_multi
+  capability: multi_module_debugging
+  prompt: "Finance says the revenue-by-customer report overstates totals for some customers, and the CSV\
+    \ export (reports.export_csv) has duplicate order rows. It only happens when there are more orders\
+    \ than the page size. With page_size >= the number of orders, the output is correct. With page_size=1,\
+    \ the export never finishes and raises RuntimeError('pagination did not terminate'). No errors show\
+    \ up for other page sizes.\n\nHere is the code:\n\n```python\n# file: orders.py\n\"\"\"Order records\
+    \ and a tiny in-memory table sorted by primary key.\"\"\"\nfrom dataclasses import dataclass\n\n\n\
+    @dataclass(frozen=True)\nclass Order:\n    id: int\n    customer: str\n    amount_cents: int\n\n\n\
+    class OrderStore:\n    \"\"\"In-memory table of orders, always kept sorted by id.\"\"\"\n\n    def\
+    \ __init__(self, orders=()):\n        self._rows = []\n        for order in orders:\n            self.add(order)\n\
+    \n    def add(self, order):\n        if any(row.id == order.id for row in self._rows):\n         \
+    \   raise ValueError(f\"duplicate order id {order.id}\")\n        self._rows.append(order)\n     \
+    \   self._rows.sort(key=lambda row: row.id)\n\n    def rows(self):\n        return list(self._rows)\n\
+    \n    def ids(self):\n        return [row.id for row in self._rows]\n\n    def __len__(self):\n  \
+    \      return len(self._rows)\n\n```\n\n```python\n# file: repository.py\n\"\"\"Data-access layer\
+    \ for orders (keyset pagination).\"\"\"\nimport bisect\n\n\nclass OrderRepository:\n    def __init__(self,\
+    \ store):\n        self._store = store\n\n    def count(self):\n        return len(self._store)\n\n\
+    \    def get(self, order_id):\n        for row in self._store.rows():\n            if row.id == order_id:\n\
+    \                return row\n        return None\n\n    def list_from(self, cursor_id, limit):\n \
+    \       \"\"\"Return up to `limit` orders in id order, positioned at `cursor_id`.\n\n        A cursor\
+    \ of None means \"start of table\". Cursors need not refer to an\n        existing id (the row may\
+    \ have been deleted since it was issued).\n        \"\"\"\n        if limit <= 0:\n            return\
+    \ []\n        rows = self._store.rows()\n        if cursor_id is None:\n            start = 0\n  \
+    \      else:\n            start = bisect.bisect_left(self._store.ids(), cursor_id)\n        return\
+    \ rows[start:start + limit]\n\n```\n\n```python\n# file: cursors.py\n\"\"\"Opaque, URL-safe pagination\
+    \ cursors.\"\"\"\nimport base64\n\nPREFIX = \"ord:\"\n\n\ndef encode(order_id):\n    raw = f\"{PREFIX}{order_id}\"\
+    .encode(\"ascii\")\n    return base64.urlsafe_b64encode(raw).decode(\"ascii\").rstrip(\"=\")\n\n\n\
+    def decode(token):\n    if not token:\n        return None\n    padded = token + \"=\" * (-len(token)\
+    \ % 4)\n    raw = base64.urlsafe_b64decode(padded.encode(\"ascii\")).decode(\"ascii\")\n    if not\
+    \ raw.startswith(PREFIX):\n        raise ValueError(\"malformed cursor\")\n    return int(raw[len(PREFIX):])\n\
+    \n```\n\n```python\n# file: service.py\n\"\"\"Service layer: page-at-a-time listing of orders for\
+    \ API clients.\"\"\"\nfrom dataclasses import dataclass\nfrom typing import List, Optional\n\nimport\
+    \ cursors\n\nMAX_PAGE_SIZE = 100\n\n\n@dataclass\nclass Page:\n    items: List\n    next_cursor: Optional[str]\n\
+    \    has_more: bool\n\n\nclass OrderService:\n    def __init__(self, repo, max_page_size=MAX_PAGE_SIZE):\n\
+    \        self._repo = repo\n        self._max_page_size = max_page_size\n\n    def list_orders(self,\
+    \ cursor=None, page_size=20):\n        \"\"\"Return one page of orders.\n\n        `next_cursor` encodes\
+    \ the id of the last item on this page; pass it\n        back unchanged to fetch the following page.\n\
+    \        \"\"\"\n        if page_size < 1:\n            raise ValueError(\"page_size must be positive\"\
+    )\n        page_size = min(page_size, self._max_page_size)\n        position = cursors.decode(cursor)\n\
+    \        # Fetch one extra row so we can tell whether another page exists.\n        rows = self._repo.list_from(position,\
+    \ page_size + 1)\n        has_more = len(rows) > page_size\n        items = rows[:page_size]\n   \
+    \     next_cursor = cursors.encode(items[-1].id) if has_more else None\n        return Page(items=items,\
+    \ next_cursor=next_cursor, has_more=has_more)\n\n```\n\n```python\n# file: reports.py\n\"\"\"Reports\
+    \ built by walking every page of the order service.\"\"\"\n\n\ndef iter_all_orders(service, page_size=50,\
+    \ max_pages=10_000):\n    cursor = None\n    for _ in range(max_pages):\n        page = service.list_orders(cursor=cursor,\
+    \ page_size=page_size)\n        yield from page.items\n        if not page.has_more:\n           \
+    \ return\n        cursor = page.next_cursor\n    raise RuntimeError(\"pagination did not terminate\"\
+    )\n\n\ndef revenue_by_customer(service, page_size=50):\n    totals = {}\n    for order in iter_all_orders(service,\
+    \ page_size=page_size):\n        totals[order.customer] = totals.get(order.customer, 0) + order.amount_cents\n\
+    \    return dict(sorted(totals.items()))\n\n\ndef export_csv(service, page_size=50):\n    lines =\
+    \ [\"id,customer,amount_cents\"]\n    for order in iter_all_orders(service, page_size=page_size):\n\
+    \        lines.append(f\"{order.id},{order.customer},{order.amount_cents}\")\n    return \"\\n\".join(lines)\
+    \ + \"\\n\"\n\n```\n\nFind the root cause and fix it. Return every file you change in full, each in\
+    \ its own ```python block whose first line is `# file: <name>`. Do not return files you leave unchanged."
+  validation:
+    valid: true
+    reasons: []
+    lines: 146
+    fixed_output: '..........                                                               [100%]
+
+      10 passed in 0.01s
+
+      '
+- id: debug_hard_4
+  title: Config file settings ignored even though merge order looks correct
+  symptom: Values in the INI config file don't take effect. With `[server] port = 9000` in app.ini and
+    no APP_* environment variables set, load_settings() still returns port 8000. The same happens to `[logging]
+    level` and `[database] pool_size`. Custom sections in the file (for example `[features] beta = on`)
+    do appear in the result. Setting an environment variable such as APP_SERVER_PORT=9100 works. The docstring
+    promises defaults < file < environment, and the merge loop in settings.py goes in that order.
+  files:
+  - path: defaults.py
+    content: "\"\"\"Built-in defaults; also serves as the schema for typing file/env values.\"\"\"\n\n\
+      DEFAULTS = {\n    \"server\": {\"host\": \"127.0.0.1\", \"port\": 8000, \"debug\": False},\n   \
+      \ \"database\": {\"url\": \"sqlite:///app.db\", \"pool_size\": 5, \"timeout\": 30.0},\n    \"logging\"\
+      : {\"level\": \"INFO\"},\n}\n"
+  - path: schema.py
+    content: "\"\"\"Helpers for walking nested settings and coercing raw strings to types.\"\"\"\n\n_TRUE\
+      \ = {\"1\", \"true\", \"yes\", \"on\"}\n_FALSE = {\"0\", \"false\", \"no\", \"off\"}\n\n\ndef walk(tree,\
+      \ prefix=()):\n    \"\"\"Yield (path_tuple, leaf_value) for every leaf in a nested dict.\"\"\"\n\
+      \    for key, value in tree.items():\n        path = prefix + (key,)\n        if isinstance(value,\
+      \ dict):\n            yield from walk(value, path)\n        else:\n            yield path, value\n\
+      \n\ndef coerce(raw, kind):\n    if type(raw) is kind:\n        return raw\n    text = str(raw).strip()\n\
+      \    if kind is bool:\n        lowered = text.lower()\n        if lowered in _TRUE:\n          \
+      \  return True\n        if lowered in _FALSE:\n            return False\n        raise ValueError(f\"\
+      not a boolean: {raw!r}\")\n    if kind is int:\n        return int(text)\n    if kind is float:\n\
+      \        return float(text)\n    return text\n\n\ndef set_path(tree, path, value):\n    node = tree\n\
+      \    for key in path[:-1]:\n        node = node.setdefault(key, {})\n    node[path[-1]] = value\n"
+  - path: loader.py
+    content: "\"\"\"Read configuration layers from an INI file and from the environment.\"\"\"\nimport\
+      \ configparser\n\nimport schema\nfrom defaults import DEFAULTS\n\n\ndef load_file(path):\n    \"\
+      \"\"Parse an INI file into a nested dict, typed where the schema knows the key.\"\"\"\n    parser\
+      \ = configparser.ConfigParser()\n    with open(path, encoding=\"utf-8\") as fh:\n        parser.read_file(fh)\n\
+      \    types = dict(schema.walk(DEFAULTS))\n    out = {}\n    for section in parser.sections():\n\
+      \        for key, raw in parser.items(section):\n            path = (section, key)\n           \
+      \ if path in types:\n                value = schema.coerce(raw, type(types[path]))\n           \
+      \ else:\n                value = raw\n            schema.set_path(out, path, value)\n    return\
+      \ out\n\n\ndef load_env(environ, prefix=\"APP_\"):\n    \"\"\"Read APP_<SECTION>_<KEY> variables,\
+      \ typed according to DEFAULTS.\"\"\"\n    out = {}\n    for path, default in schema.walk(DEFAULTS):\n\
+      \        name = prefix + \"_\".join(path).upper()\n        raw = environ.get(name, default)\n  \
+      \      schema.set_path(out, path, schema.coerce(raw, type(default)))\n    return out\n"
+  - path: merge.py
+    content: "\"\"\"Recursive dictionary merging.\"\"\"\n\n\ndef deep_merge(base, override):\n    \"\"\
+      \"Return a new dict: values in `override` win; nested dicts merge recursively.\"\"\"\n    result\
+      \ = dict(base)\n    for key, value in override.items():\n        current = result.get(key)\n   \
+      \     if isinstance(current, dict) and isinstance(value, dict):\n            result[key] = deep_merge(current,\
+      \ value)\n        else:\n            result[key] = value\n    return result\n"
+  - path: settings.py
+    content: "\"\"\"Public entry point for application settings.\"\"\"\nimport copy\nimport os\n\nimport\
+      \ loader\nfrom defaults import DEFAULTS\nfrom merge import deep_merge\n\n\ndef load_settings(config_path=None,\
+      \ environ=None):\n    \"\"\"Precedence, lowest to highest: built-in defaults, config file, environment.\"\
+      \"\"\n    environ = os.environ if environ is None else environ\n    if config_path is None:\n  \
+      \      config_path = environ.get(\"APP_CONFIG\")\n\n    layers = [copy.deepcopy(DEFAULTS)]\n   \
+      \ if config_path:\n        layers.append(loader.load_file(config_path))\n    layers.append(loader.load_env(environ))\n\
+      \n    result = {}\n    for layer in layers:\n        result = deep_merge(result, layer)\n    return\
+      \ result\n"
+  reference_files:
+  - path: loader.py
+    content: "\"\"\"Read configuration layers from an INI file and from the environment.\"\"\"\nimport\
+      \ configparser\n\nimport schema\nfrom defaults import DEFAULTS\n\n\ndef load_file(path):\n    \"\
+      \"\"Parse an INI file into a nested dict, typed where the schema knows the key.\"\"\"\n    parser\
+      \ = configparser.ConfigParser()\n    with open(path, encoding=\"utf-8\") as fh:\n        parser.read_file(fh)\n\
+      \    types = dict(schema.walk(DEFAULTS))\n    out = {}\n    for section in parser.sections():\n\
+      \        for key, raw in parser.items(section):\n            path = (section, key)\n           \
+      \ if path in types:\n                value = schema.coerce(raw, type(types[path]))\n           \
+      \ else:\n                value = raw\n            schema.set_path(out, path, value)\n    return\
+      \ out\n\n\ndef load_env(environ, prefix=\"APP_\"):\n    \"\"\"Read APP_<SECTION>_<KEY> variables,\
+      \ typed according to DEFAULTS.\n\n    Only variables that are actually set appear in the result,\
+      \ so this layer\n    overrides nothing it does not explicitly specify.\n    \"\"\"\n    out = {}\n\
+      \    for path, default in schema.walk(DEFAULTS):\n        name = prefix + \"_\".join(path).upper()\n\
+      \        if name not in environ:\n            continue\n        schema.set_path(out, path, schema.coerce(environ[name],\
+      \ type(default)))\n    return out\n"
+  test_code: "import pytest\n\nfrom defaults import DEFAULTS\nfrom settings import load_settings\n\n\n\
+    def write_ini(tmp_path, text):\n    path = tmp_path / \"app.ini\"\n    path.write_text(text, encoding=\"\
+    utf-8\")\n    return str(path)\n\n\ndef test_defaults_only():\n    s = load_settings(environ={})\n\
+    \    assert s == DEFAULTS\n\n\ndef test_file_overrides_defaults(tmp_path):\n    path = write_ini(tmp_path,\
+    \ \"[server]\\nport = 9000\\n\\n[logging]\\nlevel = DEBUG\\n\")\n    s = load_settings(path, environ={})\n\
+    \    assert s[\"server\"][\"port\"] == 9000\n    assert s[\"logging\"][\"level\"] == \"DEBUG\"\n \
+    \   assert s[\"server\"][\"host\"] == \"127.0.0.1\"\n\n\ndef test_env_overrides_file_and_file_overrides_defaults(tmp_path):\n\
+    \    path = write_ini(tmp_path, \"[database]\\npool_size = 10\\ntimeout = 5\\n\")\n    s = load_settings(path,\
+    \ environ={\"APP_DATABASE_POOL_SIZE\": \"20\"})\n    assert s[\"database\"][\"pool_size\"] == 20\n\
+    \    assert s[\"database\"][\"timeout\"] == 5.0\n    assert s[\"database\"][\"url\"] == \"sqlite:///app.db\"\
+    \n\n\ndef test_config_path_taken_from_environment(tmp_path):\n    path = write_ini(tmp_path, \"[server]\\\
+    ndebug = yes\\n\")\n    s = load_settings(environ={\"APP_CONFIG\": path})\n    assert s[\"server\"\
+    ][\"debug\"] is True\n\n\ndef test_unknown_file_sections_are_kept(tmp_path):\n    path = write_ini(tmp_path,\
+    \ \"[features]\\nbeta = on\\n\")\n    s = load_settings(path, environ={})\n    assert s[\"features\"\
+    ][\"beta\"] == \"on\"\n\n\ndef test_env_alone_overrides_defaults():\n    s = load_settings(environ={\"\
+    APP_SERVER_PORT\": \"9100\", \"APP_SERVER_DEBUG\": \"false\"})\n    assert s[\"server\"][\"port\"\
+    ] == 9100\n    assert s[\"server\"][\"debug\"] is False\n\n\ndef test_returned_settings_do_not_alias_defaults():\n\
+    \    s = load_settings(environ={})\n    s[\"server\"][\"port\"] = 1\n    assert DEFAULTS[\"server\"\
+    ][\"port\"] == 8000\n"
+  red_herring: 'The merge loop in settings.py (`result = deep_merge(result, layer)` over [defaults, file,
+    env]) and the shallow `dict(base)` copy in merge.deep_merge both look like the cause: the first looks
+    like the precedence is backwards, the second like it could alias or mutate DEFAULTS. Both are correct.
+    The order really is defaults < file < env, and settings deep-copies DEFAULTS first, so nothing is
+    aliased. Swapping the layer order would make the file override the environment.'
+  root_cause: loader.load_env uses `environ.get(name, default)` and so returns a complete layer with every
+    schema key filled in from DEFAULTS, and since settings merges that layer last, defaults overwrite
+    every schema-known value from the config file.
+  type: verifiable_multi
+  capability: multi_module_debugging
+  prompt: "Values in the INI config file don't take effect. With `[server] port = 9000` in app.ini and\
+    \ no APP_* environment variables set, load_settings() still returns port 8000. The same happens to\
+    \ `[logging] level` and `[database] pool_size`. Custom sections in the file (for example `[features]\
+    \ beta = on`) do appear in the result. Setting an environment variable such as APP_SERVER_PORT=9100\
+    \ works. The docstring promises defaults < file < environment, and the merge loop in settings.py goes\
+    \ in that order.\n\nHere is the code:\n\n```python\n# file: defaults.py\n\"\"\"Built-in defaults;\
+    \ also serves as the schema for typing file/env values.\"\"\"\n\nDEFAULTS = {\n    \"server\": {\"\
+    host\": \"127.0.0.1\", \"port\": 8000, \"debug\": False},\n    \"database\": {\"url\": \"sqlite:///app.db\"\
+    , \"pool_size\": 5, \"timeout\": 30.0},\n    \"logging\": {\"level\": \"INFO\"},\n}\n\n```\n\n```python\n\
+    # file: schema.py\n\"\"\"Helpers for walking nested settings and coercing raw strings to types.\"\"\
+    \"\n\n_TRUE = {\"1\", \"true\", \"yes\", \"on\"}\n_FALSE = {\"0\", \"false\", \"no\", \"off\"}\n\n\
+    \ndef walk(tree, prefix=()):\n    \"\"\"Yield (path_tuple, leaf_value) for every leaf in a nested\
+    \ dict.\"\"\"\n    for key, value in tree.items():\n        path = prefix + (key,)\n        if isinstance(value,\
+    \ dict):\n            yield from walk(value, path)\n        else:\n            yield path, value\n\
+    \n\ndef coerce(raw, kind):\n    if type(raw) is kind:\n        return raw\n    text = str(raw).strip()\n\
+    \    if kind is bool:\n        lowered = text.lower()\n        if lowered in _TRUE:\n            return\
+    \ True\n        if lowered in _FALSE:\n            return False\n        raise ValueError(f\"not a\
+    \ boolean: {raw!r}\")\n    if kind is int:\n        return int(text)\n    if kind is float:\n    \
+    \    return float(text)\n    return text\n\n\ndef set_path(tree, path, value):\n    node = tree\n\
+    \    for key in path[:-1]:\n        node = node.setdefault(key, {})\n    node[path[-1]] = value\n\n\
+    ```\n\n```python\n# file: loader.py\n\"\"\"Read configuration layers from an INI file and from the\
+    \ environment.\"\"\"\nimport configparser\n\nimport schema\nfrom defaults import DEFAULTS\n\n\ndef\
+    \ load_file(path):\n    \"\"\"Parse an INI file into a nested dict, typed where the schema knows the\
+    \ key.\"\"\"\n    parser = configparser.ConfigParser()\n    with open(path, encoding=\"utf-8\") as\
+    \ fh:\n        parser.read_file(fh)\n    types = dict(schema.walk(DEFAULTS))\n    out = {}\n    for\
+    \ section in parser.sections():\n        for key, raw in parser.items(section):\n            path\
+    \ = (section, key)\n            if path in types:\n                value = schema.coerce(raw, type(types[path]))\n\
+    \            else:\n                value = raw\n            schema.set_path(out, path, value)\n \
+    \   return out\n\n\ndef load_env(environ, prefix=\"APP_\"):\n    \"\"\"Read APP_<SECTION>_<KEY> variables,\
+    \ typed according to DEFAULTS.\"\"\"\n    out = {}\n    for path, default in schema.walk(DEFAULTS):\n\
+    \        name = prefix + \"_\".join(path).upper()\n        raw = environ.get(name, default)\n    \
+    \    schema.set_path(out, path, schema.coerce(raw, type(default)))\n    return out\n\n```\n\n```python\n\
+    # file: merge.py\n\"\"\"Recursive dictionary merging.\"\"\"\n\n\ndef deep_merge(base, override):\n\
+    \    \"\"\"Return a new dict: values in `override` win; nested dicts merge recursively.\"\"\"\n  \
+    \  result = dict(base)\n    for key, value in override.items():\n        current = result.get(key)\n\
+    \        if isinstance(current, dict) and isinstance(value, dict):\n            result[key] = deep_merge(current,\
+    \ value)\n        else:\n            result[key] = value\n    return result\n\n```\n\n```python\n\
+    # file: settings.py\n\"\"\"Public entry point for application settings.\"\"\"\nimport copy\nimport\
+    \ os\n\nimport loader\nfrom defaults import DEFAULTS\nfrom merge import deep_merge\n\n\ndef load_settings(config_path=None,\
+    \ environ=None):\n    \"\"\"Precedence, lowest to highest: built-in defaults, config file, environment.\"\
+    \"\"\n    environ = os.environ if environ is None else environ\n    if config_path is None:\n    \
+    \    config_path = environ.get(\"APP_CONFIG\")\n\n    layers = [copy.deepcopy(DEFAULTS)]\n    if config_path:\n\
+    \        layers.append(loader.load_file(config_path))\n    layers.append(loader.load_env(environ))\n\
+    \n    result = {}\n    for layer in layers:\n        result = deep_merge(result, layer)\n    return\
+    \ result\n\n```\n\nFind the root cause and fix it. Return every file you change in full, each in its\
+    \ own ```python block whose first line is `# file: <name>`. Do not return files you leave unchanged."
+  validation:
+    valid: true
+    reasons: []
+    lines: 116
+    fixed_output: '.......                                                                  [100%]
+
+      7 passed in 0.01s
+
+      '
+- id: debug_hard_5
+  title: CSV export breaks after a localized summary report is rendered in the same process
+  symptom: 'The warehouse importer intermittently fails with KeyError: ''sku'' when it parses our CSV
+    exports. When it fails, the export starts with `sku;qty;amount` and amounts look like `1.234,50`,
+    even though export_csv() never asks for a locale. Running export_csv() alone in a fresh interpreter
+    always gives a correct comma-separated file. It only goes wrong in long-running workers that also
+    render customer summaries. Separately, a French-locale summary rendered after a German one comes out
+    with semicolons.'
+  files:
+  - path: settings.py
+    content: "\"\"\"Application-wide option defaults and override merging.\"\"\"\n\nDEFAULT_OPTIONS =\
+      \ {\n    \"currency\": \"USD\",\n    \"precision\": 2,\n    \"format\": {\n        \"delimiter\"\
+      : \",\",\n        \"decimal_sep\": \".\",\n        \"thousands_sep\": \"\",\n    },\n    \"columns\"\
+      : (\"sku\", \"qty\", \"amount\"),\n}\n\n# Keys whose values are dicts and should be merged rather\
+      \ than replaced.\n_NESTED_KEYS = (\"format\",)\n\n\ndef load_options(overrides=None):\n    \"\"\"\
+      Return a fresh options dict with ``overrides`` applied on top of defaults.\"\"\"\n    options =\
+      \ dict(DEFAULT_OPTIONS)\n    if not overrides:\n        return options\n    for key, value in overrides.items():\n\
+      \        if key in _NESTED_KEYS:\n            options[key].update(value)\n        else:\n      \
+      \      options[key] = value\n    return options\n"
+  - path: formatting.py
+    content: "\"\"\"Number and header formatting shared by reports and exports.\"\"\"\nfrom decimal import\
+      \ Decimal\n\n_HEADER_CACHE = {}\n\n\ndef header_line(columns, delimiter):\n    \"\"\"Return the\
+      \ header row for ``columns``, memoised per (columns, delimiter).\"\"\"\n    key = (tuple(columns),\
+      \ delimiter)\n    if key not in _HEADER_CACHE:\n        _HEADER_CACHE[key] = delimiter.join(columns)\n\
+      \    return _HEADER_CACHE[key]\n\n\ndef group_thousands(digits, sep):\n    if not sep:\n       \
+      \ return digits\n    groups = []\n    while len(digits) > 3:\n        groups.insert(0, digits[-3:])\n\
+      \        digits = digits[:-3]\n    groups.insert(0, digits)\n    return sep.join(groups)\n\n\ndef\
+      \ format_amount(value, precision=2, decimal_sep=\".\", thousands_sep=\"\"):\n    text = f\"{Decimal(value):.{precision}f}\"\
+      \n    sign = \"\"\n    if text.startswith(\"-\"):\n        sign, text = \"-\", text[1:]\n    whole,\
+      \ _, frac = text.partition(\".\")\n    whole = group_thousands(whole, thousands_sep)\n    if frac:\n\
+      \        return f\"{sign}{whole}{decimal_sep}{frac}\"\n    return f\"{sign}{whole}\"\n"
+  - path: report.py
+    content: "\"\"\"Human-readable summaries, optionally localised per customer.\"\"\"\nfrom decimal import\
+      \ Decimal\n\nfrom formatting import format_amount, header_line\nfrom settings import load_options\n\
+      \n\ndef render_summary(rows, overrides=None):\n    opts = load_options(overrides)\n    fmt = opts[\"\
+      format\"]\n    sep = fmt[\"delimiter\"]\n\n    def money(value):\n        return format_amount(\n\
+      \            value, opts[\"precision\"], fmt[\"decimal_sep\"], fmt[\"thousands_sep\"]\n        )\n\
+      \n    lines = [header_line(opts[\"columns\"], sep)]\n    total = Decimal(\"0\")\n    for row in\
+      \ rows:\n        total += row[\"amount\"]\n        lines.append(sep.join([row[\"sku\"], str(row[\"\
+      qty\"]), money(row[\"amount\"])]))\n    lines.append(f\"TOTAL {opts['currency']} {money(total)}\"\
+      )\n    return \"\\n\".join(lines)\n"
+  - path: exporter.py
+    content: "\"\"\"Machine-readable CSV export consumed by the warehouse importer.\"\"\"\nimport io\n\
+      from decimal import Decimal\n\nfrom formatting import format_amount, header_line\nfrom settings\
+      \ import load_options\n\n\ndef export_csv(rows):\n    \"\"\"Export rows using the canonical (non-localised)\
+      \ default options.\"\"\"\n    opts = load_options()\n    fmt = opts[\"format\"]\n    buf = io.StringIO()\n\
+      \    buf.write(header_line(opts[\"columns\"], fmt[\"delimiter\"]) + \"\\n\")\n    for row in rows:\n\
+      \        amount = format_amount(\n            row[\"amount\"], opts[\"precision\"], fmt[\"decimal_sep\"\
+      ], fmt[\"thousands_sep\"]\n        )\n        buf.write(fmt[\"delimiter\"].join([row[\"sku\"], str(row[\"\
+      qty\"]), amount]) + \"\\n\")\n    return buf.getvalue()\n\n\ndef parse_csv(text):\n    \"\"\"Inverse\
+      \ of export_csv, as used by the warehouse importer.\"\"\"\n    lines = text.strip().splitlines()\n\
+      \    header = lines[0].split(\",\")\n    out = []\n    for line in lines[1:]:\n        values =\
+      \ dict(zip(header, line.split(\",\")))\n        out.append({\n            \"sku\": values[\"sku\"\
+      ],\n            \"qty\": int(values[\"qty\"]),\n            \"amount\": Decimal(values[\"amount\"\
+      ]),\n        })\n    return out\n"
+  reference_files:
+  - path: settings.py
+    content: "\"\"\"Application-wide option defaults and override merging.\"\"\"\n\nDEFAULT_OPTIONS =\
+      \ {\n    \"currency\": \"USD\",\n    \"precision\": 2,\n    \"format\": {\n        \"delimiter\"\
+      : \",\",\n        \"decimal_sep\": \".\",\n        \"thousands_sep\": \"\",\n    },\n    \"columns\"\
+      : (\"sku\", \"qty\", \"amount\"),\n}\n\n# Keys whose values are dicts and should be merged rather\
+      \ than replaced.\n_NESTED_KEYS = (\"format\",)\n\n\ndef load_options(overrides=None):\n    \"\"\"\
+      Return a fresh options dict with ``overrides`` applied on top of defaults.\"\"\"\n    options =\
+      \ dict(DEFAULT_OPTIONS)\n    # Copy nested dicts too, so merging never mutates the shared defaults.\n\
+      \    for key in _NESTED_KEYS:\n        options[key] = dict(DEFAULT_OPTIONS[key])\n    if not overrides:\n\
+      \        return options\n    for key, value in overrides.items():\n        if key in _NESTED_KEYS:\n\
+      \            options[key].update(value)\n        else:\n            options[key] = value\n    return\
+      \ options\n"
+  test_code: "from decimal import Decimal\n\nimport exporter\nimport report\nimport settings\n\nROWS =\
+    \ [\n    {\"sku\": \"A-1\", \"qty\": 2, \"amount\": Decimal(\"1234.50\")},\n    {\"sku\": \"B-2\"\
+    , \"qty\": 1, \"amount\": Decimal(\"9.99\")},\n]\nGERMAN = {\"currency\": \"EUR\", \"format\": {\"\
+    delimiter\": \";\", \"decimal_sep\": \",\", \"thousands_sep\": \".\"}}\nFRENCH = {\"currency\": \"\
+    EUR\", \"format\": {\"thousands_sep\": \" \"}}\n\n\ndef test_export_roundtrips_after_localized_report():\n\
+    \    report.render_summary(ROWS, GERMAN)\n    text = exporter.export_csv(ROWS)\n    assert text.splitlines()\
+    \ == [\"sku,qty,amount\", \"A-1,2,1234.50\", \"B-2,1,9.99\"]\n    assert exporter.parse_csv(text)\
+    \ == ROWS\n\n\ndef test_localized_reports_do_not_leak_into_each_other():\n    report.render_summary(ROWS,\
+    \ GERMAN)\n    french = report.render_summary(ROWS, FRENCH)\n    assert french.splitlines() == [\n\
+    \        \"sku,qty,amount\",\n        \"A-1,2,1 234.50\",\n        \"B-2,1,9.99\",\n        \"TOTAL\
+    \ EUR 1 244.49\",\n    ]\n\n\ndef test_german_report_still_localized():\n    out = report.render_summary(ROWS,\
+    \ GERMAN)\n    assert out.splitlines() == [\n        \"sku;qty;amount\",\n        \"A-1;2;1.234,50\"\
+    ,\n        \"B-2;1;9,99\",\n        \"TOTAL EUR 1.244,49\",\n    ]\n\n\ndef test_defaults_survive_overrides():\n\
+    \    settings.load_options(GERMAN)\n    settings.load_options(FRENCH)\n    opts = settings.load_options()\n\
+    \    assert opts[\"currency\"] == \"USD\"\n    assert opts[\"format\"] == {\"delimiter\": \",\", \"\
+    decimal_sep\": \".\", \"thousands_sep\": \"\"}\n"
+  red_herring: 'formatting.py keeps a module-level mutable `_HEADER_CACHE` dict that persists across calls.
+    That fits the ''shared state'' pattern and looks like it could serve a stale `sku;qty;amount` header
+    to the exporter. It is correct, though: the cache key includes the delimiter, so each delimiter gets
+    its own header. The real leak is upstream, in what delimiter the exporter is given. A second distraction
+    is that parse_csv hard-codes '','', which looks like the bug when you read the KeyError traceback.'
+  root_cause: settings.load_options makes only a shallow copy of DEFAULT_OPTIONS, so applying a 'format'
+    override in report.render_summary calls .update() on the shared nested defaults dict. That permanently
+    changes the delimiter and separators that exporter.export_csv later reads through load_options().
+  type: verifiable_multi
+  capability: multi_module_debugging
+  prompt: "The warehouse importer intermittently fails with KeyError: 'sku' when it parses our CSV exports.\
+    \ When it fails, the export starts with `sku;qty;amount` and amounts look like `1.234,50`, even though\
+    \ export_csv() never asks for a locale. Running export_csv() alone in a fresh interpreter always gives\
+    \ a correct comma-separated file. It only goes wrong in long-running workers that also render customer\
+    \ summaries. Separately, a French-locale summary rendered after a German one comes out with semicolons.\n\
+    \nHere is the code:\n\n```python\n# file: settings.py\n\"\"\"Application-wide option defaults and\
+    \ override merging.\"\"\"\n\nDEFAULT_OPTIONS = {\n    \"currency\": \"USD\",\n    \"precision\": 2,\n\
+    \    \"format\": {\n        \"delimiter\": \",\",\n        \"decimal_sep\": \".\",\n        \"thousands_sep\"\
+    : \"\",\n    },\n    \"columns\": (\"sku\", \"qty\", \"amount\"),\n}\n\n# Keys whose values are dicts\
+    \ and should be merged rather than replaced.\n_NESTED_KEYS = (\"format\",)\n\n\ndef load_options(overrides=None):\n\
+    \    \"\"\"Return a fresh options dict with ``overrides`` applied on top of defaults.\"\"\"\n    options\
+    \ = dict(DEFAULT_OPTIONS)\n    if not overrides:\n        return options\n    for key, value in overrides.items():\n\
+    \        if key in _NESTED_KEYS:\n            options[key].update(value)\n        else:\n        \
+    \    options[key] = value\n    return options\n\n```\n\n```python\n# file: formatting.py\n\"\"\"Number\
+    \ and header formatting shared by reports and exports.\"\"\"\nfrom decimal import Decimal\n\n_HEADER_CACHE\
+    \ = {}\n\n\ndef header_line(columns, delimiter):\n    \"\"\"Return the header row for ``columns``,\
+    \ memoised per (columns, delimiter).\"\"\"\n    key = (tuple(columns), delimiter)\n    if key not\
+    \ in _HEADER_CACHE:\n        _HEADER_CACHE[key] = delimiter.join(columns)\n    return _HEADER_CACHE[key]\n\
+    \n\ndef group_thousands(digits, sep):\n    if not sep:\n        return digits\n    groups = []\n \
+    \   while len(digits) > 3:\n        groups.insert(0, digits[-3:])\n        digits = digits[:-3]\n\
+    \    groups.insert(0, digits)\n    return sep.join(groups)\n\n\ndef format_amount(value, precision=2,\
+    \ decimal_sep=\".\", thousands_sep=\"\"):\n    text = f\"{Decimal(value):.{precision}f}\"\n    sign\
+    \ = \"\"\n    if text.startswith(\"-\"):\n        sign, text = \"-\", text[1:]\n    whole, _, frac\
+    \ = text.partition(\".\")\n    whole = group_thousands(whole, thousands_sep)\n    if frac:\n     \
+    \   return f\"{sign}{whole}{decimal_sep}{frac}\"\n    return f\"{sign}{whole}\"\n\n```\n\n```python\n\
+    # file: report.py\n\"\"\"Human-readable summaries, optionally localised per customer.\"\"\"\nfrom\
+    \ decimal import Decimal\n\nfrom formatting import format_amount, header_line\nfrom settings import\
+    \ load_options\n\n\ndef render_summary(rows, overrides=None):\n    opts = load_options(overrides)\n\
+    \    fmt = opts[\"format\"]\n    sep = fmt[\"delimiter\"]\n\n    def money(value):\n        return\
+    \ format_amount(\n            value, opts[\"precision\"], fmt[\"decimal_sep\"], fmt[\"thousands_sep\"\
+    ]\n        )\n\n    lines = [header_line(opts[\"columns\"], sep)]\n    total = Decimal(\"0\")\n  \
+    \  for row in rows:\n        total += row[\"amount\"]\n        lines.append(sep.join([row[\"sku\"\
+    ], str(row[\"qty\"]), money(row[\"amount\"])]))\n    lines.append(f\"TOTAL {opts['currency']} {money(total)}\"\
+    )\n    return \"\\n\".join(lines)\n\n```\n\n```python\n# file: exporter.py\n\"\"\"Machine-readable\
+    \ CSV export consumed by the warehouse importer.\"\"\"\nimport io\nfrom decimal import Decimal\n\n\
+    from formatting import format_amount, header_line\nfrom settings import load_options\n\n\ndef export_csv(rows):\n\
+    \    \"\"\"Export rows using the canonical (non-localised) default options.\"\"\"\n    opts = load_options()\n\
+    \    fmt = opts[\"format\"]\n    buf = io.StringIO()\n    buf.write(header_line(opts[\"columns\"],\
+    \ fmt[\"delimiter\"]) + \"\\n\")\n    for row in rows:\n        amount = format_amount(\n        \
+    \    row[\"amount\"], opts[\"precision\"], fmt[\"decimal_sep\"], fmt[\"thousands_sep\"]\n        )\n\
+    \        buf.write(fmt[\"delimiter\"].join([row[\"sku\"], str(row[\"qty\"]), amount]) + \"\\n\")\n\
+    \    return buf.getvalue()\n\n\ndef parse_csv(text):\n    \"\"\"Inverse of export_csv, as used by\
+    \ the warehouse importer.\"\"\"\n    lines = text.strip().splitlines()\n    header = lines[0].split(\"\
+    ,\")\n    out = []\n    for line in lines[1:]:\n        values = dict(zip(header, line.split(\",\"\
+    )))\n        out.append({\n            \"sku\": values[\"sku\"],\n            \"qty\": int(values[\"\
+    qty\"]),\n            \"amount\": Decimal(values[\"amount\"]),\n        })\n    return out\n\n```\n\
+    \nFind the root cause and fix it. Return every file you change in full, each in its own ```python\
+    \ block whose first line is `# file: <name>`. Do not return files you leave unchanged."
+  validation:
+    valid: true
+    reasons: []
+    lines: 122
+    fixed_output: '....                                                                     [100%]
+
+      4 passed in 0.01s
+
+      '
+- id: debug_hard_6
+  title: Invoice ledger posting fails with a one-cent imbalance on some invoices
+  symptom: 'Posting invoice INV-2041 to the ledger raises `LedgerImbalance: invoice INV-2041: debits 3091
+    != credits 3090`. The printed invoice shows Subtotal USD 30.00, Tax USD 0.90, Total USD 30.91, which
+    doesn''t add up. Most invoices post fine. INV-2041 has a 10.50 widget at the standard 5% rate, 3 cables
+    at 2.50 each (standard rate), and a 12.00 tax-exempt manual. Finance says our rounding policy is half-up
+    to the cent everywhere.'
+  files:
+  - path: money.py
+    content: "\"\"\"Money helpers. Company policy: all monetary rounding is half-up to the cent.\"\"\"\
+      \nfrom decimal import ROUND_HALF_UP, Decimal\n\nCENT = Decimal(\"0.01\")\n\n\ndef to_decimal(value):\n\
+      \    if isinstance(value, Decimal):\n        return value\n    return Decimal(str(value))\n\n\n\
+      def round_money(value):\n    \"\"\"Round to the cent using the company policy (half-up).\"\"\"\n\
+      \    return to_decimal(value).quantize(CENT, rounding=ROUND_HALF_UP)\n\n\ndef to_cents(amount):\n\
+      \    \"\"\"Convert an already-rounded amount to integer cents for storage.\"\"\"\n    return int(amount\
+      \ * 100)\n\n\ndef format_money(amount, currency=\"USD\"):\n    return f\"{currency} {round_money(amount):,.2f}\"\
+      \n"
+  - path: tax.py
+    content: "\"\"\"Sales-tax rates and per-line tax calculation.\"\"\"\nfrom decimal import Decimal\n\
+      \nfrom money import to_decimal\n\nRATES = {\n    \"standard\": Decimal(\"0.05\"),\n    \"reduced\"\
+      : Decimal(\"0.025\"),\n    \"exempt\": Decimal(\"0\"),\n}\n\n\ndef rate_for(category):\n    try:\n\
+      \        return RATES[category]\n    except KeyError:\n        raise ValueError(f\"unknown tax category:\
+      \ {category!r}\") from None\n\n\ndef line_tax(net, category):\n    \"\"\"Tax due on a single invoice\
+      \ line, rounded to the cent.\"\"\"\n    raw = to_decimal(net) * rate_for(category)\n    return round(raw,\
+      \ 2)\n"
+  - path: invoice.py
+    content: "\"\"\"Invoice model: lines, per-line amounts and invoice totals.\"\"\"\nfrom dataclasses\
+      \ import dataclass, field\nfrom decimal import Decimal\n\nfrom money import format_money, round_money,\
+      \ to_decimal\nfrom tax import line_tax, rate_for\n\n\n@dataclass\nclass Line:\n    description:\
+      \ str\n    quantity: int\n    unit_price: Decimal\n    category: str = \"standard\"\n\n    @property\n\
+      \    def net(self):\n        return round_money(self.quantity * to_decimal(self.unit_price))\n\n\
+      \    @property\n    def tax(self):\n        return line_tax(self.net, self.category)\n\n    @property\n\
+      \    def gross(self):\n        # Price the line from the exact rate rather than net + rounded tax,\n\
+      \        # so the customer-facing amount is only ever rounded once.\n        multiplier = 1 + rate_for(self.category)\n\
+      \        return round_money(self.net * multiplier)\n\n\n@dataclass\nclass Invoice:\n    number:\
+      \ str\n    lines: list = field(default_factory=list)\n    currency: str = \"USD\"\n\n    def add(self,\
+      \ line):\n        if line.quantity <= 0:\n            raise ValueError(\"quantity must be positive\"\
+      )\n        self.lines.append(line)\n        return self\n\n    @property\n    def subtotal(self):\n\
+      \        return sum((line.net for line in self.lines), Decimal(\"0.00\"))\n\n    @property\n   \
+      \ def tax_total(self):\n        return sum((line.tax for line in self.lines), Decimal(\"0.00\"))\n\
+      \n    @property\n    def total(self):\n        return sum((line.gross for line in self.lines), Decimal(\"\
+      0.00\"))\n\n    def render(self):\n        cur = self.currency\n        rows = [f\"Invoice {self.number}\"\
+      ]\n        for line in self.lines:\n            rows.append(\n                f\"  {line.description:<20}\
+      \ {line.quantity:>3} x \"\n                f\"{to_decimal(line.unit_price):>8} = {format_money(line.gross,\
+      \ cur)}\"\n            )\n        rows.append(f\"  Subtotal: {format_money(self.subtotal, cur)}\"\
+      )\n        rows.append(f\"  Tax:      {format_money(self.tax_total, cur)}\")\n        rows.append(f\"\
+      \  Total:    {format_money(self.total, cur)}\")\n        return \"\\n\".join(rows)\n"
+  - path: ledger.py
+    content: "\"\"\"Double-entry posting of invoices into the general journal.\"\"\"\nfrom money import\
+      \ to_cents\n\n\nclass LedgerImbalance(Exception):\n    pass\n\n\ndef post_invoice(invoice, journal):\n\
+      \    \"\"\"Append balanced entries (number, account, debit_cents, credit_cents).\"\"\"\n    entries\
+      \ = [\n        (\"accounts_receivable\", to_cents(invoice.total), 0),\n        (\"revenue\", 0,\
+      \ to_cents(invoice.subtotal)),\n        (\"tax_payable\", 0, to_cents(invoice.tax_total)),\n   \
+      \ ]\n    debits = sum(debit for _, debit, _ in entries)\n    credits = sum(credit for _, _, credit\
+      \ in entries)\n    if debits != credits:\n        raise LedgerImbalance(\n            f\"invoice\
+      \ {invoice.number}: debits {debits} != credits {credits}\"\n        )\n    journal.extend((invoice.number,\
+      \ *entry) for entry in entries)\n    return entries\n"
+  reference_files:
+  - path: tax.py
+    content: "\"\"\"Sales-tax rates and per-line tax calculation.\"\"\"\nfrom decimal import Decimal\n\
+      \nfrom money import round_money, to_decimal\n\nRATES = {\n    \"standard\": Decimal(\"0.05\"),\n\
+      \    \"reduced\": Decimal(\"0.025\"),\n    \"exempt\": Decimal(\"0\"),\n}\n\n\ndef rate_for(category):\n\
+      \    try:\n        return RATES[category]\n    except KeyError:\n        raise ValueError(f\"unknown\
+      \ tax category: {category!r}\") from None\n\n\ndef line_tax(net, category):\n    \"\"\"Tax due on\
+      \ a single invoice line, rounded to the cent (half-up policy).\"\"\"\n    raw = to_decimal(net)\
+      \ * rate_for(category)\n    return round_money(raw)\n"
+  test_code: "from decimal import ROUND_HALF_UP, Decimal\n\nimport ledger\nfrom invoice import Invoice,\
+    \ Line\n\n\ndef build():\n    inv = Invoice(\"INV-2041\")\n    inv.add(Line(\"Widget\", 1, \"10.50\"\
+    ))\n    inv.add(Line(\"Cable\", 3, \"2.50\"))\n    inv.add(Line(\"Manual\", 1, \"12.00\", \"exempt\"\
+    ))\n    return inv\n\n\ndef test_half_cent_line_tax_rounds_half_up():\n    line = Line(\"Widget\"\
+    , 1, \"10.50\")\n    assert line.tax == Decimal(\"0.53\")\n    assert line.gross == Decimal(\"11.03\"\
+    )\n    assert line.net + line.tax == line.gross\n\n\ndef test_invoice_footer_adds_up():\n    inv =\
+    \ build()\n    assert inv.subtotal == Decimal(\"30.00\")\n    assert inv.tax_total == Decimal(\"0.91\"\
+    )\n    assert inv.total == Decimal(\"30.91\")\n    assert inv.subtotal + inv.tax_total == inv.total\n\
+    \n\ndef test_invoice_posts_balanced():\n    journal = []\n    ledger.post_invoice(build(), journal)\n\
+    \    assert len(journal) == 3\n    assert sum(e[2] for e in journal) == 3091\n    assert sum(e[3]\
+    \ for e in journal) == 3091\n\n\ndef test_every_line_is_internally_consistent():\n    rates = {\"\
+    standard\": Decimal(\"0.05\"), \"reduced\": Decimal(\"0.025\")}\n    for cents in range(1, 2001, 7):\n\
+    \        price = Decimal(cents) / 100\n        for category, rate in rates.items():\n            line\
+    \ = Line(\"item\", 1, price, category)\n            expected_tax = (price * rate).quantize(Decimal(\"\
+    0.01\"), rounding=ROUND_HALF_UP)\n            assert line.tax == expected_tax, (price, category)\n\
+    \            assert line.net + line.tax == line.gross, (price, category)\n"
+  red_herring: 'money.to_cents uses `int(amount * 100)`, which looks like a classic truncation bug (as
+    with floats, 11.03*100 could become 1102.999...). The values are exact Decimals already rounded to
+    the cent, so the result is exact and correct. The ledger''s balance check is also correct, even though
+    that is where the error shows up. The comment on Line.gross about ''only rounding once'' tempts people
+    to switch gross to net + tax. That makes the ledger balance, but it hides the real problem: tax is
+    still 0.52 and the total is 11.02, which breaks the half-up policy.'
+  root_cause: tax.line_tax rounds with the built-in round(Decimal, 2), which uses banker's rounding (ROUND_HALF_EVEN),
+    while invoice.Line.gross rounds through money.round_money (ROUND_HALF_UP). On exact half-cent taxes,
+    the summed line taxes come out one cent below what the line grosses imply, so the invoice footer and
+    the ledger don't balance.
+  type: verifiable_multi
+  capability: multi_module_debugging
+  prompt: "Posting invoice INV-2041 to the ledger raises `LedgerImbalance: invoice INV-2041: debits 3091\
+    \ != credits 3090`. The printed invoice shows Subtotal USD 30.00, Tax USD 0.90, Total USD 30.91, which\
+    \ doesn't add up. Most invoices post fine. INV-2041 has a 10.50 widget at the standard 5% rate, 3\
+    \ cables at 2.50 each (standard rate), and a 12.00 tax-exempt manual. Finance says our rounding policy\
+    \ is half-up to the cent everywhere.\n\nHere is the code:\n\n```python\n# file: money.py\n\"\"\"Money\
+    \ helpers. Company policy: all monetary rounding is half-up to the cent.\"\"\"\nfrom decimal import\
+    \ ROUND_HALF_UP, Decimal\n\nCENT = Decimal(\"0.01\")\n\n\ndef to_decimal(value):\n    if isinstance(value,\
+    \ Decimal):\n        return value\n    return Decimal(str(value))\n\n\ndef round_money(value):\n \
+    \   \"\"\"Round to the cent using the company policy (half-up).\"\"\"\n    return to_decimal(value).quantize(CENT,\
+    \ rounding=ROUND_HALF_UP)\n\n\ndef to_cents(amount):\n    \"\"\"Convert an already-rounded amount\
+    \ to integer cents for storage.\"\"\"\n    return int(amount * 100)\n\n\ndef format_money(amount,\
+    \ currency=\"USD\"):\n    return f\"{currency} {round_money(amount):,.2f}\"\n\n```\n\n```python\n\
+    # file: tax.py\n\"\"\"Sales-tax rates and per-line tax calculation.\"\"\"\nfrom decimal import Decimal\n\
+    \nfrom money import to_decimal\n\nRATES = {\n    \"standard\": Decimal(\"0.05\"),\n    \"reduced\"\
+    : Decimal(\"0.025\"),\n    \"exempt\": Decimal(\"0\"),\n}\n\n\ndef rate_for(category):\n    try:\n\
+    \        return RATES[category]\n    except KeyError:\n        raise ValueError(f\"unknown tax category:\
+    \ {category!r}\") from None\n\n\ndef line_tax(net, category):\n    \"\"\"Tax due on a single invoice\
+    \ line, rounded to the cent.\"\"\"\n    raw = to_decimal(net) * rate_for(category)\n    return round(raw,\
+    \ 2)\n\n```\n\n```python\n# file: invoice.py\n\"\"\"Invoice model: lines, per-line amounts and invoice\
+    \ totals.\"\"\"\nfrom dataclasses import dataclass, field\nfrom decimal import Decimal\n\nfrom money\
+    \ import format_money, round_money, to_decimal\nfrom tax import line_tax, rate_for\n\n\n@dataclass\n\
+    class Line:\n    description: str\n    quantity: int\n    unit_price: Decimal\n    category: str =\
+    \ \"standard\"\n\n    @property\n    def net(self):\n        return round_money(self.quantity * to_decimal(self.unit_price))\n\
+    \n    @property\n    def tax(self):\n        return line_tax(self.net, self.category)\n\n    @property\n\
+    \    def gross(self):\n        # Price the line from the exact rate rather than net + rounded tax,\n\
+    \        # so the customer-facing amount is only ever rounded once.\n        multiplier = 1 + rate_for(self.category)\n\
+    \        return round_money(self.net * multiplier)\n\n\n@dataclass\nclass Invoice:\n    number: str\n\
+    \    lines: list = field(default_factory=list)\n    currency: str = \"USD\"\n\n    def add(self, line):\n\
+    \        if line.quantity <= 0:\n            raise ValueError(\"quantity must be positive\")\n   \
+    \     self.lines.append(line)\n        return self\n\n    @property\n    def subtotal(self):\n   \
+    \     return sum((line.net for line in self.lines), Decimal(\"0.00\"))\n\n    @property\n    def tax_total(self):\n\
+    \        return sum((line.tax for line in self.lines), Decimal(\"0.00\"))\n\n    @property\n    def\
+    \ total(self):\n        return sum((line.gross for line in self.lines), Decimal(\"0.00\"))\n\n   \
+    \ def render(self):\n        cur = self.currency\n        rows = [f\"Invoice {self.number}\"]\n  \
+    \      for line in self.lines:\n            rows.append(\n                f\"  {line.description:<20}\
+    \ {line.quantity:>3} x \"\n                f\"{to_decimal(line.unit_price):>8} = {format_money(line.gross,\
+    \ cur)}\"\n            )\n        rows.append(f\"  Subtotal: {format_money(self.subtotal, cur)}\"\
+    )\n        rows.append(f\"  Tax:      {format_money(self.tax_total, cur)}\")\n        rows.append(f\"\
+    \  Total:    {format_money(self.total, cur)}\")\n        return \"\\n\".join(rows)\n\n```\n\n```python\n\
+    # file: ledger.py\n\"\"\"Double-entry posting of invoices into the general journal.\"\"\"\nfrom money\
+    \ import to_cents\n\n\nclass LedgerImbalance(Exception):\n    pass\n\n\ndef post_invoice(invoice,\
+    \ journal):\n    \"\"\"Append balanced entries (number, account, debit_cents, credit_cents).\"\"\"\
+    \n    entries = [\n        (\"accounts_receivable\", to_cents(invoice.total), 0),\n        (\"revenue\"\
+    , 0, to_cents(invoice.subtotal)),\n        (\"tax_payable\", 0, to_cents(invoice.tax_total)),\n  \
+    \  ]\n    debits = sum(debit for _, debit, _ in entries)\n    credits = sum(credit for _, _, credit\
+    \ in entries)\n    if debits != credits:\n        raise LedgerImbalance(\n            f\"invoice {invoice.number}:\
+    \ debits {debits} != credits {credits}\"\n        )\n    journal.extend((invoice.number, *entry) for\
+    \ entry in entries)\n    return entries\n\n```\n\nFind the root cause and fix it. Return every file\
+    \ you change in full, each in its own ```python block whose first line is `# file: <name>`. Do not\
+    \ return files you leave unchanged."
+  validation:
+    valid: true
+    reasons: []
+    lines: 137
+    fixed_output: '....                                                                     [100%]
+
+      4 passed in 0.01s
+
+      '
+- id: debug_hard_7
+  title: Revoked catalog credentials produce stale quotes instead of an auth error
+  symptom: After the catalog API token was revoked, QuoteService.quote() did not raise AuthError, even
+    though service.py has an explicit `except PermissionError` branch for that case. If a price had been
+    cached earlier, it returned a Quote with stale=True and the old price. If not, it raised ServiceUnavailable('catalog
+    unavailable ...'). The transport log shows three identical requests to /prices/<sku> for every quote,
+    with backoff between them. Real outages (503/504) still behave correctly.
+  files:
+  - path: transport.py
+    content: "\"\"\"In-memory HTTP-ish transport used by the catalog client.\n\nHTTP status codes are\
+      \ mapped onto built-in exceptions so callers never\nhave to inspect raw status codes:\n\n    401/403\
+      \ -> PermissionError\n    404     -> KeyError\n    429/503 -> ConnectionError\n    504     -> TimeoutError\n\
+      \"\"\"\n\n_STATUS_ERRORS = {\n    401: PermissionError,\n    403: PermissionError,\n    429: ConnectionError,\n\
+      \    503: ConnectionError,\n    504: TimeoutError,\n}\n\n\nclass ScriptedTransport:\n    \"\"\"\
+      Replays a fixed script of (status, body) responses per path.\n\n    Responses are consumed in order;\
+      \ the final response for a path is\n    sticky and is returned for every subsequent call.\n    \"\
+      \"\"\n\n    def __init__(self, script):\n        self._script = {path: list(responses) for path,\
+      \ responses in script.items()}\n        self.calls = []\n\n    def get(self, path):\n        self.calls.append(path)\n\
+      \        queue = self._script.get(path)\n        if not queue:\n            raise KeyError(path)\n\
+      \        status, body = queue.pop(0) if len(queue) > 1 else queue[0]\n        if status == 200:\n\
+      \            return body\n        if status == 404:\n            raise KeyError(path)\n        exc_type\
+      \ = _STATUS_ERRORS.get(status)\n        if exc_type is None:\n            raise RuntimeError(f\"\
+      unexpected status {status} for {path}\")\n        raise exc_type(f\"HTTP {status} for {path}\")\n"
+  - path: retry.py
+    content: "\"\"\"Generic retry decorator with exponential backoff.\"\"\"\nimport functools\nimport\
+      \ time\n\n\nclass RetryExhausted(Exception):\n    \"\"\"Raised when every attempt failed with a\
+      \ retryable error.\"\"\"\n\n    def __init__(self, func_name, attempts, last_error):\n        super().__init__(f\"\
+      {func_name} failed after {attempts} attempts: {last_error!r}\")\n        self.attempts = attempts\n\
+      \        self.last_error = last_error\n\n\ndef retry(on, attempts=3, base_delay=0.1, sleeper=time.sleep):\n\
+      \    \"\"\"Retry the wrapped callable when it raises one of the `on` exceptions.\n\n    Non-matching\
+      \ exceptions propagate immediately and unchanged.\n    \"\"\"\n    if attempts < 1:\n        raise\
+      \ ValueError(\"attempts must be >= 1\")\n\n    def decorate(fn):\n        @functools.wraps(fn)\n\
+      \        def wrapper(*args, **kwargs):\n            for attempt in range(1, attempts + 1):\n   \
+      \             try:\n                    return fn(*args, **kwargs)\n                except on as\
+      \ exc:\n                    if attempt == attempts:\n                        raise RetryExhausted(fn.__name__,\
+      \ attempts, exc) from exc\n                    sleeper(base_delay * 2 ** (attempt - 1))\n\n    \
+      \    return wrapper\n\n    return decorate\n"
+  - path: client.py
+    content: "\"\"\"Catalog API client.\"\"\"\nfrom retry import retry\n\n# Network-level failures worth\
+      \ retrying. ConnectionError and TimeoutError\n# are both OSError subclasses, so catching OSError\
+      \ covers them plus any\n# lower-level socket errors.\nRETRYABLE_ERRORS = (OSError,)\n\n\nclass UnknownSku(LookupError):\n\
+      \    pass\n\n\nclass CatalogClient:\n    def __init__(self, transport, attempts=3, sleeper=None):\n\
+      \        self._transport = transport\n        options = {\"on\": RETRYABLE_ERRORS, \"attempts\"\
+      : attempts}\n        if sleeper is not None:\n            options[\"sleeper\"] = sleeper\n     \
+      \   self._get = retry(**options)(transport.get)\n\n    def get_price(self, sku):\n        \"\"\"\
+      Return the unit price of `sku` in cents.\"\"\"\n        try:\n            body = self._get(f\"/prices/{sku}\"\
+      )\n        except KeyError:\n            raise UnknownSku(sku) from None\n        cents = body[\"\
+      cents\"]\n        if not isinstance(cents, int) or cents < 0:\n            raise ValueError(f\"\
+      bad price payload for {sku}: {body!r}\")\n        return cents\n"
+  - path: service.py
+    content: "\"\"\"Quote service: prices orders, falling back to cached prices during outages.\"\"\"\n\
+      from retry import RetryExhausted\n\n\nclass AuthError(Exception):\n    \"\"\"Credentials were rejected\
+      \ by the catalog.\"\"\"\n\n\nclass ServiceUnavailable(Exception):\n    \"\"\"Catalog is down and\
+      \ no cached price is available.\"\"\"\n\n\nclass Quote:\n    def __init__(self, sku, qty, unit_cents,\
+      \ stale):\n        self.sku = sku\n        self.qty = qty\n        self.unit_cents = unit_cents\n\
+      \        self.stale = stale\n\n    @property\n    def total_cents(self):\n        return self.unit_cents\
+      \ * self.qty\n\n\nclass QuoteService:\n    def __init__(self, client):\n        self._client = client\n\
+      \        self._last_known = {}\n\n    def quote(self, sku, qty):\n        if qty <= 0:\n       \
+      \     raise ValueError(\"qty must be positive\")\n        try:\n            cents = self._client.get_price(sku)\n\
+      \        except PermissionError as exc:\n            raise AuthError(str(exc)) from exc\n      \
+      \  except RetryExhausted:\n            if sku in self._last_known:\n                return Quote(sku,\
+      \ qty, self._last_known[sku], stale=True)\n            raise ServiceUnavailable(f\"catalog unavailable,\
+      \ no cached price for {sku}\")\n        self._last_known[sku] = cents\n        return Quote(sku,\
+      \ qty, cents, stale=False)\n"
+  reference_files:
+  - path: client.py
+    content: "\"\"\"Catalog API client.\"\"\"\nfrom retry import retry\n\n# Only genuinely transient network\
+      \ failures are retried. Do NOT widen this\n# to OSError: PermissionError (401/403) is also an OSError\
+      \ subclass and must\n# reach the caller immediately rather than being retried and wrapped.\nRETRYABLE_ERRORS\
+      \ = (ConnectionError, TimeoutError)\n\n\nclass UnknownSku(LookupError):\n    pass\n\n\nclass CatalogClient:\n\
+      \    def __init__(self, transport, attempts=3, sleeper=None):\n        self._transport = transport\n\
+      \        options = {\"on\": RETRYABLE_ERRORS, \"attempts\": attempts}\n        if sleeper is not\
+      \ None:\n            options[\"sleeper\"] = sleeper\n        self._get = retry(**options)(transport.get)\n\
+      \n    def get_price(self, sku):\n        \"\"\"Return the unit price of `sku` in cents.\"\"\"\n\
+      \        try:\n            body = self._get(f\"/prices/{sku}\")\n        except KeyError:\n    \
+      \        raise UnknownSku(sku) from None\n        cents = body[\"cents\"]\n        if not isinstance(cents,\
+      \ int) or cents < 0:\n            raise ValueError(f\"bad price payload for {sku}: {body!r}\")\n\
+      \        return cents\n"
+  test_code: "import pytest\n\nfrom transport import ScriptedTransport\nfrom client import CatalogClient\n\
+    from service import QuoteService, AuthError, ServiceUnavailable\n\n\ndef make(script):\n    transport\
+    \ = ScriptedTransport(script)\n    delays = []\n    svc = QuoteService(CatalogClient(transport, attempts=3,\
+    \ sleeper=delays.append))\n    return transport, svc, delays\n\n\ndef test_rejected_credentials_raise_auth_error():\n\
+    \    _, svc, _ = make({\"/prices/A1\": [(403, None)]})\n    with pytest.raises(AuthError):\n     \
+    \   svc.quote(\"A1\", 2)\n\n\ndef test_rejected_credentials_are_not_retried():\n    transport, svc,\
+    \ delays = make({\"/prices/A1\": [(401, None)]})\n    with pytest.raises(AuthError):\n        svc.quote(\"\
+    A1\", 1)\n    assert transport.calls == [\"/prices/A1\"]\n    assert delays == []\n\n\ndef test_auth_failure_is_never_masked_by_cached_price():\n\
+    \    transport, svc, _ = make({\"/prices/A1\": [(200, {\"cents\": 250}), (403, None)]})\n    assert\
+    \ svc.quote(\"A1\", 2).total_cents == 500\n    with pytest.raises(AuthError):\n        svc.quote(\"\
+    A1\", 2)\n    assert len(transport.calls) == 2\n\n\ndef test_transient_errors_are_retried_then_succeed():\n\
+    \    transport, svc, delays = make(\n        {\"/prices/A1\": [(503, None), (504, None), (200, {\"\
+    cents\": 99})]}\n    )\n    q = svc.quote(\"A1\", 3)\n    assert q.total_cents == 297\n    assert\
+    \ not q.stale\n    assert len(transport.calls) == 3\n    assert delays == [0.1, 0.2]\n\n\ndef test_persistent_outage_falls_back_to_cached_price():\n\
+    \    _, svc, _ = make({\"/prices/A1\": [(200, {\"cents\": 250}), (503, None)]})\n    svc.quote(\"\
+    A1\", 1)\n    q = svc.quote(\"A1\", 4)\n    assert q.stale\n    assert q.total_cents == 1000\n\n\n\
+    def test_persistent_outage_without_cache_is_unavailable():\n    _, svc, _ = make({\"/prices/A1\":\
+    \ [(503, None)]})\n    with pytest.raises(ServiceUnavailable):\n        svc.quote(\"A1\", 1)\n"
+  red_herring: Several things look wrong and are not. transport.py maps HTTP 401/403 to PermissionError,
+    which seems like a strange fit, but it is documented and intended. Its `queue.pop(0) if len(queue)
+    > 1 else queue[0]` makes the last scripted response sticky, which is also intended. In service.py
+    the `except PermissionError` and `except RetryExhausted` clauses look like they might be in the wrong
+    order or might shadow each other; they don't. retry.py's `range(1, attempts + 1)` with `if attempt
+    == attempts` looks like an off-by-one but is correct, and it keeps the cause with `from exc`. Changing
+    service.py to dig into `RetryExhausted.last_error` would produce AuthError, but the token would still
+    be hit three times.
+  root_cause: client.py sets RETRYABLE_ERRORS = (OSError,), which also matches the PermissionError that
+    transport.py raises for 401/403, so the retry wrapper retries auth failures and wraps them in RetryExhausted,
+    and QuoteService's PermissionError branch never runs.
+  type: verifiable_multi
+  capability: multi_module_debugging
+  prompt: "After the catalog API token was revoked, QuoteService.quote() did not raise AuthError, even\
+    \ though service.py has an explicit `except PermissionError` branch for that case. If a price had\
+    \ been cached earlier, it returned a Quote with stale=True and the old price. If not, it raised ServiceUnavailable('catalog\
+    \ unavailable ...'). The transport log shows three identical requests to /prices/<sku> for every quote,\
+    \ with backoff between them. Real outages (503/504) still behave correctly.\n\nHere is the code:\n\
+    \n```python\n# file: transport.py\n\"\"\"In-memory HTTP-ish transport used by the catalog client.\n\
+    \nHTTP status codes are mapped onto built-in exceptions so callers never\nhave to inspect raw status\
+    \ codes:\n\n    401/403 -> PermissionError\n    404     -> KeyError\n    429/503 -> ConnectionError\n\
+    \    504     -> TimeoutError\n\"\"\"\n\n_STATUS_ERRORS = {\n    401: PermissionError,\n    403: PermissionError,\n\
+    \    429: ConnectionError,\n    503: ConnectionError,\n    504: TimeoutError,\n}\n\n\nclass ScriptedTransport:\n\
+    \    \"\"\"Replays a fixed script of (status, body) responses per path.\n\n    Responses are consumed\
+    \ in order; the final response for a path is\n    sticky and is returned for every subsequent call.\n\
+    \    \"\"\"\n\n    def __init__(self, script):\n        self._script = {path: list(responses) for\
+    \ path, responses in script.items()}\n        self.calls = []\n\n    def get(self, path):\n      \
+    \  self.calls.append(path)\n        queue = self._script.get(path)\n        if not queue:\n      \
+    \      raise KeyError(path)\n        status, body = queue.pop(0) if len(queue) > 1 else queue[0]\n\
+    \        if status == 200:\n            return body\n        if status == 404:\n            raise\
+    \ KeyError(path)\n        exc_type = _STATUS_ERRORS.get(status)\n        if exc_type is None:\n  \
+    \          raise RuntimeError(f\"unexpected status {status} for {path}\")\n        raise exc_type(f\"\
+    HTTP {status} for {path}\")\n\n```\n\n```python\n# file: retry.py\n\"\"\"Generic retry decorator with\
+    \ exponential backoff.\"\"\"\nimport functools\nimport time\n\n\nclass RetryExhausted(Exception):\n\
+    \    \"\"\"Raised when every attempt failed with a retryable error.\"\"\"\n\n    def __init__(self,\
+    \ func_name, attempts, last_error):\n        super().__init__(f\"{func_name} failed after {attempts}\
+    \ attempts: {last_error!r}\")\n        self.attempts = attempts\n        self.last_error = last_error\n\
+    \n\ndef retry(on, attempts=3, base_delay=0.1, sleeper=time.sleep):\n    \"\"\"Retry the wrapped callable\
+    \ when it raises one of the `on` exceptions.\n\n    Non-matching exceptions propagate immediately\
+    \ and unchanged.\n    \"\"\"\n    if attempts < 1:\n        raise ValueError(\"attempts must be >=\
+    \ 1\")\n\n    def decorate(fn):\n        @functools.wraps(fn)\n        def wrapper(*args, **kwargs):\n\
+    \            for attempt in range(1, attempts + 1):\n                try:\n                    return\
+    \ fn(*args, **kwargs)\n                except on as exc:\n                    if attempt == attempts:\n\
+    \                        raise RetryExhausted(fn.__name__, attempts, exc) from exc\n             \
+    \       sleeper(base_delay * 2 ** (attempt - 1))\n\n        return wrapper\n\n    return decorate\n\
+    \n```\n\n```python\n# file: client.py\n\"\"\"Catalog API client.\"\"\"\nfrom retry import retry\n\n\
+    # Network-level failures worth retrying. ConnectionError and TimeoutError\n# are both OSError subclasses,\
+    \ so catching OSError covers them plus any\n# lower-level socket errors.\nRETRYABLE_ERRORS = (OSError,)\n\
+    \n\nclass UnknownSku(LookupError):\n    pass\n\n\nclass CatalogClient:\n    def __init__(self, transport,\
+    \ attempts=3, sleeper=None):\n        self._transport = transport\n        options = {\"on\": RETRYABLE_ERRORS,\
+    \ \"attempts\": attempts}\n        if sleeper is not None:\n            options[\"sleeper\"] = sleeper\n\
+    \        self._get = retry(**options)(transport.get)\n\n    def get_price(self, sku):\n        \"\"\
+    \"Return the unit price of `sku` in cents.\"\"\"\n        try:\n            body = self._get(f\"/prices/{sku}\"\
+    )\n        except KeyError:\n            raise UnknownSku(sku) from None\n        cents = body[\"\
+    cents\"]\n        if not isinstance(cents, int) or cents < 0:\n            raise ValueError(f\"bad\
+    \ price payload for {sku}: {body!r}\")\n        return cents\n\n```\n\n```python\n# file: service.py\n\
+    \"\"\"Quote service: prices orders, falling back to cached prices during outages.\"\"\"\nfrom retry\
+    \ import RetryExhausted\n\n\nclass AuthError(Exception):\n    \"\"\"Credentials were rejected by the\
+    \ catalog.\"\"\"\n\n\nclass ServiceUnavailable(Exception):\n    \"\"\"Catalog is down and no cached\
+    \ price is available.\"\"\"\n\n\nclass Quote:\n    def __init__(self, sku, qty, unit_cents, stale):\n\
+    \        self.sku = sku\n        self.qty = qty\n        self.unit_cents = unit_cents\n        self.stale\
+    \ = stale\n\n    @property\n    def total_cents(self):\n        return self.unit_cents * self.qty\n\
+    \n\nclass QuoteService:\n    def __init__(self, client):\n        self._client = client\n        self._last_known\
+    \ = {}\n\n    def quote(self, sku, qty):\n        if qty <= 0:\n            raise ValueError(\"qty\
+    \ must be positive\")\n        try:\n            cents = self._client.get_price(sku)\n        except\
+    \ PermissionError as exc:\n            raise AuthError(str(exc)) from exc\n        except RetryExhausted:\n\
+    \            if sku in self._last_known:\n                return Quote(sku, qty, self._last_known[sku],\
+    \ stale=True)\n            raise ServiceUnavailable(f\"catalog unavailable, no cached price for {sku}\"\
+    )\n        self._last_known[sku] = cents\n        return Quote(sku, qty, cents, stale=False)\n\n```\n\
+    \nFind the root cause and fix it. Return every file you change in full, each in its own ```python\
+    \ block whose first line is `# file: <name>`. Do not return files you leave unchanged."
+  validation:
+    valid: true
+    reasons: []
+    lines: 154
+    fixed_output: '......                                                                   [100%]
+
+      6 passed in 0.01s
+
+      '
+- id: debug_hard_8
+  title: Paginated event feed skips or repeats events with shared timestamps
+  symptom: Clients paging through the event feed get the wrong set of events. Feed.page(limit=500) returns
+    all 12 events in the right order. Following next_cursor with small page sizes skips some events (for
+    example ids 10–14 vanish with limit=1 or limit=6) or repeats them (ids 5–9 come back again with limit=7).
+    It only happens when many events share the same `ts` second. Data with one event per second paginates
+    fine.
+  files:
+  - path: models.py
+    content: "\"\"\"Event model shared by the feed and its cursors.\"\"\"\nfrom dataclasses import dataclass\n\
+      \n\n@dataclass(frozen=True)\nclass Event:\n    id: str    # numeric string assigned by the legacy\
+      \ ingest system\n    ts: int    # unix seconds; many events can share the same second\n    kind:\
+      \ str\n\n\ndef parse_event(raw):\n    return Event(\n        id=str(raw[\"id\"]),\n        ts=int(raw[\"\
+      ts\"]),\n        kind=raw.get(\"kind\", \"unknown\"),\n    )\n\n\ndef order_key(event):\n    \"\"\
+      \"Canonical feed order: oldest first, ties broken by numeric id.\n\n    Ids are numeric strings,\
+      \ so they are compared as integers: event 9 was\n    ingested before event 10 and must be listed\
+      \ first.\n    \"\"\"\n    return (event.ts, int(event.id))\n"
+  - path: cursor.py
+    content: "\"\"\"Opaque pagination cursors.\n\nA cursor records the position of the last event a client\
+      \ has seen, so the\nnext page can resume strictly after it.\n\"\"\"\nimport base64\nimport json\n\
+      \n\nclass InvalidCursor(ValueError):\n    pass\n\n\ndef encode(event):\n    raw = json.dumps({\"\
+      ts\": event.ts, \"id\": event.id}, separators=(\",\", \":\"))\n    # Strip padding to keep tokens\
+      \ URL-friendly; decode() restores it.\n    return base64.urlsafe_b64encode(raw.encode()).decode().rstrip(\"\
+      =\")\n\n\ndef decode(token):\n    padded = token + \"=\" * (-len(token) % 4)\n    try:\n       \
+      \ data = json.loads(base64.urlsafe_b64decode(padded.encode()))\n        return (data[\"ts\"], data[\"\
+      id\"])\n    except (ValueError, KeyError, TypeError) as exc:\n        raise InvalidCursor(token)\
+      \ from exc\n\n\ndef is_after(event, position):\n    \"\"\"True if `event` comes strictly after the\
+      \ decoded cursor `position`.\"\"\"\n    return (event.ts, event.id) > position\n"
+  - path: feed.py
+    content: "\"\"\"Paginated event feed.\"\"\"\nimport cursor\nfrom models import order_key, parse_event\n\
+      \n\nclass Page:\n    def __init__(self, items, next_cursor):\n        self.items = items\n     \
+      \   self.next_cursor = next_cursor\n\n\nclass Feed:\n    def __init__(self, raw_events):\n     \
+      \   events = [parse_event(r) for r in raw_events]\n        self._events = sorted(events, key=order_key)\n\
+      \n    def page(self, limit=50, after=None, kinds=None):\n        if limit < 1:\n            raise\
+      \ ValueError(\"limit must be >= 1\")\n        candidates = self._events\n        if kinds is not\
+      \ None:\n            wanted = set(kinds)\n            candidates = [e for e in candidates if e.kind\
+      \ in wanted]\n        if after is not None:\n            position = cursor.decode(after)\n     \
+      \       candidates = [e for e in candidates if cursor.is_after(e, position)]\n        items = candidates[:limit]\n\
+      \        has_more = len(candidates) > limit\n        next_cursor = cursor.encode(items[-1]) if has_more\
+      \ else None\n        return Page(items, next_cursor)\n\n    def iter_all(self, page_size=50, kinds=None):\n\
+      \        token = None\n        while True:\n            page = self.page(limit=page_size, after=token,\
+      \ kinds=kinds)\n            yield from page.items\n            if page.next_cursor is None:\n  \
+      \              return\n            token = page.next_cursor\n"
+  reference_files:
+  - path: cursor.py
+    content: "\"\"\"Opaque pagination cursors.\n\nA cursor records the position of the last event a client\
+      \ has seen, so the\nnext page can resume strictly after it. Positions are expressed in the\nsame\
+      \ terms as models.order_key so the resume check agrees with the sort.\n\"\"\"\nimport base64\nimport\
+      \ json\n\nfrom models import order_key\n\n\nclass InvalidCursor(ValueError):\n    pass\n\n\ndef\
+      \ encode(event):\n    raw = json.dumps({\"ts\": event.ts, \"id\": event.id}, separators=(\",\",\
+      \ \":\"))\n    # Strip padding to keep tokens URL-friendly; decode() restores it.\n    return base64.urlsafe_b64encode(raw.encode()).decode().rstrip(\"\
+      =\")\n\n\ndef decode(token):\n    padded = token + \"=\" * (-len(token) % 4)\n    try:\n       \
+      \ data = json.loads(base64.urlsafe_b64decode(padded.encode()))\n        return (int(data[\"ts\"\
+      ]), int(data[\"id\"]))\n    except (ValueError, KeyError, TypeError) as exc:\n        raise InvalidCursor(token)\
+      \ from exc\n\n\ndef is_after(event, position):\n    \"\"\"True if `event` comes strictly after the\
+      \ decoded cursor `position`.\"\"\"\n    return order_key(event) > position\n"
+  test_code: "import pytest\n\nfrom feed import Feed\n\n\ndef raw_events():\n    raw = [{\"id\": \"3\"\
+    , \"ts\": 999, \"kind\": \"view\"}]\n    # ids 5..14 all share one second and straddle the 1->2 digit\
+    \ boundary\n    raw += [{\"id\": i, \"ts\": 1000, \"kind\": \"click\"} for i in range(14, 4, -1)]\n\
+    \    raw.append({\"id\": \"200\", \"ts\": 1001, \"kind\": \"view\"})\n    return raw\n\n\nEXPECTED\
+    \ = [\"3\"] + [str(i) for i in range(5, 15)] + [\"200\"]\n\n\ndef walk(feed, size, cap=100):\n   \
+    \ out, token = [], None\n    for _ in range(cap):\n        page = feed.page(limit=size, after=token)\n\
+    \        out.extend(e.id for e in page.items)\n        token = page.next_cursor\n        if token\
+    \ is None:\n            return out\n    raise AssertionError(\"pagination did not terminate\")\n\n\
+    \ndef test_single_page_uses_numeric_order():\n    page = Feed(raw_events()).page(limit=500)\n    assert\
+    \ [e.id for e in page.items] == EXPECTED\n    assert page.next_cursor is None\n\n\n@pytest.mark.parametrize(\"\
+    size\", [1, 2, 3, 5, 6, 7, 11])\ndef test_paging_visits_every_event_exactly_once(size):\n    assert\
+    \ walk(Feed(raw_events()), size) == EXPECTED\n\n\ndef test_iter_all_matches_single_page():\n    feed\
+    \ = Feed(raw_events())\n    assert [e.id for e in feed.iter_all(page_size=4)] == EXPECTED\n\n\ndef\
+    \ test_iter_all_with_kind_filter():\n    feed = Feed(raw_events())\n    clicks = [e.id for e in feed.iter_all(page_size=3,\
+    \ kinds=[\"click\"])]\n    assert clicks == [str(i) for i in range(5, 15)]\n"
+  red_herring: '`order_key` in models.py sorts by `int(event.id)` even though ids are stored as strings.
+    It looks like an unnecessary or inconsistent conversion, and the obvious quick fix is to sort by the
+    raw string. But numeric order is the documented feed order, and the single-page test enforces it.
+    The base64 padding strip and restore in cursor.py, and `has_more = len(candidates) > limit` in feed.py,
+    also look like likely off-by-one or encoding bugs, but both are correct.'
+  root_cause: feed.py sorts events with models.order_key (ts, int(id)), but cursor.is_after compares (ts,
+    id) as strings, so within one timestamp "10" < "9" and the resume check skips or repeats events that
+    the sort put on the other side of the cursor.
+  type: verifiable_multi
+  capability: multi_module_debugging
+  prompt: "Clients paging through the event feed get the wrong set of events. Feed.page(limit=500) returns\
+    \ all 12 events in the right order. Following next_cursor with small page sizes skips some events\
+    \ (for example ids 10–14 vanish with limit=1 or limit=6) or repeats them (ids 5–9 come back again\
+    \ with limit=7). It only happens when many events share the same `ts` second. Data with one event\
+    \ per second paginates fine.\n\nHere is the code:\n\n```python\n# file: models.py\n\"\"\"Event model\
+    \ shared by the feed and its cursors.\"\"\"\nfrom dataclasses import dataclass\n\n\n@dataclass(frozen=True)\n\
+    class Event:\n    id: str    # numeric string assigned by the legacy ingest system\n    ts: int  \
+    \  # unix seconds; many events can share the same second\n    kind: str\n\n\ndef parse_event(raw):\n\
+    \    return Event(\n        id=str(raw[\"id\"]),\n        ts=int(raw[\"ts\"]),\n        kind=raw.get(\"\
+    kind\", \"unknown\"),\n    )\n\n\ndef order_key(event):\n    \"\"\"Canonical feed order: oldest first,\
+    \ ties broken by numeric id.\n\n    Ids are numeric strings, so they are compared as integers: event\
+    \ 9 was\n    ingested before event 10 and must be listed first.\n    \"\"\"\n    return (event.ts,\
+    \ int(event.id))\n\n```\n\n```python\n# file: cursor.py\n\"\"\"Opaque pagination cursors.\n\nA cursor\
+    \ records the position of the last event a client has seen, so the\nnext page can resume strictly\
+    \ after it.\n\"\"\"\nimport base64\nimport json\n\n\nclass InvalidCursor(ValueError):\n    pass\n\n\
+    \ndef encode(event):\n    raw = json.dumps({\"ts\": event.ts, \"id\": event.id}, separators=(\",\"\
+    , \":\"))\n    # Strip padding to keep tokens URL-friendly; decode() restores it.\n    return base64.urlsafe_b64encode(raw.encode()).decode().rstrip(\"\
+    =\")\n\n\ndef decode(token):\n    padded = token + \"=\" * (-len(token) % 4)\n    try:\n        data\
+    \ = json.loads(base64.urlsafe_b64decode(padded.encode()))\n        return (data[\"ts\"], data[\"id\"\
+    ])\n    except (ValueError, KeyError, TypeError) as exc:\n        raise InvalidCursor(token) from\
+    \ exc\n\n\ndef is_after(event, position):\n    \"\"\"True if `event` comes strictly after the decoded\
+    \ cursor `position`.\"\"\"\n    return (event.ts, event.id) > position\n\n```\n\n```python\n# file:\
+    \ feed.py\n\"\"\"Paginated event feed.\"\"\"\nimport cursor\nfrom models import order_key, parse_event\n\
+    \n\nclass Page:\n    def __init__(self, items, next_cursor):\n        self.items = items\n       \
+    \ self.next_cursor = next_cursor\n\n\nclass Feed:\n    def __init__(self, raw_events):\n        events\
+    \ = [parse_event(r) for r in raw_events]\n        self._events = sorted(events, key=order_key)\n\n\
+    \    def page(self, limit=50, after=None, kinds=None):\n        if limit < 1:\n            raise ValueError(\"\
+    limit must be >= 1\")\n        candidates = self._events\n        if kinds is not None:\n        \
+    \    wanted = set(kinds)\n            candidates = [e for e in candidates if e.kind in wanted]\n \
+    \       if after is not None:\n            position = cursor.decode(after)\n            candidates\
+    \ = [e for e in candidates if cursor.is_after(e, position)]\n        items = candidates[:limit]\n\
+    \        has_more = len(candidates) > limit\n        next_cursor = cursor.encode(items[-1]) if has_more\
+    \ else None\n        return Page(items, next_cursor)\n\n    def iter_all(self, page_size=50, kinds=None):\n\
+    \        token = None\n        while True:\n            page = self.page(limit=page_size, after=token,\
+    \ kinds=kinds)\n            yield from page.items\n            if page.next_cursor is None:\n    \
+    \            return\n            token = page.next_cursor\n\n```\n\nFind the root cause and fix it.\
+    \ Return every file you change in full, each in its own ```python block whose first line is `# file:\
+    \ <name>`. Do not return files you leave unchanged."
+  validation:
+    valid: true
+    reasons: []
+    lines: 96
+    fixed_output: '..........                                                               [100%]
+
+      10 passed in 0.03s
+
+      '
+- id: debug_hard_9
+  title: Accented customer names from the Mac export can't be found by full name
+  symptom: Customers loaded from the CSV export produced on the macOS admin machine can't be found when
+    you search their accented name. Searching "García" or "José García" returns [] even though "José García"
+    is in the index and prints correctly. The same customer typed in by hand through the web form is found.
+    Oddly, searching the fragment "Garci" does return the imported record. Searches for plain ASCII names
+    work for every source.
+  files:
+  - path: textnorm.py
+    content: "\"\"\"Text helpers shared by the indexing and search layers.\"\"\"\nimport re\nimport unicodedata\n\
+      \n_TOKEN_RE = re.compile(r\"\\w+\")\n\n\ndef fold(text):\n    \"\"\"Return the comparison form of\
+      \ *text*: NFC-composed and case-folded.\n\n    NFC (not NFKC) is deliberate: NFKC would turn superscripts\
+      \ such as\n    the '2' in some registered company names into ordinary digits.\n    \"\"\"\n    return\
+      \ unicodedata.normalize(\"NFC\", text).casefold()\n\n\ndef tokens(text):\n    \"\"\"Split *text*\
+      \ into word tokens.\"\"\"\n    return _TOKEN_RE.findall(text)\n\n\ndef display(text):\n    \"\"\"\
+      Tidy a name for display: composed form, single spaces.\"\"\"\n    return \" \".join(unicodedata.normalize(\"\
+      NFC\", text).split())\n"
+  - path: indexer.py
+    content: "\"\"\"In-memory inverted index of customer names.\"\"\"\nfrom collections import defaultdict\n\
+      \nimport textnorm\n\n\nclass NameIndex:\n    def __init__(self):\n        self._postings = defaultdict(set)\n\
+      \        self._names = {}\n\n    def add(self, record_id, name):\n        if record_id in self._names:\n\
+      \            self.remove(record_id)\n        self._names[record_id] = textnorm.display(name)\n \
+      \       for token in textnorm.tokens(name):\n            self._postings[textnorm.fold(token)].add(record_id)\n\
+      \n    def remove(self, record_id):\n        self._names.pop(record_id, None)\n        for key in\
+      \ list(self._postings):\n            self._postings[key].discard(record_id)\n            if not\
+      \ self._postings[key]:\n                del self._postings[key]\n\n    def ids_for(self, token):\n\
+      \        return set(self._postings.get(token, ()))\n\n    def name(self, record_id):\n        return\
+      \ self._names[record_id]\n\n    def __len__(self):\n        return len(self._names)\n"
+  - path: search.py
+    content: "\"\"\"Query side of the customer directory.\"\"\"\nimport textnorm\n\n\ndef _query_terms(query):\n\
+      \    # Fast path: pure-ASCII queries (the vast majority) need no Unicode\n    # normalisation, and\
+      \ lower() == casefold() for ASCII.\n    if query.isascii():\n        folded = query.lower()\n  \
+      \  else:\n        folded = textnorm.fold(query)\n    return textnorm.tokens(folded)\n\n\ndef find(index,\
+      \ query):\n    \"\"\"Return display names of records matching every term of *query*.\"\"\"\n   \
+      \ terms = _query_terms(query)\n    if not terms:\n        return []\n    hits = None\n    for term\
+      \ in terms:\n        ids = index.ids_for(term)\n        hits = ids if hits is None else hits & ids\n\
+      \        if not hits:\n            return []\n    return [index.name(rid) for rid in sorted(hits)]\n"
+  - path: importer.py
+    content: "\"\"\"Load customer exports (CSV with header id,name) into a NameIndex.\"\"\"\nimport csv\n\
+      import io\n\nfrom indexer import NameIndex\n\n\ndef load_csv(text, index=None):\n    index = NameIndex()\
+      \ if index is None else index\n    reader = csv.reader(io.StringIO(text.lstrip(\"\uFEFF\")))\n \
+      \   header = next(reader, None)\n    if header is None:\n        return index\n    if [h.strip().lower()\
+      \ for h in header] != [\"id\", \"name\"]:\n        raise ValueError(f\"unexpected header: {header!r}\"\
+      )\n    for lineno, row in enumerate(reader, start=2):\n        if not row or not \"\".join(row).strip():\n\
+      \            continue\n        if len(row) != 2:\n            raise ValueError(f\"line {lineno}:\
+      \ expected 2 fields, got {len(row)}\")\n        index.add(int(row[0]), row[1].strip())\n    return\
+      \ index\n"
+  reference_files:
+  - path: indexer.py
+    content: "\"\"\"In-memory inverted index of customer names.\"\"\"\nfrom collections import defaultdict\n\
+      \nimport textnorm\n\n\nclass NameIndex:\n    def __init__(self):\n        self._postings = defaultdict(set)\n\
+      \        self._names = {}\n\n    def add(self, record_id, name):\n        if record_id in self._names:\n\
+      \            self.remove(record_id)\n        self._names[record_id] = textnorm.display(name)\n \
+      \       # Normalise BEFORE tokenising, exactly like the query side does:\n        # in decomposed\
+      \ (NFD) text the combining accents are not \\w, so\n        # tokenising first would split \"García\"\
+      \ into \"Garci\" + \"a\".\n        for token in textnorm.tokens(textnorm.fold(name)):\n        \
+      \    self._postings[token].add(record_id)\n\n    def remove(self, record_id):\n        self._names.pop(record_id,\
+      \ None)\n        for key in list(self._postings):\n            self._postings[key].discard(record_id)\n\
+      \            if not self._postings[key]:\n                del self._postings[key]\n\n    def ids_for(self,\
+      \ token):\n        return set(self._postings.get(token, ()))\n\n    def name(self, record_id):\n\
+      \        return self._names[record_id]\n\n    def __len__(self):\n        return len(self._names)\n"
+  test_code: "import unicodedata\n\nfrom importer import load_csv\nfrom indexer import NameIndex\nfrom\
+    \ search import find\n\n\ndef nfd(s):\n    return unicodedata.normalize(\"NFD\", s)\n\n\ndef nfc(s):\n\
+    \    return unicodedata.normalize(\"NFC\", s)\n\n\nJOSE = \"José García\"          # composed spelling\n\
+    ZOE_A = \"Zoë Ångström\"\nZOE_B = \"Zoë Berg\"\n\n\ndef test_decomposed_name_found_by_composed_full_name():\n\
+    \    idx = NameIndex()\n    idx.add(1, nfd(JOSE))\n    assert find(idx, nfc(JOSE)) == [nfc(JOSE)]\n\
+    \n\ndef test_decomposed_name_found_by_accented_surname_any_case():\n    idx = NameIndex()\n    idx.add(1,\
+    \ nfd(JOSE))\n    assert find(idx, \"GARCÍA\") == [nfc(JOSE)]\n\n\ndef test_decomposed_query_matches_decomposed_record():\n\
+    \    idx = NameIndex()\n    idx.add(1, nfd(JOSE))\n    assert find(idx, nfd(\"garcía\")) == [nfc(JOSE)]\n\
+    \n\ndef test_mixed_sources_both_returned():\n    idx = NameIndex()\n    idx.add(1, nfc(ZOE_A))\n \
+    \   idx.add(2, nfd(ZOE_B))\n    assert find(idx, \"zoë\") == [nfc(ZOE_A), nfc(ZOE_B)]\n\n\ndef test_fragment_of_accented_word_is_not_a_word_match():\n\
+    \    idx = NameIndex()\n    idx.add(1, nfd(JOSE))\n    assert find(idx, \"Garci\") == []\n\n\ndef\
+    \ test_csv_export_with_decomposed_names_is_searchable():\n    text = \"\uFEFFid,name\\n1,\" + nfd(JOSE)\
+    \ + \"\\n2,Ana Lopez\\n\"\n    idx = load_csv(text)\n    assert len(idx) == 2\n    assert find(idx,\
+    \ \"josé garcía\") == [nfc(JOSE)]\n    assert find(idx, \"lopez\") == [\"Ana Lopez\"]\n\n\ndef test_ascii_names_still_work():\n\
+    \    idx = NameIndex()\n    idx.add(7, \"Ana  Lopez\")\n    assert find(idx, \"ANA lopez\") == [\"\
+    Ana Lopez\"]\n"
+  red_herring: The ASCII fast path in search._query_terms skips textnorm.fold and calls str.lower(), which
+    looks like the place where normalisation gets skipped. It is correct, because NFC changes nothing
+    in ASCII text and lower() equals casefold() for ASCII. textnorm.fold choosing NFC over NFKC also looks
+    like a likely culprit, but NFC is enough to make NFD and NFC spellings match.
+  root_cause: indexer.NameIndex.add tokenises the raw name before normalising it, so decomposed (NFD)
+    names are split at combining accents (which are not \w) into fragments like 'garci' and 'a', while
+    search normalises to NFC before tokenising and looks up 'garcía'.
+  type: verifiable_multi
+  capability: multi_module_debugging
+  prompt: "Customers loaded from the CSV export produced on the macOS admin machine can't be found when\
+    \ you search their accented name. Searching \"García\" or \"José García\" returns [] even though \"\
+    José García\" is in the index and prints correctly. The same customer typed in by hand through the\
+    \ web form is found. Oddly, searching the fragment \"Garci\" does return the imported record. Searches\
+    \ for plain ASCII names work for every source.\n\nHere is the code:\n\n```python\n# file: textnorm.py\n\
+    \"\"\"Text helpers shared by the indexing and search layers.\"\"\"\nimport re\nimport unicodedata\n\
+    \n_TOKEN_RE = re.compile(r\"\\w+\")\n\n\ndef fold(text):\n    \"\"\"Return the comparison form of\
+    \ *text*: NFC-composed and case-folded.\n\n    NFC (not NFKC) is deliberate: NFKC would turn superscripts\
+    \ such as\n    the '2' in some registered company names into ordinary digits.\n    \"\"\"\n    return\
+    \ unicodedata.normalize(\"NFC\", text).casefold()\n\n\ndef tokens(text):\n    \"\"\"Split *text* into\
+    \ word tokens.\"\"\"\n    return _TOKEN_RE.findall(text)\n\n\ndef display(text):\n    \"\"\"Tidy a\
+    \ name for display: composed form, single spaces.\"\"\"\n    return \" \".join(unicodedata.normalize(\"\
+    NFC\", text).split())\n\n```\n\n```python\n# file: indexer.py\n\"\"\"In-memory inverted index of customer\
+    \ names.\"\"\"\nfrom collections import defaultdict\n\nimport textnorm\n\n\nclass NameIndex:\n   \
+    \ def __init__(self):\n        self._postings = defaultdict(set)\n        self._names = {}\n\n   \
+    \ def add(self, record_id, name):\n        if record_id in self._names:\n            self.remove(record_id)\n\
+    \        self._names[record_id] = textnorm.display(name)\n        for token in textnorm.tokens(name):\n\
+    \            self._postings[textnorm.fold(token)].add(record_id)\n\n    def remove(self, record_id):\n\
+    \        self._names.pop(record_id, None)\n        for key in list(self._postings):\n            self._postings[key].discard(record_id)\n\
+    \            if not self._postings[key]:\n                del self._postings[key]\n\n    def ids_for(self,\
+    \ token):\n        return set(self._postings.get(token, ()))\n\n    def name(self, record_id):\n \
+    \       return self._names[record_id]\n\n    def __len__(self):\n        return len(self._names)\n\
+    \n```\n\n```python\n# file: search.py\n\"\"\"Query side of the customer directory.\"\"\"\nimport textnorm\n\
+    \n\ndef _query_terms(query):\n    # Fast path: pure-ASCII queries (the vast majority) need no Unicode\n\
+    \    # normalisation, and lower() == casefold() for ASCII.\n    if query.isascii():\n        folded\
+    \ = query.lower()\n    else:\n        folded = textnorm.fold(query)\n    return textnorm.tokens(folded)\n\
+    \n\ndef find(index, query):\n    \"\"\"Return display names of records matching every term of *query*.\"\
+    \"\"\n    terms = _query_terms(query)\n    if not terms:\n        return []\n    hits = None\n   \
+    \ for term in terms:\n        ids = index.ids_for(term)\n        hits = ids if hits is None else hits\
+    \ & ids\n        if not hits:\n            return []\n    return [index.name(rid) for rid in sorted(hits)]\n\
+    \n```\n\n```python\n# file: importer.py\n\"\"\"Load customer exports (CSV with header id,name) into\
+    \ a NameIndex.\"\"\"\nimport csv\nimport io\n\nfrom indexer import NameIndex\n\n\ndef load_csv(text,\
+    \ index=None):\n    index = NameIndex() if index is None else index\n    reader = csv.reader(io.StringIO(text.lstrip(\"\
+    \uFEFF\")))\n    header = next(reader, None)\n    if header is None:\n        return index\n    if\
+    \ [h.strip().lower() for h in header] != [\"id\", \"name\"]:\n        raise ValueError(f\"unexpected\
+    \ header: {header!r}\")\n    for lineno, row in enumerate(reader, start=2):\n        if not row or\
+    \ not \"\".join(row).strip():\n            continue\n        if len(row) != 2:\n            raise\
+    \ ValueError(f\"line {lineno}: expected 2 fields, got {len(row)}\")\n        index.add(int(row[0]),\
+    \ row[1].strip())\n    return index\n\n```\n\nFind the root cause and fix it. Return every file you\
+    \ change in full, each in its own ```python block whose first line is `# file: <name>`. Do not return\
+    \ files you leave unchanged."
+  validation:
+    valid: true
+    reasons: []
+    lines: 105
+    fixed_output: '.......                                                                  [100%]
+
+      7 passed in 0.01s
+
+      '
+- id: debug_hard_10
+  title: Configured VAT rate ignored on invoices even though other settings apply
+  symptom: 'After deploying with a settings file containing `CURRENCY = GBP` and `VAT_RATE = 0.25  # UK
+    standard`, invoices print amounts in GBP as expected but still charge 20% VAT. A 2 x 10.00 order shows
+    tax "4.00 GBP" and total "24.00 GBP" instead of "5.00 GBP" / "25.00 GBP". Changing the rounding setting
+    in the same file works. Building a TaxRule with an explicit rate gives the right tax.'
+  files:
+  - path: config.py
+    content: "\"\"\"Runtime configuration: built-in defaults overridden by KEY=VALUE text.\"\"\"\nfrom\
+      \ decimal import Decimal\n\n_DEFAULTS = {\n    \"currency\": \"EUR\",\n    \"vat_rate\": \"0.20\"\
+      ,\n    \"rounding\": \"0.01\",\n}\n_values = dict(_DEFAULTS)\n\n\ndef load(text):\n    \"\"\"Apply\
+      \ overrides from *text*. Later keys win; '#' starts a comment.\"\"\"\n    for lineno, raw in enumerate(text.splitlines(),\
+      \ start=1):\n        line = raw.split(\"#\", 1)[0].strip()\n        if not line:\n            continue\n\
+      \        key, sep, value = line.partition(\"=\")\n        if not sep:\n            raise ValueError(f\"\
+      line {lineno}: expected KEY=VALUE, got {raw!r}\")\n        key = key.strip().lower()\n        if\
+      \ key not in _DEFAULTS:\n            raise KeyError(f\"line {lineno}: unknown setting {key!r}\"\
+      )\n        _values[key] = value.strip()\n\n\ndef reset():\n    _values.clear()\n    _values.update(_DEFAULTS)\n\
+      \n\ndef get(key):\n    return _values[key]\n\n\ndef decimal(key):\n    return Decimal(get(key))\n"
+  - path: money.py
+    content: "\"\"\"Money helpers. Everything is Decimal; floats are rejected.\"\"\"\nfrom decimal import\
+      \ Decimal, ROUND_HALF_UP\n\nimport config\n\n\ndef to_decimal(value):\n    if isinstance(value,\
+      \ float):\n        raise TypeError(\"use str or Decimal for money, not float\")\n    return Decimal(value)\n\
+      \n\ndef quantize(amount, step=None):\n    step = config.decimal(\"rounding\") if step is None else\
+      \ step\n    return amount.quantize(step, rounding=ROUND_HALF_UP)\n\n\ndef fmt(amount, currency=None):\n\
+      \    return f\"{quantize(amount)} {currency or config.get('currency')}\"\n"
+  - path: tax.py
+    content: "\"\"\"VAT calculation.\"\"\"\nfrom decimal import Decimal\n\nimport config\nimport money\n\
+      \n# Standard rate as configured for this deployment.\nSTANDARD_RATE = config.decimal(\"vat_rate\"\
+      )\n\nZERO = Decimal(\"0\")\n\n\nclass TaxRule:\n    \"\"\"Applies a single VAT rate, with zero-rated\
+      \ categories.\"\"\"\n\n    def __init__(self, rate=None, zero_rated=()):\n        self.rate = STANDARD_RATE\
+      \ if rate is None else money.to_decimal(rate)\n        self.zero_rated = frozenset(zero_rated)\n\
+      \n    def tax_for(self, category, net):\n        if category in self.zero_rated:\n            return\
+      \ ZERO\n        return money.quantize(net * self.rate)\n"
+  - path: invoice.py
+    content: "\"\"\"Invoices: lines, totals and a printable summary.\"\"\"\nfrom decimal import Decimal\n\
+      \nimport money\nimport tax\n\nZERO_RATED = (\"books\", \"childrens_clothing\", \"food\")\n\n\nclass\
+      \ Invoice:\n    def __init__(self, customer, rule=None):\n        self.customer = customer\n   \
+      \     self.rule = rule if rule is not None else tax.TaxRule(zero_rated=ZERO_RATED)\n        self.lines\
+      \ = []\n\n    def add(self, sku, category, qty, unit_price):\n        if qty <= 0:\n           \
+      \ raise ValueError(\"quantity must be positive\")\n        self.lines.append((sku, category, int(qty),\
+      \ money.to_decimal(unit_price)))\n        return self\n\n    def net(self):\n        return money.quantize(\n\
+      \            sum((q * p for _, _, q, p in self.lines), Decimal(\"0\"))\n        )\n\n    def vat(self):\n\
+      \        return sum(\n            (self.rule.tax_for(cat, q * p) for _, cat, q, p in self.lines),\n\
+      \            Decimal(\"0\"),\n        )\n\n    def total(self):\n        return self.net() + self.vat()\n\
+      \n    def summary(self):\n        return {\n            \"customer\": self.customer,\n         \
+      \   \"net\": money.fmt(self.net()),\n            \"tax\": money.fmt(self.vat()),\n            \"\
+      total\": money.fmt(self.total()),\n        }\n"
+  reference_files:
+  - path: tax.py
+    content: "\"\"\"VAT calculation.\"\"\"\nfrom decimal import Decimal\n\nimport config\nimport money\n\
+      \nZERO = Decimal(\"0\")\n\n\ndef standard_rate():\n    \"\"\"The currently configured standard rate\
+      \ (read at call time).\"\"\"\n    return config.decimal(\"vat_rate\")\n\n\nclass TaxRule:\n    \"\
+      \"\"Applies a single VAT rate, with zero-rated categories.\"\"\"\n\n    def __init__(self, rate=None,\
+      \ zero_rated=()):\n        self.rate = standard_rate() if rate is None else money.to_decimal(rate)\n\
+      \        self.zero_rated = frozenset(zero_rated)\n\n    def tax_for(self, category, net):\n    \
+      \    if category in self.zero_rated:\n            return ZERO\n        return money.quantize(net\
+      \ * self.rate)\n"
+  test_code: "from decimal import Decimal\n\nimport pytest\n\nimport config\nfrom invoice import Invoice\n\
+    from tax import TaxRule\n\n\n@pytest.fixture(autouse=True)\ndef clean_config():\n    config.reset()\n\
+    \    yield\n    config.reset()\n\n\ndef test_configured_vat_rate_applies_to_invoice_summary():\n \
+    \   config.load(\"CURRENCY = GBP\\nVAT_RATE = 0.25  # UK standard\\n\")\n    inv = Invoice(\"acme\"\
+    ).add(\"W-1\", \"hardware\", 2, \"10.00\")\n    assert inv.summary() == {\n        \"customer\": \"\
+    acme\",\n        \"net\": \"20.00 GBP\",\n        \"tax\": \"5.00 GBP\",\n        \"total\": \"25.00\
+    \ GBP\",\n    }\n\n\ndef test_defaults_without_any_config():\n    inv = Invoice(\"acme\").add(\"W-1\"\
+    , \"hardware\", 2, \"10.00\")\n    assert inv.summary()[\"tax\"] == \"4.00 EUR\"\n    assert inv.summary()[\"\
+    total\"] == \"24.00 EUR\"\n\n\ndef test_rate_change_affects_invoices_created_afterwards():\n    before\
+    \ = Invoice(\"a\").add(\"X\", \"hardware\", 1, \"100.00\")\n    assert before.vat() == Decimal(\"\
+    20.00\")\n    config.load(\"vat_rate=0.07\")\n    after = Invoice(\"b\").add(\"X\", \"hardware\",\
+    \ 1, \"100.00\")\n    assert after.vat() == Decimal(\"7.00\")\n    assert after.total() == Decimal(\"\
+    107.00\")\n\n\ndef test_default_tax_rule_uses_configured_rate():\n    config.load(\"VAT_RATE=0.10\"\
+    )\n    assert TaxRule().tax_for(\"hardware\", Decimal(\"50\")) == Decimal(\"5.00\")\n\n\ndef test_zero_rated_lines_untaxed_under_configured_rate():\n\
+    \    config.load(\"vat_rate = 0.25\")\n    inv = Invoice(\"c\").add(\"B-1\", \"books\", 3, \"8.00\"\
+    ).add(\"H-1\", \"hardware\", 1, \"4.00\")\n    assert inv.vat() == Decimal(\"1.00\")\n    assert inv.total()\
+    \ == Decimal(\"29.00\")\n\n\ndef test_explicit_rate_still_overrides_config():\n    config.load(\"\
+    vat_rate = 0.25\")\n    rule = TaxRule(rate=\"0.05\")\n    assert rule.tax_for(\"hardware\", Decimal(\"\
+    200\")) == Decimal(\"10.00\")\n"
+  red_herring: 'config.load looks fragile: it cuts each line at ''#'', lowercases keys, and updates the
+    module-level _values dict in place instead of rebinding it. Because ''VAT_RATE = 0.25  # UK standard''
+    has a trailing comment and the symptom is about that one key, the parser looks guilty. It is correct:
+    config.get(''vat_rate'') returns ''0.25'' after loading, and currency and rounding use the same code
+    path and are applied correctly. The None-sentinel default in TaxRule.__init__ also looks like the
+    textbook fix for early-bound defaults, which draws attention away from it.'
+  root_cause: tax.py copies config's vat_rate into the module-level STANDARD_RATE once at import, before
+    config.load runs, so the None-sentinel default in TaxRule (used by invoice.Invoice) never sees the
+    configured rate.
+  type: verifiable_multi
+  capability: multi_module_debugging
+  prompt: "After deploying with a settings file containing `CURRENCY = GBP` and `VAT_RATE = 0.25  # UK\
+    \ standard`, invoices print amounts in GBP as expected but still charge 20% VAT. A 2 x 10.00 order\
+    \ shows tax \"4.00 GBP\" and total \"24.00 GBP\" instead of \"5.00 GBP\" / \"25.00 GBP\". Changing\
+    \ the rounding setting in the same file works. Building a TaxRule with an explicit rate gives the\
+    \ right tax.\n\nHere is the code:\n\n```python\n# file: config.py\n\"\"\"Runtime configuration: built-in\
+    \ defaults overridden by KEY=VALUE text.\"\"\"\nfrom decimal import Decimal\n\n_DEFAULTS = {\n   \
+    \ \"currency\": \"EUR\",\n    \"vat_rate\": \"0.20\",\n    \"rounding\": \"0.01\",\n}\n_values = dict(_DEFAULTS)\n\
+    \n\ndef load(text):\n    \"\"\"Apply overrides from *text*. Later keys win; '#' starts a comment.\"\
+    \"\"\n    for lineno, raw in enumerate(text.splitlines(), start=1):\n        line = raw.split(\"#\"\
+    , 1)[0].strip()\n        if not line:\n            continue\n        key, sep, value = line.partition(\"\
+    =\")\n        if not sep:\n            raise ValueError(f\"line {lineno}: expected KEY=VALUE, got\
+    \ {raw!r}\")\n        key = key.strip().lower()\n        if key not in _DEFAULTS:\n            raise\
+    \ KeyError(f\"line {lineno}: unknown setting {key!r}\")\n        _values[key] = value.strip()\n\n\n\
+    def reset():\n    _values.clear()\n    _values.update(_DEFAULTS)\n\n\ndef get(key):\n    return _values[key]\n\
+    \n\ndef decimal(key):\n    return Decimal(get(key))\n\n```\n\n```python\n# file: money.py\n\"\"\"\
+    Money helpers. Everything is Decimal; floats are rejected.\"\"\"\nfrom decimal import Decimal, ROUND_HALF_UP\n\
+    \nimport config\n\n\ndef to_decimal(value):\n    if isinstance(value, float):\n        raise TypeError(\"\
+    use str or Decimal for money, not float\")\n    return Decimal(value)\n\n\ndef quantize(amount, step=None):\n\
+    \    step = config.decimal(\"rounding\") if step is None else step\n    return amount.quantize(step,\
+    \ rounding=ROUND_HALF_UP)\n\n\ndef fmt(amount, currency=None):\n    return f\"{quantize(amount)} {currency\
+    \ or config.get('currency')}\"\n\n```\n\n```python\n# file: tax.py\n\"\"\"VAT calculation.\"\"\"\n\
+    from decimal import Decimal\n\nimport config\nimport money\n\n# Standard rate as configured for this\
+    \ deployment.\nSTANDARD_RATE = config.decimal(\"vat_rate\")\n\nZERO = Decimal(\"0\")\n\n\nclass TaxRule:\n\
+    \    \"\"\"Applies a single VAT rate, with zero-rated categories.\"\"\"\n\n    def __init__(self,\
+    \ rate=None, zero_rated=()):\n        self.rate = STANDARD_RATE if rate is None else money.to_decimal(rate)\n\
+    \        self.zero_rated = frozenset(zero_rated)\n\n    def tax_for(self, category, net):\n      \
+    \  if category in self.zero_rated:\n            return ZERO\n        return money.quantize(net * self.rate)\n\
+    \n```\n\n```python\n# file: invoice.py\n\"\"\"Invoices: lines, totals and a printable summary.\"\"\
+    \"\nfrom decimal import Decimal\n\nimport money\nimport tax\n\nZERO_RATED = (\"books\", \"childrens_clothing\"\
+    , \"food\")\n\n\nclass Invoice:\n    def __init__(self, customer, rule=None):\n        self.customer\
+    \ = customer\n        self.rule = rule if rule is not None else tax.TaxRule(zero_rated=ZERO_RATED)\n\
+    \        self.lines = []\n\n    def add(self, sku, category, qty, unit_price):\n        if qty <=\
+    \ 0:\n            raise ValueError(\"quantity must be positive\")\n        self.lines.append((sku,\
+    \ category, int(qty), money.to_decimal(unit_price)))\n        return self\n\n    def net(self):\n\
+    \        return money.quantize(\n            sum((q * p for _, _, q, p in self.lines), Decimal(\"\
+    0\"))\n        )\n\n    def vat(self):\n        return sum(\n            (self.rule.tax_for(cat, q\
+    \ * p) for _, cat, q, p in self.lines),\n            Decimal(\"0\"),\n        )\n\n    def total(self):\n\
+    \        return self.net() + self.vat()\n\n    def summary(self):\n        return {\n            \"\
+    customer\": self.customer,\n            \"net\": money.fmt(self.net()),\n            \"tax\": money.fmt(self.vat()),\n\
+    \            \"total\": money.fmt(self.total()),\n        }\n\n```\n\nFind the root cause and fix\
+    \ it. Return every file you change in full, each in its own ```python block whose first line is `#\
+    \ file: <name>`. Do not return files you leave unchanged."
+  validation:
+    valid: true
+    reasons: []
+    lines: 121
+    fixed_output: '......                                                                   [100%]
+
+      6 passed in 0.01s
+
+      '
+- id: debug_hard_11
+  title: Slowest requests and p95 disappear when a time window is given
+  symptom: The access-log report is correct when run over the whole log. When a time window is passed
+    (start and/or end), the level counts and total are still correct, but the 'slowest' section is empty
+    and p95_ms is 0. For example, build_report(LOG, start=105, end=140) gives levels INFO=2, WARN=1, ERROR=1,
+    but slowest == [] and p95_ms == 0. The same happens with services=['web'], start=100.
+  files:
+  - path: logparse.py
+    content: "\"\"\"Parse access-log lines into records.\"\"\"\nfrom collections import namedtuple\n\n\
+      Record = namedtuple(\"Record\", \"ts level service path duration_ms\")\n\nLEVELS = (\"DEBUG\", \"\
+      INFO\", \"WARN\", \"ERROR\")\n\n\nclass ParseError(ValueError):\n    pass\n\n\ndef parse_line(line):\n\
+      \    parts = line.split()\n    if len(parts) != 5:\n        raise ParseError(\"expected 5 fields,\
+      \ got %d: %r\" % (len(parts), line))\n    ts, level, service, path, dur = parts\n    level = level.upper()\n\
+      \    if level not in LEVELS:\n        raise ParseError(\"unknown level %r\" % level)\n    if not\
+      \ dur.endswith(\"ms\"):\n        raise ParseError(\"duration must end with 'ms': %r\" % dur)\n \
+      \   return Record(int(ts), level, service, path, int(dur[:-2]))\n\n\ndef parse(text):\n    \"\"\"\
+      Parse a whole log into a list of records sorted by timestamp.\"\"\"\n    records = []\n    for lineno,\
+      \ raw in enumerate(text.splitlines(), 1):\n        line = raw.strip()\n        if not line or line.startswith(\"\
+      #\"):\n            continue\n        try:\n            records.append(parse_line(line))\n      \
+      \  except ParseError as exc:\n            raise ParseError(\"line %d: %s\" % (lineno, exc)) from\
+      \ None\n    records.sort(key=lambda r: r.ts)\n    return records\n"
+  - path: filters.py
+    content: "\"\"\"Record selection helpers.\"\"\"\n\n\ndef for_services(records, services):\n    \"\"\
+      \"Keep only records whose service is in `services` (falsy = keep all).\"\"\"\n    if not services:\n\
+      \        return records\n    wanted = set(services)\n    return [r for r in records if r.service\
+      \ in wanted]\n\n\ndef within_window(records, start=None, end=None):\n    \"\"\"Keep records with\
+      \ start <= ts < end.\n\n    The window is half-open so adjacent windows never double count a\n \
+      \   request. Either bound may be omitted.\n    \"\"\"\n    if start is None and end is None:\n \
+      \       return records\n    lo = start if start is not None else float(\"-inf\")\n    hi = end if\
+      \ end is not None else float(\"inf\")\n    return filter(lambda r: lo <= r.ts < hi, records)\n"
+  - path: stats.py
+    content: "\"\"\"Aggregate statistics over parsed records.\"\"\"\nimport heapq\nimport math\nfrom collections\
+      \ import Counter\n\nfrom logparse import LEVELS\n\n\ndef count_by_level(records):\n    counts =\
+      \ Counter(r.level for r in records)\n    return {lvl: counts.get(lvl, 0) for lvl in LEVELS}\n\n\n\
+      def ratio(num, total):\n    return round(num / total, 4) if total else 0.0\n\n\ndef slowest(records,\
+      \ n=3):\n    \"\"\"The n slowest requests as (path, duration_ms); ties go to the earlier request.\"\
+      \"\"\n    top = heapq.nlargest(n, records, key=lambda r: (r.duration_ms, -r.ts))\n    return [(r.path,\
+      \ r.duration_ms) for r in top]\n\n\ndef percentile(records, pct):\n    \"\"\"Nearest-rank percentile\
+      \ of request durations (0 for no data).\"\"\"\n    values = sorted(r.duration_ms for r in records)\n\
+      \    if not values:\n        return 0\n    rank = math.ceil(pct / 100.0 * len(values))\n    return\
+      \ values[max(rank - 1, 0)]\n"
+  - path: report.py
+    content: "\"\"\"Build and render the access-log summary report.\"\"\"\nimport filters\nimport logparse\n\
+      import stats\n\n\ndef build_report(text, start=None, end=None, services=None, top=3):\n    records\
+      \ = logparse.parse(text)\n    records = filters.for_services(records, services)\n    records = filters.within_window(records,\
+      \ start, end)\n\n    levels = stats.count_by_level(records)\n    total = sum(levels.values())\n\
+      \    return {\n        \"total\": total,\n        \"levels\": levels,\n        \"error_rate\": stats.ratio(levels[\"\
+      ERROR\"], total),\n        \"slowest\": stats.slowest(records, top),\n        \"p95_ms\": stats.percentile(records,\
+      \ 95),\n    }\n\n\ndef render(rep):\n    out = [\"requests: %d\" % rep[\"total\"]]\n    for level,\
+      \ count in rep[\"levels\"].items():\n        out.append(\"  %-5s %d\" % (level, count))\n    out.append(\"\
+      error rate: %.2f%%\" % (rep[\"error_rate\"] * 100))\n    out.append(\"p95: %dms\" % rep[\"p95_ms\"\
+      ])\n    out.append(\"slowest:\")\n    for path, ms in rep[\"slowest\"]:\n        out.append(\" \
+      \ %s %dms\" % (path, ms))\n    return \"\\n\".join(out)\n"
+  reference_files:
+  - path: filters.py
+    content: "\"\"\"Record selection helpers.\"\"\"\n\n\ndef for_services(records, services):\n    \"\"\
+      \"Keep only records whose service is in `services` (falsy = keep all).\"\"\"\n    if not services:\n\
+      \        return records\n    wanted = set(services)\n    return [r for r in records if r.service\
+      \ in wanted]\n\n\ndef within_window(records, start=None, end=None):\n    \"\"\"Keep records with\
+      \ start <= ts < end.\n\n    The window is half-open so adjacent windows never double count a\n \
+      \   request. Either bound may be omitted.\n    \"\"\"\n    if start is None and end is None:\n \
+      \       return records\n    lo = start if start is not None else float(\"-inf\")\n    hi = end if\
+      \ end is not None else float(\"inf\")\n    return [r for r in records if lo <= r.ts < hi]\n"
+  test_code: "import report\n\nLOG = \"\"\"\n# ts level service path duration\n100 INFO api /users 120ms\n\
+    105 ERROR api /orders 900ms\n110 INFO web /home 40ms\n120 WARN api /users 300ms\n130 INFO web /cart\
+    \ 75ms\n140 ERROR web /checkout 650ms\n150 DEBUG api /health 2ms\n\"\"\"\n\n\ndef test_full_log_report():\n\
+    \    r = report.build_report(LOG)\n    assert r[\"total\"] == 7\n    assert r[\"slowest\"] == [(\"\
+    /orders\", 900), (\"/checkout\", 650), (\"/users\", 300)]\n    assert r[\"p95_ms\"] == 900\n\n\ndef\
+    \ test_windowed_report_levels():\n    r = report.build_report(LOG, start=105, end=140)\n    assert\
+    \ r[\"levels\"] == {\"DEBUG\": 0, \"INFO\": 2, \"WARN\": 1, \"ERROR\": 1}\n    assert r[\"total\"\
+    ] == 4\n    assert r[\"error_rate\"] == 0.25\n\n\ndef test_windowed_report_slowest_and_p95():\n  \
+    \  r = report.build_report(LOG, start=105, end=140)\n    assert r[\"slowest\"] == [(\"/orders\", 900),\
+    \ (\"/users\", 300), (\"/cart\", 75)]\n    assert r[\"p95_ms\"] == 900\n\n\ndef test_service_and_open_window():\n\
+    \    r = report.build_report(LOG, start=100, services=[\"web\"])\n    assert r[\"total\"] == 3\n \
+    \   assert r[\"slowest\"] == [(\"/checkout\", 650), (\"/cart\", 75), (\"/home\", 40)]\n    assert\
+    \ r[\"p95_ms\"] == 650\n    assert r[\"error_rate\"] == 0.3333\n\n\ndef test_render_windowed_lists_slow_paths():\n\
+    \    text = report.render(report.build_report(LOG, start=105, end=140, top=2))\n    assert \"/orders\
+    \ 900ms\" in text\n    assert \"/users 300ms\" in text\n    assert \"p95: 900ms\" in text\n"
+  red_herring: 'stats.slowest uses heapq.nlargest with the odd key (duration_ms, -ts), and stats.percentile
+    computes ceil(pct/100*n) and then indexes with max(rank-1, 0), which looks like an off-by-one. Both
+    are correct: the negative ts breaks ties toward the earlier request as the docstring says, and the
+    second is the standard nearest-rank formula. The half-open window bound (ts < end) is also deliberate.'
+  root_cause: filters.within_window returns a one-shot `filter` iterator whenever a bound is given, report.build_report
+    passes that same object to several stats functions, and stats.count_by_level uses it up, so stats.slowest
+    and stats.percentile get an empty sequence.
+  type: verifiable_multi
+  capability: multi_module_debugging
+  prompt: "The access-log report is correct when run over the whole log. When a time window is passed\
+    \ (start and/or end), the level counts and total are still correct, but the 'slowest' section is empty\
+    \ and p95_ms is 0. For example, build_report(LOG, start=105, end=140) gives levels INFO=2, WARN=1,\
+    \ ERROR=1, but slowest == [] and p95_ms == 0. The same happens with services=['web'], start=100.\n\
+    \nHere is the code:\n\n```python\n# file: logparse.py\n\"\"\"Parse access-log lines into records.\"\
+    \"\"\nfrom collections import namedtuple\n\nRecord = namedtuple(\"Record\", \"ts level service path\
+    \ duration_ms\")\n\nLEVELS = (\"DEBUG\", \"INFO\", \"WARN\", \"ERROR\")\n\n\nclass ParseError(ValueError):\n\
+    \    pass\n\n\ndef parse_line(line):\n    parts = line.split()\n    if len(parts) != 5:\n        raise\
+    \ ParseError(\"expected 5 fields, got %d: %r\" % (len(parts), line))\n    ts, level, service, path,\
+    \ dur = parts\n    level = level.upper()\n    if level not in LEVELS:\n        raise ParseError(\"\
+    unknown level %r\" % level)\n    if not dur.endswith(\"ms\"):\n        raise ParseError(\"duration\
+    \ must end with 'ms': %r\" % dur)\n    return Record(int(ts), level, service, path, int(dur[:-2]))\n\
+    \n\ndef parse(text):\n    \"\"\"Parse a whole log into a list of records sorted by timestamp.\"\"\"\
+    \n    records = []\n    for lineno, raw in enumerate(text.splitlines(), 1):\n        line = raw.strip()\n\
+    \        if not line or line.startswith(\"#\"):\n            continue\n        try:\n            records.append(parse_line(line))\n\
+    \        except ParseError as exc:\n            raise ParseError(\"line %d: %s\" % (lineno, exc))\
+    \ from None\n    records.sort(key=lambda r: r.ts)\n    return records\n\n```\n\n```python\n# file:\
+    \ filters.py\n\"\"\"Record selection helpers.\"\"\"\n\n\ndef for_services(records, services):\n  \
+    \  \"\"\"Keep only records whose service is in `services` (falsy = keep all).\"\"\"\n    if not services:\n\
+    \        return records\n    wanted = set(services)\n    return [r for r in records if r.service in\
+    \ wanted]\n\n\ndef within_window(records, start=None, end=None):\n    \"\"\"Keep records with start\
+    \ <= ts < end.\n\n    The window is half-open so adjacent windows never double count a\n    request.\
+    \ Either bound may be omitted.\n    \"\"\"\n    if start is None and end is None:\n        return\
+    \ records\n    lo = start if start is not None else float(\"-inf\")\n    hi = end if end is not None\
+    \ else float(\"inf\")\n    return filter(lambda r: lo <= r.ts < hi, records)\n\n```\n\n```python\n\
+    # file: stats.py\n\"\"\"Aggregate statistics over parsed records.\"\"\"\nimport heapq\nimport math\n\
+    from collections import Counter\n\nfrom logparse import LEVELS\n\n\ndef count_by_level(records):\n\
+    \    counts = Counter(r.level for r in records)\n    return {lvl: counts.get(lvl, 0) for lvl in LEVELS}\n\
+    \n\ndef ratio(num, total):\n    return round(num / total, 4) if total else 0.0\n\n\ndef slowest(records,\
+    \ n=3):\n    \"\"\"The n slowest requests as (path, duration_ms); ties go to the earlier request.\"\
+    \"\"\n    top = heapq.nlargest(n, records, key=lambda r: (r.duration_ms, -r.ts))\n    return [(r.path,\
+    \ r.duration_ms) for r in top]\n\n\ndef percentile(records, pct):\n    \"\"\"Nearest-rank percentile\
+    \ of request durations (0 for no data).\"\"\"\n    values = sorted(r.duration_ms for r in records)\n\
+    \    if not values:\n        return 0\n    rank = math.ceil(pct / 100.0 * len(values))\n    return\
+    \ values[max(rank - 1, 0)]\n\n```\n\n```python\n# file: report.py\n\"\"\"Build and render the access-log\
+    \ summary report.\"\"\"\nimport filters\nimport logparse\nimport stats\n\n\ndef build_report(text,\
+    \ start=None, end=None, services=None, top=3):\n    records = logparse.parse(text)\n    records =\
+    \ filters.for_services(records, services)\n    records = filters.within_window(records, start, end)\n\
+    \n    levels = stats.count_by_level(records)\n    total = sum(levels.values())\n    return {\n   \
+    \     \"total\": total,\n        \"levels\": levels,\n        \"error_rate\": stats.ratio(levels[\"\
+    ERROR\"], total),\n        \"slowest\": stats.slowest(records, top),\n        \"p95_ms\": stats.percentile(records,\
+    \ 95),\n    }\n\n\ndef render(rep):\n    out = [\"requests: %d\" % rep[\"total\"]]\n    for level,\
+    \ count in rep[\"levels\"].items():\n        out.append(\"  %-5s %d\" % (level, count))\n    out.append(\"\
+    error rate: %.2f%%\" % (rep[\"error_rate\"] * 100))\n    out.append(\"p95: %dms\" % rep[\"p95_ms\"\
+    ])\n    out.append(\"slowest:\")\n    for path, ms in rep[\"slowest\"]:\n        out.append(\"  %s\
+    \ %dms\" % (path, ms))\n    return \"\\n\".join(out)\n\n```\n\nFind the root cause and fix it. Return\
+    \ every file you change in full, each in its own ```python block whose first line is `# file: <name>`.\
+    \ Do not return files you leave unchanged."
+  validation:
+    valid: true
+    reasons: []
+    lines: 122
+    fixed_output: '.....                                                                    [100%]
+
+      5 passed in 0.01s
+
+      '
+- id: debug_hard_12
+  title: Promo discounts leak into later orders and compound
+  symptom: After one customer orders 2 Widgets with promo SAVE10 (total 19.44, correct), the next customer
+    orders 2 Widgets with no promo and is also charged 19.44 instead of 21.60. A third customer who uses
+    SAVE10 gets about 19% off (total 17.50). The catalog's list_price for discounted items also falls
+    over the session, and new order lines come back with tags like 'promo:SAVE10' already set. Each order
+    on its own still applies a promo only once.
+  files:
+  - path: catalog.py
+    content: "\"\"\"Read-only product catalog.\"\"\"\nfrom decimal import Decimal\n\n\nclass UnknownSku(KeyError):\n\
+      \    pass\n\n\n_PRODUCTS = {\n    \"SKU-1\": {\n        \"name\": \"Widget\",\n        \"pricing\"\
+      : {\"unit\": Decimal(\"10.00\"), \"currency\": \"USD\"},\n        \"tags\": [\"hardware\"],\n  \
+      \  },\n    \"SKU-2\": {\n        \"name\": \"Gadget\",\n        \"pricing\": {\"unit\": Decimal(\"\
+      25.00\"), \"currency\": \"USD\"},\n        \"tags\": [\"electronics\"],\n    },\n    \"SKU-3\":\
+      \ {\n        \"name\": \"Cable\",\n        \"pricing\": {\"unit\": Decimal(\"4.50\"), \"currency\"\
+      : \"USD\"},\n        \"tags\": [\"electronics\", \"accessory\"],\n    },\n}\n\n\ndef skus():\n \
+      \   return sorted(_PRODUCTS)\n\n\ndef get_product(sku):\n    \"\"\"Return a fresh product record\
+      \ that the caller is free to modify.\"\"\"\n    try:\n        product = _PRODUCTS[sku]\n    except\
+      \ KeyError:\n        raise UnknownSku(sku) from None\n    return dict(product)\n\n\ndef list_price(sku):\n\
+      \    return get_product(sku)[\"pricing\"][\"unit\"]\n"
+  - path: orders.py
+    content: "\"\"\"Order construction.\"\"\"\nimport catalog\n\n\nclass OrderError(ValueError):\n   \
+      \ pass\n\n\ndef new_order(customer, notes=()):\n    if not customer:\n        raise OrderError(\"\
+      customer is required\")\n    return {\"customer\": customer, \"lines\": [], \"promos\": [], \"notes\"\
+      : list(notes)}\n\n\ndef add_line(order, sku, qty=1):\n    \"\"\"Add qty of sku to the order, merging\
+      \ with an existing line for the same sku.\"\"\"\n    if qty <= 0:\n        raise OrderError(\"quantity\
+      \ must be positive\")\n    for line in order[\"lines\"]:\n        if line[\"sku\"] == sku:\n   \
+      \         line[\"qty\"] += qty\n            return line\n    line = catalog.get_product(sku)\n \
+      \   line[\"sku\"] = sku\n    line[\"qty\"] = qty\n    order[\"lines\"].append(line)\n    return\
+      \ line\n"
+  - path: discounts.py
+    content: "\"\"\"Promo-code handling.\"\"\"\nfrom decimal import Decimal, ROUND_HALF_UP\n\nCENT = Decimal(\"\
+      0.01\")\n\nPROMOS = {\n    \"SAVE10\": {\"tag\": \"hardware\", \"pct\": 10},\n    \"TECH20\": {\"\
+      tag\": \"electronics\", \"pct\": 20},\n}\n\n\nclass PromoError(ValueError):\n    pass\n\n\ndef discounted(unit,\
+      \ pct):\n    # Round per unit, not per line: matches what the till prints on receipts.\n    return\
+      \ (unit * (Decimal(100 - pct) / 100)).quantize(CENT, rounding=ROUND_HALF_UP)\n\n\ndef apply_promo(order,\
+      \ code):\n    \"\"\"Apply a promo to matching lines; returns the number of lines discounted.\"\"\
+      \"\n    promo = PROMOS.get(code)\n    if promo is None:\n        raise PromoError(\"unknown promo\
+      \ code %r\" % code)\n    if code in order[\"promos\"]:\n        return 0\n    hits = 0\n    for\
+      \ line in order[\"lines\"]:\n        if promo[\"tag\"] in line[\"tags\"]:\n            pricing =\
+      \ line[\"pricing\"]\n            pricing[\"unit\"] = discounted(pricing[\"unit\"], promo[\"pct\"\
+      ])\n            line[\"tags\"].append(\"promo:\" + code)\n            hits += 1\n    order[\"promos\"\
+      ].append(code)\n    return hits\n"
+  - path: totals.py
+    content: "\"\"\"Order totals and receipts.\"\"\"\nfrom decimal import Decimal, ROUND_HALF_UP\n\nCENT\
+      \ = Decimal(\"0.01\")\nTAX_RATE = Decimal(\"0.08\")\n\n\ndef line_total(line):\n    return line[\"\
+      pricing\"][\"unit\"] * line[\"qty\"]\n\n\ndef summarize(order):\n    subtotal = sum((line_total(l)\
+      \ for l in order[\"lines\"]), Decimal(\"0\"))\n    tax = (subtotal * TAX_RATE).quantize(CENT, rounding=ROUND_HALF_UP)\n\
+      \    return {\n        \"customer\": order[\"customer\"],\n        \"subtotal\": subtotal,\n   \
+      \     \"tax\": tax,\n        \"total\": subtotal + tax,\n        \"promos\": list(order[\"promos\"\
+      ]),\n    }\n\n\ndef receipt(order):\n    s = summarize(order)\n    out = [\"Receipt for %s\" % s[\"\
+      customer\"]]\n    for line in order[\"lines\"]:\n        out.append(\"  %-8s x%d  %s\" % (line[\"\
+      name\"], line[\"qty\"], line_total(line)))\n    out.append(\"  subtotal %s\" % s[\"subtotal\"])\n\
+      \    out.append(\"  tax      %s\" % s[\"tax\"])\n    out.append(\"  total    %s\" % s[\"total\"\
+      ])\n    return \"\\n\".join(out)\n"
+  reference_files:
+  - path: catalog.py
+    content: "\"\"\"Read-only product catalog.\"\"\"\nimport copy\nfrom decimal import Decimal\n\n\nclass\
+      \ UnknownSku(KeyError):\n    pass\n\n\n_PRODUCTS = {\n    \"SKU-1\": {\n        \"name\": \"Widget\"\
+      ,\n        \"pricing\": {\"unit\": Decimal(\"10.00\"), \"currency\": \"USD\"},\n        \"tags\"\
+      : [\"hardware\"],\n    },\n    \"SKU-2\": {\n        \"name\": \"Gadget\",\n        \"pricing\"\
+      : {\"unit\": Decimal(\"25.00\"), \"currency\": \"USD\"},\n        \"tags\": [\"electronics\"],\n\
+      \    },\n    \"SKU-3\": {\n        \"name\": \"Cable\",\n        \"pricing\": {\"unit\": Decimal(\"\
+      4.50\"), \"currency\": \"USD\"},\n        \"tags\": [\"electronics\", \"accessory\"],\n    },\n\
+      }\n\n\ndef skus():\n    return sorted(_PRODUCTS)\n\n\ndef get_product(sku):\n    \"\"\"Return a\
+      \ fresh product record that the caller is free to modify.\"\"\"\n    try:\n        product = _PRODUCTS[sku]\n\
+      \    except KeyError:\n        raise UnknownSku(sku) from None\n    return copy.deepcopy(product)\n\
+      \n\ndef list_price(sku):\n    return get_product(sku)[\"pricing\"][\"unit\"]\n"
+  test_code: "from decimal import Decimal\n\nimport catalog\nimport discounts\nimport orders\nimport totals\n\
+    \n\ndef make_order(customer, items, promo=None):\n    order = orders.new_order(customer)\n    for\
+    \ sku, qty in items:\n        orders.add_line(order, sku, qty)\n    if promo:\n        discounts.apply_promo(order,\
+    \ promo)\n    return order\n\n\ndef test_single_promo_order_is_correct():\n    order = make_order(\"\
+    ann\", [(\"SKU-1\", 2)], \"SAVE10\")\n    assert totals.summarize(order)[\"total\"] == Decimal(\"\
+    19.44\")\n\n\ndef test_promo_does_not_leak_into_next_order():\n    make_order(\"ann\", [(\"SKU-1\"\
+    , 2)], \"SAVE10\")\n    plain = make_order(\"bob\", [(\"SKU-1\", 2)])\n    assert totals.summarize(plain)[\"\
+    total\"] == Decimal(\"21.60\")\n\n\ndef test_repeated_promo_orders_are_priced_the_same():\n    first\
+    \ = make_order(\"ann\", [(\"SKU-1\", 2)], \"SAVE10\")\n    t1 = totals.summarize(first)[\"total\"\
+    ]\n    second = make_order(\"cat\", [(\"SKU-1\", 2)], \"SAVE10\")\n    assert totals.summarize(second)[\"\
+    total\"] == t1 == Decimal(\"19.44\")\n\n\ndef test_catalog_price_unchanged_after_promo():\n    order\
+    \ = make_order(\"dan\", [(\"SKU-2\", 1), (\"SKU-3\", 3)], \"TECH20\")\n    assert totals.summarize(order)[\"\
+    total\"] == Decimal(\"33.26\")\n    assert catalog.list_price(\"SKU-2\") == Decimal(\"25.00\")\n \
+    \   assert catalog.list_price(\"SKU-3\") == Decimal(\"4.50\")\n    plain = make_order(\"eve\", [(\"\
+    SKU-2\", 1), (\"SKU-3\", 3)])\n    assert totals.summarize(plain)[\"total\"] == Decimal(\"41.58\"\
+    )\n\n\ndef test_new_lines_carry_no_promo_tags():\n    make_order(\"fay\", [(\"SKU-3\", 1)], \"TECH20\"\
+    )\n    order = orders.new_order(\"gus\")\n    line = orders.add_line(order, \"SKU-3\", 1)\n    assert\
+    \ line[\"tags\"] == [\"electronics\", \"accessory\"]\n\n\ndef test_promo_applies_once_per_order():\n\
+    \    order = make_order(\"hal\", [(\"SKU-1\", 1)], \"SAVE10\")\n    assert discounts.apply_promo(order,\
+    \ \"SAVE10\") == 0\n    assert totals.summarize(order)[\"subtotal\"] == Decimal(\"9.00\")\n"
+  red_herring: 'discounts.discounted() rounds the discounted unit price to the cent before it is multiplied
+    by quantity. That looks like a rounding bug that could make prices drift, but it is the intended till
+    policy and gives exact results here. The `if code in order[''promos'']: return 0` guard can also look
+    like the reason discounts stack, but it correctly prevents double application within an order. The
+    compounding happens across orders.'
+  root_cause: catalog.get_product returns a shallow `dict(product)` copy, so each order line shares the
+    catalog's nested `pricing` dict and `tags` list, and discounts.apply_promo changes those shared objects
+    in place, which permanently discounts and tags the catalog entry for every later order.
+  type: verifiable_multi
+  capability: multi_module_debugging
+  prompt: "After one customer orders 2 Widgets with promo SAVE10 (total 19.44, correct), the next customer\
+    \ orders 2 Widgets with no promo and is also charged 19.44 instead of 21.60. A third customer who\
+    \ uses SAVE10 gets about 19% off (total 17.50). The catalog's list_price for discounted items also\
+    \ falls over the session, and new order lines come back with tags like 'promo:SAVE10' already set.\
+    \ Each order on its own still applies a promo only once.\n\nHere is the code:\n\n```python\n# file:\
+    \ catalog.py\n\"\"\"Read-only product catalog.\"\"\"\nfrom decimal import Decimal\n\n\nclass UnknownSku(KeyError):\n\
+    \    pass\n\n\n_PRODUCTS = {\n    \"SKU-1\": {\n        \"name\": \"Widget\",\n        \"pricing\"\
+    : {\"unit\": Decimal(\"10.00\"), \"currency\": \"USD\"},\n        \"tags\": [\"hardware\"],\n    },\n\
+    \    \"SKU-2\": {\n        \"name\": \"Gadget\",\n        \"pricing\": {\"unit\": Decimal(\"25.00\"\
+    ), \"currency\": \"USD\"},\n        \"tags\": [\"electronics\"],\n    },\n    \"SKU-3\": {\n     \
+    \   \"name\": \"Cable\",\n        \"pricing\": {\"unit\": Decimal(\"4.50\"), \"currency\": \"USD\"\
+    },\n        \"tags\": [\"electronics\", \"accessory\"],\n    },\n}\n\n\ndef skus():\n    return sorted(_PRODUCTS)\n\
+    \n\ndef get_product(sku):\n    \"\"\"Return a fresh product record that the caller is free to modify.\"\
+    \"\"\n    try:\n        product = _PRODUCTS[sku]\n    except KeyError:\n        raise UnknownSku(sku)\
+    \ from None\n    return dict(product)\n\n\ndef list_price(sku):\n    return get_product(sku)[\"pricing\"\
+    ][\"unit\"]\n\n```\n\n```python\n# file: orders.py\n\"\"\"Order construction.\"\"\"\nimport catalog\n\
+    \n\nclass OrderError(ValueError):\n    pass\n\n\ndef new_order(customer, notes=()):\n    if not customer:\n\
+    \        raise OrderError(\"customer is required\")\n    return {\"customer\": customer, \"lines\"\
+    : [], \"promos\": [], \"notes\": list(notes)}\n\n\ndef add_line(order, sku, qty=1):\n    \"\"\"Add\
+    \ qty of sku to the order, merging with an existing line for the same sku.\"\"\"\n    if qty <= 0:\n\
+    \        raise OrderError(\"quantity must be positive\")\n    for line in order[\"lines\"]:\n    \
+    \    if line[\"sku\"] == sku:\n            line[\"qty\"] += qty\n            return line\n    line\
+    \ = catalog.get_product(sku)\n    line[\"sku\"] = sku\n    line[\"qty\"] = qty\n    order[\"lines\"\
+    ].append(line)\n    return line\n\n```\n\n```python\n# file: discounts.py\n\"\"\"Promo-code handling.\"\
+    \"\"\nfrom decimal import Decimal, ROUND_HALF_UP\n\nCENT = Decimal(\"0.01\")\n\nPROMOS = {\n    \"\
+    SAVE10\": {\"tag\": \"hardware\", \"pct\": 10},\n    \"TECH20\": {\"tag\": \"electronics\", \"pct\"\
+    : 20},\n}\n\n\nclass PromoError(ValueError):\n    pass\n\n\ndef discounted(unit, pct):\n    # Round\
+    \ per unit, not per line: matches what the till prints on receipts.\n    return (unit * (Decimal(100\
+    \ - pct) / 100)).quantize(CENT, rounding=ROUND_HALF_UP)\n\n\ndef apply_promo(order, code):\n    \"\
+    \"\"Apply a promo to matching lines; returns the number of lines discounted.\"\"\"\n    promo = PROMOS.get(code)\n\
+    \    if promo is None:\n        raise PromoError(\"unknown promo code %r\" % code)\n    if code in\
+    \ order[\"promos\"]:\n        return 0\n    hits = 0\n    for line in order[\"lines\"]:\n        if\
+    \ promo[\"tag\"] in line[\"tags\"]:\n            pricing = line[\"pricing\"]\n            pricing[\"\
+    unit\"] = discounted(pricing[\"unit\"], promo[\"pct\"])\n            line[\"tags\"].append(\"promo:\"\
+    \ + code)\n            hits += 1\n    order[\"promos\"].append(code)\n    return hits\n\n```\n\n```python\n\
+    # file: totals.py\n\"\"\"Order totals and receipts.\"\"\"\nfrom decimal import Decimal, ROUND_HALF_UP\n\
+    \nCENT = Decimal(\"0.01\")\nTAX_RATE = Decimal(\"0.08\")\n\n\ndef line_total(line):\n    return line[\"\
+    pricing\"][\"unit\"] * line[\"qty\"]\n\n\ndef summarize(order):\n    subtotal = sum((line_total(l)\
+    \ for l in order[\"lines\"]), Decimal(\"0\"))\n    tax = (subtotal * TAX_RATE).quantize(CENT, rounding=ROUND_HALF_UP)\n\
+    \    return {\n        \"customer\": order[\"customer\"],\n        \"subtotal\": subtotal,\n     \
+    \   \"tax\": tax,\n        \"total\": subtotal + tax,\n        \"promos\": list(order[\"promos\"]),\n\
+    \    }\n\n\ndef receipt(order):\n    s = summarize(order)\n    out = [\"Receipt for %s\" % s[\"customer\"\
+    ]]\n    for line in order[\"lines\"]:\n        out.append(\"  %-8s x%d  %s\" % (line[\"name\"], line[\"\
+    qty\"], line_total(line)))\n    out.append(\"  subtotal %s\" % s[\"subtotal\"])\n    out.append(\"\
+    \  tax      %s\" % s[\"tax\"])\n    out.append(\"  total    %s\" % s[\"total\"])\n    return \"\\\
+    n\".join(out)\n\n```\n\nFind the root cause and fix it. Return every file you change in full, each\
+    \ in its own ```python block whose first line is `# file: <name>`. Do not return files you leave unchanged."
+  validation:
+    valid: true
+    reasons: []
+    lines: 137
+    fixed_output: '......                                                                   [100%]
+
+      6 passed in 0.01s
+
+      '

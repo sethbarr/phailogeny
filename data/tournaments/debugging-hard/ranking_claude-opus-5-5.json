@@ -1,0 +1,104 @@
+{
+  "model": "claude-opus-5-5",
+  "n_tasks": 12,
+  "n_agents": 4,
+  "replicates": 1,
+  "n_results": 48,
+  "total_cost_usd": 2.02,
+  "ranking": [
+    {
+      "agent_id": "control/generic-expert",
+      "pass_rate": 1.0,
+      "ci95": [
+        1.0,
+        1.0
+      ],
+      "rank_ci95": [
+        1,
+        1
+      ],
+      "mean_cost_usd": 0.0375,
+      "cost_ci95": [
+        0.0352,
+        0.0396
+      ],
+      "by_capability": {
+        "multi_module_debugging": 1.0
+      }
+    },
+    {
+      "agent_id": "control/no-prompt",
+      "pass_rate": 1.0,
+      "ci95": [
+        1.0,
+        1.0
+      ],
+      "rank_ci95": [
+        1,
+        1
+      ],
+      "mean_cost_usd": 0.0368,
+      "cost_ci95": [
+        0.033,
+        0.0416
+      ],
+      "by_capability": {
+        "multi_module_debugging": 1.0
+      }
+    },
+    {
+      "agent_id": "voltagent/debugger",
+      "pass_rate": 1.0,
+      "ci95": [
+        1.0,
+        1.0
+      ],
+      "rank_ci95": [
+        1,
+        1
+      ],
+      "mean_cost_usd": 0.047,
+      "cost_ci95": [
+        0.0414,
+        0.0531
+      ],
+      "by_capability": {
+        "multi_module_debugging": 1.0
+      }
+    },
+    {
+      "agent_id": "wshobson/debugging-toolkit-debugger",
+      "pass_rate": 1.0,
+      "ci95": [
+        1.0,
+        1.0
+      ],
+      "rank_ci95": [
+        1,
+        1
+      ],
+      "mean_cost_usd": 0.0473,
+      "cost_ci95": [
+        0.0433,
+        0.0514
+      ],
+      "by_capability": {
+        "multi_module_debugging": 1.0
+      }
+    }
+  ],
+  "task_difficulty": {
+    "debug_hard_1": 1.0,
+    "debug_hard_10": 1.0,
+    "debug_hard_11": 1.0,
+    "debug_hard_12": 1.0,
+    "debug_hard_2": 1.0,
+    "debug_hard_3": 1.0,
+    "debug_hard_4": 1.0,
+    "debug_hard_5": 1.0,
+    "debug_hard_6": 1.0,
+    "debug_hard_7": 1.0,
+    "debug_hard_8": 1.0,
+    "debug_hard_9": 1.0
+  }
+}

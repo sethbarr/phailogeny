@@ -86,3 +86,23 @@ def test_extract_code_handles_four_backtick_fences() -> None:
 
     answer = f"Snippet:\n```python\nx = 1\n```\nFull module:\n````python\n{FIXED}````\n"
     assert extract_code(answer, FIXED).strip() == FIXED.strip()
+
+
+def test_multi_file_answer_overlays_changed_files_and_runs_tests() -> None:
+    from phailogeny.phenotype.tournament import score_answer
+
+    task = {"type": "verifiable_multi",
+            "files": [{"path": "calc.py", "content": "from helpers import sign\n\ndef add(a, b):\n    return a + sign(b) * b\n"},
+                      {"path": "helpers.py", "content": "def sign(x):\n    return -1\n"}],
+            "test_code": "from calc import add\n\ndef test_add():\n    assert add(2, 3) == 5\n"}
+    fixed = "```python\n# file: helpers.py\ndef sign(x):\n    return 1\n```"
+    assert score_answer(task, fixed)["passed"]
+    assert not score_answer(task, "No change needed.")["passed"]
+
+
+def test_unlabelled_snippet_does_not_overwrite_a_file_when_answer_labels_files() -> None:
+    from phailogeny.phenotype.tournament import extract_files
+
+    original = {"a.py": "def f():\n    return 1\n\ndef g():\n    return 2\n", "b.py": "def h():\n    return 3\n"}
+    answer = "Look at this:\n```python\ndef h():\n    pass\n```\nFix:\n```python\n# file: a.py\ndef f():\n    return 10\n\ndef g():\n    return 2\n```"
+    assert set(extract_files(answer, original)) == {"a.py"}

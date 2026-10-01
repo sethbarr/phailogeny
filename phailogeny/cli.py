@@ -218,6 +218,10 @@ def _tournament(args: argparse.Namespace) -> dict[str, object]:
     from phailogeny.estate import assign_ids, dedupe_copies, load_subagent_dirs
     from phailogeny.phenotype.tournament import prepare, rank, run_verifiable
 
+    if args.tournament_command == "prepare-hard":
+        from phailogeny.phenotype.tournament import prepare_hard
+
+        return prepare_hard(args.name, args.member, n_tasks=args.tasks)
     if args.tournament_command == "rank":
         result = rank(args.name, model=args.model)
         return {k: v for k, v in result.items() if k != "task_difficulty"}
@@ -323,6 +327,10 @@ def build_parser() -> argparse.ArgumentParser:
     run.add_argument("--limit", type=int, default=None, help="Only this many calls (smoke test).")
     run.add_argument("--model", default="claude-opus-5-5", help="The common-garden model every agent runs on.")
     run.add_argument("--effort", default="low", help="Effort level, or 'none' to omit it.")
+    hard = tournament_sub.add_parser("prepare-hard", help="Generate and validate multi-file debugging tasks.")
+    hard.add_argument("--name", required=True)
+    hard.add_argument("--member", action="append", default=[], required=True, help="Agent id to include (repeatable).")
+    hard.add_argument("--tasks", type=int, default=12)
     ranker = tournament_sub.add_parser("rank", help="Pass rates with bootstrap confidence intervals.")
     ranker.add_argument("--name", required=True)
     ranker.add_argument("--model", default="claude-opus-5-5")
