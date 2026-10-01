@@ -54,14 +54,17 @@ Cost: $9.96 at list price.
 
 - **511 of 520 patches pass.** Both controls fix all 26 bugs. The 9 misses (audited: all genuine
   wrong fixes, none extraction errors) are spread over 8 agents and concentrated in 2 tasks.
-- **No reliable ranking.** Every agent's pass-rate interval overlaps 100%; rank intervals span
-  most of the field. Agents vs controls, 9/468 vs 0/52 failures: Fisher p = 0.61.
+- **No reliable ranking.** Every agent's 95% Wilson interval overlaps 100% (26/26 gives
+  0.87-1.00; 25/26 gives 0.81-0.99). Agents vs controls, 9/468 vs 0/52 failures: Fisher p = 0.61.
+  (Pass-rate intervals were first drawn as percentile bootstraps, which collapse to zero width at
+  26/26 and overstate certainty; ranking files now carry Wilson intervals too.)
 - **Cost:** Haiku answers cost about half of Opus answers (1.9 vs 4.1 cents per task). On Haiku,
   agent prompts barely change cost (median +2%; 2 of 18 significant).
 - **Reading:** the model decision moves cost far more than the agent decision moves quality, and
   ranking these agents needs harder tasks.
 
-Plots: `out/figures/tournament_debugging_haiku.svg`, `out/figures/tournament_debugging_paired_cost_haiku.svg`.
+Plots: `out/figures/slide_fig5_haiku_pass_wilson.svg` (Wilson intervals),
+`out/figures/tournament_debugging_paired_cost_haiku.svg`; Opus cost: `out/figures/slide_fig4_opus_extra_cost.svg`.
 Next: harder tasks (multi-file, subtle, under-specified), and the rubric and disposition tasks,
 where a prompt's rules should matter more than its knowledge.
 
@@ -76,6 +79,9 @@ controls, 1 replicate per model. Generation $2.17, runs $3.32.
 | --- | --- | --- | --- |
 | Opus 5.5 | 48 / 48 | 4.2 cents | 4.2 cents |
 | Haiku 4.5 | 45 / 48 | 2.7 cents | 2.9 cents |
+
+Controls: on Opus both fixed all 12; on Haiku both missed the same one task as VoltAgent's
+debugger (11 / 12), and only wshobson's debugger fixed all 12, too little to call it better.
 
 - Opus still solves everything; these "hard" tasks are not hard enough to find its limit.
 - All three Haiku failures are one task, and the same mistake: it found the right file but returned

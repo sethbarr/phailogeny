@@ -137,13 +137,26 @@ with a Mantel test (`phailogeny/phenotype/common_garden.py`).
    the main risk.
 
 7. **First clade tournament** ([design and results](docs/clade_tournament.md)). The 18 agents of
-   the debugging clade and two controls each fixed 26 planted bugs; patches were tested in a
-   sandbox. On Claude Opus 5.5 all 520 passed, including with no system prompt, and every agent
-   cost more than no prompt (paired, median +27%, range +10% to +42%). Rerun on Haiku 4.5, 511 of
-   520 passed, both controls fixed every bug, and no agent was reliably better or worse. On simple
-   fixes these prompts add cost, not capability; separating agents needs harder tasks.
+   the debugging clade and two controls (no system prompt; a generic expert prompt) each fixed
+   26 planted single-file bugs, and a subset also fixed 12 harder multi-file bugs. Patches were
+   scored by running hidden tests in a sandbox.
 
-   ![Extra cost of each agent compared with no prompt](out/figures/tournament_debugging_paired_cost.svg)
+   | Garden model | Single-file bugs | Multi-file bugs | Controls | Mean cost per task |
+   | --- | --- | --- | --- | --- |
+   | Opus 5.5 | 520 / 520 | 48 / 48 | all bugs fixed | 4.1 cents |
+   | Haiku 4.5 | 511 / 520 | 45 / 48 | 26 / 26 single-file; 11 / 12 multi-file | 1.9 cents |
+
+   - On Opus, **no prompt matched every agent on quality and beat them all on cost**: every agent
+     cost more than no prompt (paired ratio of total cost, median +27%, range +10% to +42%; the
+     95% bootstrap interval excludes zero for all 18).
+   - On Haiku, no agent was reliably better or worse (95% Wilson intervals all overlap 100%).
+     Its misses on the harder set were sloppy edits (a file returned with a function dropped).
+   - Every task where the two models disagreed went Opus's way (12 of 12, sign test p = 0.0005).
+   - On simple fixes these prompts add cost, not capability; separating agents needs harder tasks.
+
+   ![Extra cost of each agent compared with no prompt, Opus 5.5](out/figures/slide_fig4_opus_extra_cost.svg)
+
+   ![Share of tasks passed per agent with 95% Wilson intervals, Haiku 4.5](out/figures/slide_fig5_haiku_pass_wilson.svg)
 
 ## Questions for a phylogeneticist
 

@@ -19,6 +19,7 @@
   figure { margin: 0 0 28px; background: #fff; border: 1px solid var(--line); border-radius: 10px; padding: 12px; overflow-x: auto; }
   figure img { display: block; max-width: 100%; height: auto; }
   figcaption { color: #5c5c5c; font-size: 0.9rem; margin-top: 8px; }
+  h2 { font-size: 1.4rem; margin: 40px 0 8px; }
 </style>
 </head>
 <body>
@@ -30,6 +31,7 @@
     <a href="out/report.html">Interactive tree report</a>
     <a href="out/uncentred/report.html">Uncentred version</a>
     <a href="out/tree.nwk">Newick (tree.nwk)</a>
+    <a href="https://github.com/sethbarr/phailogeny/blob/main/docs/clade_tournament.md">Tournament results</a>
     <a href="https://github.com/sethbarr/phailogeny">Code and README</a>
   </div>
   <figure>
@@ -39,6 +41,20 @@
   <figure>
     <img src="out/figures/clade_debugging.svg" alt="Debugging clade with labelled agents from five repos">
     <figcaption>Zoom: debugging agents from five repos group together; lst97/debugger, a documented copy, sits next to its wshobson source.</figcaption>
+  </figure>
+  <h2>First tournament: debugging agents</h2>
+  <p class="lead">The 18 agents of the debugging clade and two controls (no system prompt; a generic
+  expert prompt) each fixed 26 planted bugs, scored by running hidden tests in a sandbox. On Claude
+  Opus 5.5 all 520 patches passed, the no-prompt control included, and every agent cost more than no
+  prompt (median +27%). On Haiku 4.5, 511 of 520 passed at about half the cost, and no agent was
+  reliably better or worse. On 12 harder multi-file bugs, Opus passed 48 of 48 and Haiku 45 of 48.</p>
+  <figure>
+    <img src="out/figures/slide_fig4_opus_extra_cost.svg" alt="Extra cost of each of 18 debugging agents compared with no system prompt on Claude Opus 5.5, with 95% bootstrap intervals; every agent is 10 to 42 percent costlier">
+    <figcaption>Extra cost of each agent prompt over no prompt, Opus 5.5. Paired ratio of total cost on the same 26 tasks; 95% bootstrap interval over tasks.</figcaption>
+  </figure>
+  <figure>
+    <img src="out/figures/slide_fig5_haiku_pass_wilson.svg" alt="Share of 26 bug-fix tasks passed per agent on Claude Haiku 4.5 with 95% Wilson intervals; all intervals overlap 100 percent">
+    <figcaption>Share of 26 bug-fix tasks passed, Haiku 4.5. 95% Wilson score intervals; a perfect 26 of 26 is consistent with 87 to 100%.</figcaption>
   </figure>
 </main>
 </body>
